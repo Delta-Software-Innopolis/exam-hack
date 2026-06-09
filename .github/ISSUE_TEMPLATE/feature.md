@@ -3,7 +3,7 @@ name: Feature
 about: Template for feature implementation request
 title: "[FEAT] name"
 labels: enhancement
-assignees: ustkost
+assignees: ''
 type: Feature
 
 ---
