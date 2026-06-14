@@ -1,7 +1,7 @@
 from openai import OpenAI
 import os
 from dotenv import load_dotenv
-
+from pydantic import BaseModel
 
 
 load_dotenv()
@@ -10,31 +10,15 @@ client = OpenAI(
   api_key=os.getenv("OPENROUTER_API_KEY"),
 )
 
-schema = {
-    "type": "json_schema",
-    "json_schema": {
-        "name": "quiz_item", 
-        "strict": True,      
-        "schema": {
-            "type": "object",
-            "properties": {
-                "id": {"type": "integer"},
-                "question": {"type": "string"},
-                "options": {
-                    "type": "array",
-                    "items": {"type": "string"}
-                },
-                "correct": {"type": "integer"},
-                "hint": {"type": "string"},
-                "explanation": {"type": "string"}
-            },
-            "required": ["id", "question", "options", "correct", "hint", "explanation"],
-            "additionalProperties": False
-        }
-    }
-}
+class QuizItem(BaseModel):
+    id: int
+    question: str
+    options: list[str]
+    correct: int
+    hint: str
+    explanation: str
 
-completion = client.chat.completions.create(
+completion = client.chat.completions.parse(
   model="openrouter/free",
   messages=[
     {
@@ -42,7 +26,7 @@ completion = client.chat.completions.create(
       "content": "Сгенерируй один сложный вопрос по Python для викторины."
     }
   ],
-  response_format=schema
+  response_format=QuizItem,
 )
 
 print(f"Model: {completion.model}")
