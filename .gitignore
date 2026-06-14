@@ -3,3 +3,4 @@ venv
 __pycache__
 quiz_hub/alembic.ini
 quiz_hub/migration/
+.DS_Store
