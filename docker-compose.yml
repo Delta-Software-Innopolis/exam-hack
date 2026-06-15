@@ -72,5 +72,26 @@ services:
     depends_on:
       - quiz_core
       - quiz_hub
+  auth:
+    build:
+      context: ./auth
+      dockerfile: Dockerfile
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8081:8081"
+    environment:
+      # CORS
+      - CORS_ADDRS=${CORS_ADDRS}
+
+      # JWT
+      - SECRET_FILE=${AUTH_PRIVATE_KEY_FILE}
+
+      # Postgres
+      - POSTGRES_HOST=db
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
 volumes:
   db-data:
