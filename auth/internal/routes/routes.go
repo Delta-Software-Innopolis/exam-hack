@@ -25,6 +25,7 @@ func Setup() *gin.Engine {
 		group.POST("/login", api.Login)
 		group.POST("/refresh", api.Refresh)
 		group.POST("/validate", api.Validate)
+		group.POST("/logout", api.Logout)
 	}
 
 	return router
