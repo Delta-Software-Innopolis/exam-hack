@@ -186,5 +186,4 @@ class RootComponent(
         @Serializable
         data object Settings : Config()
     }
-
 }
