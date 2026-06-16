@@ -35,6 +35,7 @@ android {
 }
 
 dependencies {
+    // Core + UI
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -43,6 +44,26 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
+
+    // Kotlinx
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.android)
+
+    // Navigation
+    implementation(libs.decompose.core)
+    implementation(libs.decompose.compose)
+    implementation(libs.decompose.experimental)
+
+    // Project
+    implementation(project(":authentication"))
+    implementation(project(":ai_interactions"))
+    implementation(project(":quiz_edit"))
+    implementation(project(":quiz_list"))
+    implementation(project(":quiz_solve"))
+    implementation(project(":settings"))
+    implementation(project(":resources"))
+
+    // Tests
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
