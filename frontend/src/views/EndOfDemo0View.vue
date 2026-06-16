@@ -1,13 +1,18 @@
 <script setup lang="ts">
-import { ref, nextTick } from "vue";
+import { ref, nextTick, watch} from "vue";
 import BasicButton from "@/components/basic/BasicButton.vue";
 import { useRouter } from "vue-router";
-
+import { useUserStore } from "@/stores/user";
 const router = useRouter();
 
+const userStore = useUserStore()
 const showGlitter = ref(false);
 const glitterVideo = ref<HTMLVideoElement | null>(null);
-
+watch(showGlitter, (new_value, old_value) => {
+  if (!new_value && old_value === true) {
+    router.push("/")
+  }
+})
 async function glitter() {
   showGlitter.value = true;
 
@@ -54,7 +59,8 @@ function onGlitterEnded() {
   <div class="window-wrapper">
     <div class="sidebar">
       <div class="text-wrapper">
-        <h1>Thank you for joining!</h1>
+        <h1>Thank you for joining, {{userStore.name}}!</h1>
+        <h2>You password is {{ userStore.password }}, btw!</h2>
         <p>end of demo 0</p>
       </div>
 

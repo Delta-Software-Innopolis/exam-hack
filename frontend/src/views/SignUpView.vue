@@ -2,8 +2,45 @@
 import BasicButton from '@/components/basic/BasicButton.vue';
 import BasicInput from '@/components/basic/BasicInput.vue';
 import { useRouter } from 'vue-router';
+import { ref } from 'vue';
+import { useUserStore } from '@/stores/user';
 
 const router = useRouter();
+const username = ref("")
+const password = ref("")
+const second_password = ref("")
+
+
+
+async function register(): Promise<void> {
+	console.log(import.meta.env.VITE_AUTH_URL_DEV)
+	console.log(import.meta.env.DEV)
+	//import.meta.env.DEV = true, if server in dev mode, else false
+	const address = import.meta.env.DEV ? import.meta.env.VITE_AUTH_URL_DEV : "not a dev adderss"
+	console.log(address)
+	const request = await fetch(`${address}/auth/reg`,{
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json"
+		},
+		body: JSON.stringify({
+			"username": username.value,
+			"password": password.value
+		})
+	})
+	if (!request.ok){
+		const error = await request.json()
+		console.error(error)
+	}
+	const response = await request.json()
+	console.log(response)
+	const userStore = useUserStore()
+	userStore.name = username.value
+	userStore.password = password.value
+
+	router.push("/end-of-demo-0")
+  
+}
 </script>
 
 <template>
@@ -11,12 +48,12 @@ const router = useRouter();
     <div class="sidebar">
       <h1>Sign Up to ExamHacker</h1>
       <div class="inputs-wrapper">
-        <BasicInput placeholder="Enter your email" type="email"></BasicInput>
-        <BasicInput placeholder="Come up with a password" type="password"></BasicInput>
-        <BasicInput placeholder="Repeat the password" type="password"></BasicInput>
+        <BasicInput placeholder="Enter your email" type="email" v-model="username"></BasicInput>
+        <BasicInput placeholder="Come up with a password" type="password" v-model="password"></BasicInput>
+        <BasicInput placeholder="Repeat the password" type="password" v-model="second_password"></BasicInput>
       </div>
       <div class="buttons-wrapper">
-        <BasicButton variant="green" @click="router.push('/end-of-demo-0')">Continue</BasicButton>
+        <BasicButton variant="green" @click="register()">Continue</BasicButton>
         <BasicButton @click="router.push('/auth/login')">I already have an account</BasicButton>
       </div>
     </div>
