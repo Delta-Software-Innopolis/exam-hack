@@ -57,7 +57,7 @@ services:
       context: ./frontend/
       dockerfile: Dockerfile.dev
     environment:
-      - VITE_AUTH_URL=${VITE_AUTH_URL}
+      - VITE_AUTH_URL_DEV=${VITE_AUTH_URL_DEV}
     ports:
       - "5173:5173"
     develop:
@@ -74,6 +74,7 @@ services:
     depends_on:
       - quiz_core
       - quiz_hub
+      - auth
   auth:
     build:
       context: ./auth
