@@ -1,0 +1,20 @@
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+
+    ports:
+      - 5173:5173
+
+    develop:
+      watch:
+        - path: ./frontend/src
+          target: /app/src
+          action: sync
+        - path: ./frontend/package.json
+          target: /app/package.json
+          action: restart
+        - path: ./frontend/vite.config.js
+          target: /app/vite.config.js
+          action: restart

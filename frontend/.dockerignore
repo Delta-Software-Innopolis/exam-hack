@@ -30,14 +30,6 @@ cypress/screenshots/
 cypress/videos/
 
 # -------------------------------
-# Environment and config files
-# -------------------------------
-*.env*
-!.env.production    # Keep production env if needed
-*.local
-*.log
-
-# -------------------------------
 # TypeScript artifacts
 # -------------------------------
 *.tsbuildinfo

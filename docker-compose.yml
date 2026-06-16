@@ -1,97 +1,112 @@
 services:
-  db:
+
+  quizhub-db:
     image: postgres:15-alpine
     volumes:
-      - db-data:/var/lib/postgresql/data
+      - quizhub-db-data:/var/lib/postgresql/data
     environment:
-      - PGDATA=/var/lib/postgresql/data
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_DB=${POSTGRES_DB}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-    ports:
-      - 5432:5432
+      - POSTGRES_USER=${QUIZHUB_POSTGRES_USER}
+      - POSTGRES_DB=${QUIZHUB_POSTGRES_DB}
+      - POSTGRES_PASSWORD=${QUIZHUB_POSTGRES_PASSWORD}
+
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      test: ["CMD-SHELL", "pg_isready -U ${QUIZHUB_POSTGRES_USER} -d ${QUIZHUB_POSTGRES_DB}"]
       interval: 5s
       timeout: 5s
       retries: 10
-  migration:
+
+  quizcore-db:
+    image: postgres:15-alpine
+    volumes:
+      - quizcore-db-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=${QUIZCORE_POSTGRES_USER}
+      - POSTGRES_DB=${QUIZCORE_POSTGRES_DB}
+      - POSTGRES_PASSWORD=${QUIZCORE_POSTGRES_PASSWORD}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${QUIZCORE_POSTGRES_USER} -d ${QUIZCORE_POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+ 
+  quizhub-migration:
     build:
       context: ./quiz_hub
       dockerfile: Dockerfile
     command: alembic upgrade head
     environment:
       - DEBUG=${DEBUG}
-      - DATABASE_URL=${DATABASE_URL}
+
+      - POSTGRES_HOST=${QUIZHUB_POSTGRES_HOST}
+      - POSTGRES_USER=${QUIZHUB_POSTGRES_USER}
+      - POSTGRES_DB=${QUIZHUB_POSTGRES_DB}
+      - POSTGRES_PASSWORD=${QUIZHUB_POSTGRES_PASSWORD}
+      - POSTGRES_PORT=${QUIZHUB_POSTGRES_PORT}
     depends_on:
-      db:
+      quizhub-db:
         condition: service_healthy
-  quiz_hub:
+
+  quizhub:
     build: 
       context: ./quiz_hub
       dockerfile: Dockerfile
     environment:
-      - DATABASE_URL=${DATABASE_URL}
       - DEBUG=${DEBUG}
+
+      - POSTGRES_HOST=${QUIZHUB_POSTGRES_HOST}
+      - POSTGRES_USER=${QUIZHUB_POSTGRES_USER}
+      - POSTGRES_DB=${QUIZHUB_POSTGRES_DB}
+      - POSTGRES_PASSWORD=${QUIZHUB_POSTGRES_PASSWORD}
+      - POSTGRES_PORT=${QUIZHUB_POSTGRES_PORT}
     ports:
       - 8000:8000
     depends_on:
-      migration:
+      quizhub-migration:
         condition: service_completed_successfully
-  quiz_core:
+
+  quizcore:
     build: ./quiz_core/
     environment:
       - CORS_ADDRS=${CORS_ADDRS}
-      
-      - POSTGRES_HOST=db
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=${POSTGRES_DB}
+   
+      - POSTGRES_HOST=${QUIZCORE_POSTGRES_HOST}
+      - POSTGRES_USER=${QUIZCORE_POSTGRES_USER}
+      - POSTGRES_PASSWORD=${QUIZCORE_POSTGRES_PASSWORD}
+      - POSTGRES_DB=${QUIZCORE_POSTGRES_DB}
+      - POSTGRES_PORT=${QUIZCORE_POSTGRES_PORT}
     ports:
-      - "8080:8080"
+      - 8001:8001
     depends_on:
-      migration:
-        condition: service_completed_successfully
+      quizcore-db:
+        condition: service_healthy
+ 
   auth:
     build:
       context: ./auth
       dockerfile: Dockerfile
     depends_on:
-      db:
+      quizcore-db:
         condition: service_healthy
     ports:
-      - "8081:8081"
+      - 8081:8081
     environment:
-      # CORS
       - CORS_ADDRS=${CORS_ADDRS}
-
-      # JWT
       - SECRET_FILE=${AUTH_PRIVATE_KEY_FILE}
-
-      # Postgres
-      - POSTGRES_HOST=db
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_HOST=${QUIZCORE_POSTGRES_HOST}
+      - POSTGRES_USER=${QUIZCORE_POSTGRES_USER}
+      - POSTGRES_PASSWORD=${QUIZCORE_POSTGRES_PASSWORD}
+      - POSTGRES_DB=${QUIZCORE_POSTGRES_DB}
+      - POSTGRES_PORT=${QUIZCORE_POSTGRES_PORT}
   front-dev:
     build: 
       context: ./frontend/
       dockerfile: Dockerfile.dev
     ports:
-      - "5173:5173"
-    develop:
-      watch:
-        - path: ./frontend/src
-          target: /app/src
-          action: sync
-        - path: ./frontend/package.json
-          target: /app/package.json
-          action: restart
-        - path: ./frontend/vite.config.js
-          target: /app/vite.config.js
-          action: restart
+      - 8080:8080
     depends_on:
-      - quiz_core
-      - quiz_hub
+      - quizcore
+      - quizhub
+
 volumes:
-  db-data:
+  quizhub-db-data:
+  quizcore-db-data:
