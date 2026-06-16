@@ -3,7 +3,7 @@ name: Deploy prod to VPS
 on:
   push:
     branches:
-      - main
+      - test-workflows
 
 jobs:
   deploy:
