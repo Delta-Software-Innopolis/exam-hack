@@ -1,8 +1,9 @@
 package database
 
 import (
-	"log"
 	"auth/internal/config"
+	"auth/internal/models"
+	"log"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -20,5 +21,7 @@ func Connect() {
 	if err != nil {
 		log.Fatalf("Error while connecting to database: %s\n", err.Error())
 	}
+
+	DB.AutoMigrate(&models.User{}, &models.Token{})
 
 }
