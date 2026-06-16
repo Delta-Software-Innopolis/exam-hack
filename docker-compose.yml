@@ -82,6 +82,33 @@ services:
 
   frontend:
     build: ./frontend
+      migration:
+        condition: service_completed_successfully
+  auth:
+    build:
+      context: ./auth
+      dockerfile: Dockerfile
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8081:8081"
+    environment:
+      # CORS
+      - CORS_ADDRS=${CORS_ADDRS}
+
+      # JWT
+      - SECRET_FILE=${AUTH_PRIVATE_KEY_FILE}
+
+      # Postgres
+      - POSTGRES_HOST=db
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+  front-dev:
+    build: 
+      context: ./frontend/
+      dockerfile: Dockerfile.dev
     ports:
       - 8080:8080
     depends_on:
