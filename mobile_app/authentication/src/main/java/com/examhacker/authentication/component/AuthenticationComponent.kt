@@ -15,8 +15,7 @@ interface IAuthenticationComponent {
         val repeatedPassword: String = ""
     )
 
-    fun switchModeToLogin()
-    fun switchModeToRegister()
+    fun switchScreenMode(mode: ScreenMode)
     fun onEmailChange(email: String)
     fun onPasswordChange(password: String)
     fun onRepeatedPasswordChange(repeatedPassword: String)
@@ -30,21 +29,10 @@ class AuthenticationComponent(componentContext: ComponentContext)
     private val _model = MutableValue(IAuthenticationComponent.Model())
     override val model: Value<IAuthenticationComponent.Model> = _model
 
-    override fun switchModeToLogin() {
+    override fun switchScreenMode(mode: ScreenMode) {
         _model.update {
             it.copy(
-                screenMode = ScreenMode.LOGIN,
-                email = "",
-                password = "",
-                repeatedPassword = ""
-            )
-        }
-    }
-
-    override fun switchModeToRegister() {
-        _model.update {
-            it.copy(
-                screenMode = ScreenMode.REGISTER,
+                screenMode = mode,
                 email = "",
                 password = "",
                 repeatedPassword = ""
@@ -71,18 +59,20 @@ class AuthenticationComponent(componentContext: ComponentContext)
     }
 
     override fun onSignUp() {
-
+        _model.update {
+            it.copy(screenMode = ScreenMode.DEMO_END)
+        }
     }
 
     override fun onLogin() {
-
+        _model.update {
+            it.copy(screenMode = ScreenMode.DEMO_END)
+        }
     }
-
-
 }
 
 enum class ScreenMode {
     LOGIN,
     REGISTER,
-    DONE
+    DEMO_END
 }
