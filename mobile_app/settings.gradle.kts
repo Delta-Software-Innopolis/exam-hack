@@ -21,3 +21,13 @@ dependencyResolutionManagement {
 
 rootProject.name = "ExamHacker Mobile"
 include(":app")
+include(":resources")
+include(":settings")
+include(":quiz_edit")
+include(":quiz_solve")
+include(":quiz_list")
+include(":ai_interactions")
+include(":authentication")
+include(":common")
+include(":data_network")
+include(":data_local")
