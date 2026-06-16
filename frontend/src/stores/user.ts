@@ -4,6 +4,6 @@ import { defineStore } from 'pinia'
 export const useUserStore = defineStore('user', () => {
   const name = ref("")
   const password = ref("")
-
-  return { name, password }
+  const isNew = ref(true)
+  return { name, password, isNew }
 })
