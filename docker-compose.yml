@@ -97,15 +97,16 @@ services:
       - POSTGRES_PASSWORD=${QUIZCORE_POSTGRES_PASSWORD}
       - POSTGRES_DB=${QUIZCORE_POSTGRES_DB}
       - POSTGRES_PORT=${QUIZCORE_POSTGRES_PORT}
-  front-dev:
-    build: 
-      context: ./frontend/
-      dockerfile: Dockerfile.dev
+  frontend:
+    build: ./frontend
+    environment:
+      - VITE_AUTH_URL_DEV=${VITE_AUTH_URL_DEV}
     ports:
       - 8080:8080
     depends_on:
       - quizcore
       - quizhub
+      - auth
 
 volumes:
   quizhub-db-data:
