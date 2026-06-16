@@ -1,9 +1,10 @@
 <script setup lang="ts">
+const value = defineModel()
 </script>
 
 
 <template>
-  <input v-bind="$attrs">
+  <input v-bind="$attrs" v-model="value">
     <slot></slot>
   </input>
 </template>
