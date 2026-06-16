@@ -1,4 +1,10 @@
 services:
+  quizcore:
+    ports:
+      - "9000:8080"
+  quizhub:
+    ports:
+      - "9081:8080"
   frontend:
     ports:
-      - "5174:5173"
+      - "9080:8080"
