@@ -22,8 +22,8 @@ interface IRootComponent {
     }
 }
 
-class RootComponent(private val componentContext: ComponentContext) :
-    ComponentContext by componentContext, IRootComponent {
+class RootComponent(private val componentContext: ComponentContext)
+    : ComponentContext by componentContext, IRootComponent {
 
     private val navigation = StackNavigation<Config>()
 
@@ -42,10 +42,8 @@ class RootComponent(private val componentContext: ComponentContext) :
             childFactory = ::createChild,
         )
 
-    private fun createChild(
-        config: Config,
-        componentContext: ComponentContext,
-    ): IRootComponent.Child =
+    private fun createChild(config: Config, componentContext: ComponentContext,)
+    : IRootComponent.Child =
         when (config) {
             Config.Authentication ->
                 IRootComponent.Child.Authentication(
