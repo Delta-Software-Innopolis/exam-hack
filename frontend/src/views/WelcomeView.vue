@@ -8,7 +8,7 @@ const router = useRouter();
 <template>
   <div class="window-wrapper">
     <div class="sidebar">
-      <h1>Sign Up to ExamHacker</h1>
+      <h1>Welcome to ExamHacker</h1>
       <div class="buttons-wrapper">
         <BasicButton variant="green" @click="router.push('/auth/signup')">Sign up</BasicButton>
         <BasicButton @click="router.push('/auth/login')">I already have an account</BasicButton>
