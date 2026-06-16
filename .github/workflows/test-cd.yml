@@ -1,4 +1,4 @@
-name: Deploy test to VPS
+name: Deploy to test environment in VPS
 
 on:
   push:
@@ -6,11 +6,11 @@ on:
       - test
 
 jobs:
-  deploy:
+  test:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Deploy via SSH
+      - name: Deploy test via SSH and run compose
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.VPS_IP }}

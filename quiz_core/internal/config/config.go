@@ -27,7 +27,7 @@ var AppConfig Config
 func Load() {
 	AppConfig.Routes.CORSAddresses = utils.ParseCommaSeparatedEnv("CORS_ADDRS")
 
-	AppConfig.Host = ":8080"
+	AppConfig.Host = ":8001"
 
 	AppConfig.Database.Host = os.Getenv("POSTGRES_HOST")
 	AppConfig.Database.User = os.Getenv("POSTGRES_USER")

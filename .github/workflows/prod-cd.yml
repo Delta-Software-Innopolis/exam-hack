@@ -1,4 +1,4 @@
-name: Deploy prod to VPS
+name: Deploy to prod environemnt in VPS
 
 on:
   push:
@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Deploy via SSH
+      - name: Deploy prod via SSH and run compose
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.VPS_IP }}

@@ -75,7 +75,7 @@ services:
       - POSTGRES_DB=${QUIZCORE_POSTGRES_DB}
       - POSTGRES_PORT=${QUIZCORE_POSTGRES_PORT}
     ports:
-      - 8081:8080
+      - 8001:8001
     depends_on:
       quizcore-db:
         condition: service_healthy
