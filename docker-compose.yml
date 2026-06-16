@@ -24,7 +24,7 @@ services:
       - POSTGRES_DB=${QUIZCORE_POSTGRES_DB}
       - POSTGRES_PASSWORD=${QUIZCORE_POSTGRES_PASSWORD}
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${QUIZHUB_POSTGRES_USER} -d ${QUIZHUB_POSTGRES_DB}"]
+      test: ["CMD-SHELL", "pg_isready -U ${QUIZCORE_POSTGRES_USER} -d ${QUIZCORE_POSTGRES_DB}"]
       interval: 5s
       timeout: 5s
       retries: 10
