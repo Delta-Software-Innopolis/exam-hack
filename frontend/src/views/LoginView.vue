@@ -1,21 +1,54 @@
 <script setup lang="ts">
 import BasicButton from '@/components/basic/BasicButton.vue';
 import BasicInput from '@/components/basic/BasicInput.vue';
+import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-
+import { useUserStore } from '@/stores/user';
 const router = useRouter();
+const username = ref("")
+const password = ref("")
+const isValid = ref(true)
+
+async function logIn() {
+	const address = import.meta.env.DEV ? import.meta.env.VITE_AUTH_URL_DEV : "not a dev adderss"
+	console.log(address)
+	const request = await fetch(`${address}/auth/login`,{
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json"
+		},
+		body: JSON.stringify({
+			"username": username.value,
+			"password": password.value
+		})
+	})
+	if (!request.ok){
+		const error = await request.json()
+		console.error(error.error)
+		isValid.value = !isValid.value
+		return
+	}
+	const response = await request.json()
+	console.log(response)
+	const userStore = useUserStore()
+	userStore.name = username.value
+	userStore.password = password.value
+	userStore.isNew = false
+	router.push("/end-of-demo-0")
+}
 </script>
 
 <template>
   <div class="window-wrapper">
     <div class="sidebar">
       <h1>Login to ExamHacker</h1>
+	  <div v-if="!isValid" style="color: red;">Invalide username or password</div>
       <div class="inputs-wrapper">
-        <BasicInput placeholder="Enter your email" type="email"></BasicInput>
-        <BasicInput placeholder="Enter your password" type="password"></BasicInput>
+        <BasicInput placeholder="Enter your email" type="email" v-model="username"></BasicInput>
+        <BasicInput placeholder="Enter your password" type="password" v-model="password"></BasicInput>
       </div>
       <div class="buttons-wrapper">
-        <BasicButton variant="green" @click="router.push('/end-of-demo-0')">Continue</BasicButton>
+        <BasicButton variant="green" @click="logIn()">Continue</BasicButton>
         <BasicButton @click="router.push('/auth/signup')">I don't have an account yet</BasicButton>
       </div>
     </div>
