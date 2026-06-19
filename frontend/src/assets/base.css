@@ -1,7 +1,10 @@
 
-/* :root {
-
-} */
+:root {
+  --color-background: #F3F6F7;
+  --color-background-secondary: #FFFFFF;
+  --color-text: #000000;
+  --color-text-secondary: #757575;
+}
 
 
 
@@ -27,7 +30,7 @@ html, body {
 
 #app {
   margin: 0;
-  padding: 0;
+  padding: 0 15px;
   width: 100vw;
   height: 100vh;
   box-sizing: border-box;

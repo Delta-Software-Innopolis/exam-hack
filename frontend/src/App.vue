@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
+import QuizesView from './views/QuizesView.vue';
 </script>
 
 <template>
@@ -10,7 +11,8 @@ import { RouterLink, RouterView } from 'vue-router'
       </nav> -->
   </header>
 
-  <RouterView />
+  <QuizesView />
+  <!-- <RouterView /> -->
 </template>
 
 <style scoped>
