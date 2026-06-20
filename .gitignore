@@ -1,6 +1,8 @@
 .env
 .env.test
 .env.dev
+.env.test
+.env.dev
 venv
 __pycache__
 .DS_Store
