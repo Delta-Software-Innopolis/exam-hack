@@ -37,12 +37,16 @@ CREATE TABLE packs (
     name VARCHAR(50) NOT NULL, 
     creation_date TIMESTAMP WITH TIME ZONE NOT NULL, 
     updating_date TIMESTAMP WITH TIME ZONE, 
-    PRIMARY KEY (id)
+    author_id INTEGER NOT NULL, 
+    PRIMARY KEY (id), 
+    FOREIGN KEY(author_id) REFERENCES users (id)
 );
 
 CREATE INDEX ix_packs_id ON packs (id);
 
 CREATE INDEX ix_packs_name ON packs (name);
+
+CREATE INDEX ix_packs_author_id ON packs (author_id);
 
 CREATE TABLE cards (
     id SERIAL NOT NULL, 
@@ -146,4 +150,3 @@ CREATE INDEX ix_replies_reply_id ON replies (reply_id);
 UPDATE alembic_version SET version_num='fe2ebf3f76c2' WHERE alembic_version.version_num = '471509bc311b';
 
 COMMIT;
-

@@ -3,6 +3,7 @@ package db
 import (
 	"log"
 	"quiz_core/internal/config"
+	"quiz_core/internal/models"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -20,5 +21,7 @@ func Connect() {
 	if err != nil {
 		log.Fatalf("Error while connecting to database: %s\n", err.Error())
 	}
+
+	DB.AutoMigrate(&models.Card{}, &models.CardOption{}, &models.Fork{}, &models.Pack{})
 
 }
