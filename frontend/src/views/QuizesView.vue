@@ -2,6 +2,8 @@
 import type QuizItem from "@/types"
 import { ref } from "vue";
 import QuizComponent from "@/components/QuizComponent.vue";
+import { useRouter } from "vue-router";
+const router = useRouter();
 const quizes = ref<QuizItem[]>([
     {
         id: 1,
@@ -122,7 +124,8 @@ const quizes = ref<QuizItem[]>([
         :key="quiz.id" 
         :name="quiz.name"
         :author="quiz.author"
-        :description="quiz.description">
+        :description="quiz.description"
+        @click="router.push({name: 'quiz', params: {quizId: quiz.id}})">
       </QuizComponent>
     </div>
   </div>

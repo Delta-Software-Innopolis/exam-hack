@@ -2,7 +2,8 @@ import EndOfDemo0View from '@/views/EndOfDemo0View.vue'
 import LoginView from '@/views/LoginView.vue'
 import SignUpView from '@/views/SignUpView.vue'
 import WelcomeView from '@/views/WelcomeView.vue'
-
+import OneQuizView from '@/views/OneQuizView.vue'
+import QuizesView from '@/views/QuizesView.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
@@ -27,6 +28,16 @@ const router = createRouter({
       path: '/end-of-demo-0',
       name: 'end-of-demo-0',
       component: EndOfDemo0View
+    },
+    {
+      path: "/quezzes/:quizId",
+      name: "quiz",
+      component: OneQuizView
+    },
+    {
+      path: "/quezzes",
+      name: "quizzes",
+      component: QuizesView
     },
   ],
 })
