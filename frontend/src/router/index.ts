@@ -12,32 +12,41 @@ const router = createRouter({
     {
       path: '/',
       name: 'welcome',
-      component: WelcomeView
+      component: WelcomeView,
+      meta: {headerClass: "hidden"}
+      
     },
     {
       path: '/auth/signup',
       name: 'signup',
-      component: SignUpView
+      component: SignUpView,
+      meta: {headerClass: "hidden"}
     },
     {
       path: '/auth/login',
       name: 'login',
-      component: LoginView
+      component: LoginView,
+      meta: {headerClass: "hidden"}
     },
     {
       path: '/end-of-demo-0',
       name: 'end-of-demo-0',
-      component: EndOfDemo0View
+      component: EndOfDemo0View,
+      meta: {headerClass: "hidden"}
     },
     {
-      path: "/quezzes/:quizId",
+      path: "/quizzes/:quizId",
       name: "quiz",
       component: OneQuizView
     },
     {
-      path: "/quezzes",
+      path: "/quizzes",
       name: "quizzes",
-      component: QuizesView
+      component: QuizesView,
+      meta: {
+        headerInfo: "Your quizzes",
+        headerClass: "header-container"
+      }
     },
   ],
 })
