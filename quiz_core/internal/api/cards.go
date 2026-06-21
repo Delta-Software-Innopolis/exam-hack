@@ -87,7 +87,7 @@ func CreateCards(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to create cards"})
 		return
 	}
-
+	
 	createdCards := make([]models.Card, 0, len(req.Cards))
 
 	err = db.DB.Transaction(func(tx *gorm.DB) error {
@@ -250,7 +250,7 @@ func UpdateCards(c *gin.Context) {
 
 func DeleteCard(c *gin.Context) {
 	cardID, err := strconv.ParseUint(c.Param("card_id"), 10, 0)
-	
+
 	if err != nil || cardID == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid card id"})
 		return

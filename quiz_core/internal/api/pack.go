@@ -17,11 +17,11 @@ type createPackRequest struct {
 }
 
 type packResponse struct {
-	ID           uint       `json:"id"`
-	Name         string     `json:"name"`
-	CreationDate time.Time  `json:"creation_date"`
-	UpdatingDate *time.Time `json:"updating_date,omitempty"`
-	Author       uint       `json:"author"`
+	ID           uint         `json:"id"`
+	Name         string       `json:"name"`
+	CreationDate time.Time    `json:"creation_date"`
+	UpdatingDate *time.Time   `json:"updating_date,omitempty"`
+	Author       userResponse `json:"author"`
 }
 
 type packsResponse struct {
@@ -33,8 +33,13 @@ type packWithCardsResponse struct {
 	Name         string         `json:"name"`
 	CreationDate time.Time      `json:"creation_date"`
 	UpdatingDate *time.Time     `json:"updating_date,omitempty"`
-	Author       uint           `json:"author"`
+	Author       userResponse   `json:"author"`
 	Cards        []cardResponse `json:"cards"`
+}
+
+type userResponse struct {
+	ID   uint   `json:"id"`
+	Name string `json:"name"`
 }
 
 func CreatePack(c *gin.Context) {
@@ -71,7 +76,7 @@ func CreatePack(c *gin.Context) {
 		Name:         pack.Name,
 		CreationDate: pack.CreationDate,
 		UpdatingDate: pack.UpdatingDate,
-		Author:       authorID,
+		Author:       currentUserResponse(c, authorID),
 	})
 }
 
@@ -127,7 +132,7 @@ func UpdatePack(c *gin.Context) {
 		Name:         pack.Name,
 		CreationDate: pack.CreationDate,
 		UpdatingDate: pack.UpdatingDate,
-		Author:       pack.AuthorID,
+		Author:       currentUserResponse(c, pack.AuthorID),
 	})
 }
 
@@ -233,7 +238,7 @@ func GetPacks(c *gin.Context) {
 			Name:         pack.Name,
 			CreationDate: pack.CreationDate,
 			UpdatingDate: pack.UpdatingDate,
-			Author:       authorID,
+			Author:       currentUserResponse(c, authorID),
 			Cards:        cardResponses(pack.Cards),
 		})
 	}
@@ -272,5 +277,22 @@ func currentUserID(c *gin.Context) (uint, bool) {
 		return value, value > 0
 	default:
 		return 0, false
+	}
+}
+
+func currentUserResponse(c *gin.Context, userID uint) userResponse {
+	username, ok := c.Get("username")
+	if !ok {
+		return userResponse{ID: userID}
+	}
+
+	name, ok := username.(string)
+	if !ok {
+		return userResponse{ID: userID}
+	}
+
+	return userResponse{
+		ID:   userID,
+		Name: name,
 	}
 }
