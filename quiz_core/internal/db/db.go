@@ -20,5 +20,4 @@ func Connect() {
 	if err != nil {
 		log.Fatalf("Error while connecting to database: %s\n", err.Error())
 	}
-
 }
