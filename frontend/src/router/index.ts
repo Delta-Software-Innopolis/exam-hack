@@ -6,6 +6,8 @@ import OneQuizView from '@/views/OneQuizView.vue'
 import QuizesView from '@/views/QuizesView.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
+
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -42,11 +44,7 @@ const router = createRouter({
     {
       path: "/quizzes",
       name: "quizzes",
-      component: QuizesView,
-      meta: {
-        headerInfo: "Your quizzes",
-        headerClass: "header-container"
-      }
+      component: QuizesView
     },
   ],
 })

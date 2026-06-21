@@ -1,5 +1,14 @@
+<script setup lang="ts">
+import { useRoute } from 'vue-router';
+import {computed} from 'vue'
+import { useQuizzesStore } from '@/stores/quizzes';
+const route = useRoute()
+const quizzesStore = useQuizzesStore()
+const headerInfo = computed(() => quizzesStore.headerInfo)
+</script>
+
 <template>
-    <div :class="$route.meta.headerClass">
+    <div :class="$route.meta.headerClass ? $route.meta.headerClass: 'header-container'">
         <nav class="icons">
             <div @click="">
                 <img src="@/assets/Profile.svg" alt="Profile">
@@ -14,7 +23,7 @@
                 <div>Settings</div>
             </div>
         </nav>
-        <div class="context-info">{{ $route.meta?.headerInfo }}</div> 
+        <div class="context-info">{{ headerInfo }}</div> 
     </div>
 </template>
 
@@ -29,6 +38,7 @@
     justify-content: space-between;
     background-color: var(--color-background-secondary);
     border-radius: 0 0 16px 16px;
+    margin-bottom: 30px;
 }
 
 .icons {

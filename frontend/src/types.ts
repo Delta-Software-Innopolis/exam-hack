@@ -10,6 +10,7 @@ export default interface QuizItem {
 }
 
 interface Card {
+    id: number,
     question: string,
     options: string[],
     correct: number,
