@@ -3,13 +3,14 @@ package db
 import (
 	"log"
 	"quiz_core/internal/config"
+	"quiz_core/internal/models"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
 
-var DB *gorm.DB;
+var DB *gorm.DB
 
 func Connect() {
 	dsn := "host=" + config.AppConfig.Database.Host + " user=" + config.AppConfig.Database.User + " password=" + config.AppConfig.Database.Password + " dbname=" + config.AppConfig.Database.Name + " sslmode=disable TimeZone=Europe/Moscow"
@@ -21,4 +22,5 @@ func Connect() {
 		log.Fatalf("Error while connecting to database: %s\n", err.Error())
 	}
 
+	DB.AutoMigrate(&models.User{}, &models.Pack{}, &models.Card{}, &models.CardOption{}, &models.Fork{})
 }

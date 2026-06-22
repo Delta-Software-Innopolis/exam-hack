@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import Literal
 
 from dotenv import load_dotenv
@@ -6,13 +7,18 @@ from pydantic import BaseModel, Field
 
 from generator import CardGenerationError, generate_cards
 
-load_dotenv()
+load_dotenv(dotenv_path=Path(__file__).resolve().parent.parent / ".env")
 
 app = FastAPI(
-    title="ExamHacker LLM Core",
+    title="ExamHacker LLM Service",
     description="Internal service for generating study cards from raw text.",
     version="0.1.0",
 )
+
+
+@app.get("/health")
+async def health():
+    return {"status": "ok"}
 
 
 class GenerateRequest(BaseModel):

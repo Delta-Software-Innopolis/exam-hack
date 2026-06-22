@@ -1,10 +1,11 @@
-package api
+package llm
 
 import (
 	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -15,37 +16,37 @@ import (
 )
 
 const (
-	maxDocumentSize     = 1 * 1024 * 1024 // 1 MB
+	maxDocumentSize     = 1 * 1024 * 1024
 	defaultCardCount    = 5
 	maxCardCount        = 20
 	llmRequestTimeout   = 120 * time.Second
+	minTextLength       = 10
 )
 
-// generateCardsLLMRequest is the payload sent to the internal LLM service.
+var httpClient = &http.Client{Timeout: llmRequestTimeout}
+
 type generateCardsLLMRequest struct {
 	Text     string `json:"text"`
 	CardType string `json:"card_type"`
 	Count    int    `json:"count"`
 }
 
-// Card is a single generated study card returned to the client.
 type Card struct {
 	Type           string   `json:"type"`
 	Question       string   `json:"question"`
-	Options        []string `json:"options,omitempty"`
-	CorrectIndices []int    `json:"correct_indices,omitempty"`
-	CorrectAnswer  string   `json:"correct_answer,omitempty"`
+	Options        []string `json:"options"`
+	CorrectIndices []int    `json:"correct_indices"`
+	CorrectAnswer  *string  `json:"correct_answer"`
 	Hint           string   `json:"hint"`
 	Explanation    string   `json:"explanation"`
 }
 
-// GenerateCardsResponse is the API response shape.
 type GenerateCardsResponse struct {
 	Cards []Card `json:"cards"`
 }
 
-// GenerateCards accepts a raw .txt document and asks the internal LLM service to generate cards.
 func GenerateCards(ctx *gin.Context) {
+	ctx.Request.Body = http.MaxBytesReader(ctx.Writer, ctx.Request.Body, maxDocumentSize)
 	if err := ctx.Request.ParseMultipartForm(maxDocumentSize); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "failed to parse multipart form: " + err.Error()})
 		return
@@ -75,9 +76,13 @@ func GenerateCards(ctx *gin.Context) {
 		return
 	}
 
-	text := string(textBytes)
-	if len(strings.TrimSpace(text)) == 0 {
+	text := strings.TrimSpace(string(textBytes))
+	if len(text) == 0 {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "document is empty"})
+		return
+	}
+	if len(text) < minTextLength {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("document must be at least %d characters", minTextLength)})
 		return
 	}
 
@@ -109,16 +114,16 @@ func GenerateCards(ctx *gin.Context) {
 	}
 
 	llmURL := strings.TrimSuffix(config.AppConfig.LLMService.URL, "/") + "/generate"
-	req, err := http.NewRequest(http.MethodPost, llmURL, bytes.NewReader(llmReqBody))
+	req, err := http.NewRequestWithContext(ctx.Request.Context(), http.MethodPost, llmURL, bytes.NewReader(llmReqBody))
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "failed to create LLM request"})
 		return
 	}
 	req.Header.Set("Content-Type", "application/json")
 
-	httpClient := &http.Client{Timeout: llmRequestTimeout}
 	resp, err := httpClient.Do(req)
 	if err != nil {
+		log.Printf("LLM request failed: %v", err)
 		ctx.JSON(http.StatusBadGateway, gin.H{"error": "failed to reach LLM service: " + err.Error()})
 		return
 	}
@@ -126,17 +131,20 @@ func GenerateCards(ctx *gin.Context) {
 
 	respBody, err := io.ReadAll(resp.Body)
 	if err != nil {
+		log.Printf("LLM response read failed: %v", err)
 		ctx.JSON(http.StatusBadGateway, gin.H{"error": "failed to read LLM response"})
 		return
 	}
 
 	if resp.StatusCode != http.StatusOK {
+		log.Printf("LLM returned %d: %s", resp.StatusCode, string(respBody))
 		ctx.JSON(http.StatusBadGateway, gin.H{"error": "LLM service returned error", "details": string(respBody)})
 		return
 	}
 
 	var llmResp GenerateCardsResponse
 	if err := json.Unmarshal(respBody, &llmResp); err != nil {
+		log.Printf("LLM response parse failed: %v, body: %s", err, string(respBody))
 		ctx.JSON(http.StatusBadGateway, gin.H{"error": "failed to parse LLM response"})
 		return
 	}

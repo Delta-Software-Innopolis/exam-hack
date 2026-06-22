@@ -94,7 +94,7 @@ async def generate_cards(
         system_prompt = SYSTEM_PROMPT_SINGLE_ANSWER.format(count=count)
 
     try:
-        response = await _get_client().beta.chat.completions.parse(
+        response = await _get_client().chat.completions.parse(
             model=os.getenv("LLM_MODEL", "openai/gpt-oss-20b:free"),
             messages=[
                 {"role": "system", "content": system_prompt},

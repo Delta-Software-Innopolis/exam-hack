@@ -1,13 +1,13 @@
 services:
   quizhub:
-    ports: !reset
+    ports: !override
       - "9000:8000"
   quizcore:
-    ports: !reset
+    ports: !override
       - "9001:8001"
   frontend:
-    ports: !reset
+    ports: !override
       - "9080:8080"
   auth:
-    ports: !reset
+    ports: !override
       - "9081:8081"
