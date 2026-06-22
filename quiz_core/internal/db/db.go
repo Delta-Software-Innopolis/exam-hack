@@ -18,10 +18,7 @@ func Connect() {
 	var err error
 	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
-	if err != nil {
+  if err != nil {
 		log.Fatalf("Error while connecting to database: %s\n", err.Error())
 	}
-
-	DB.AutoMigrate(&models.Card{}, &models.CardOption{}, &models.Fork{}, &models.Pack{})
-
 }
