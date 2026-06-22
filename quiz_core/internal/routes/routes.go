@@ -3,7 +3,9 @@ package routes
 import (
 	"errors"
 	"net/http"
-	"quiz_core/internal/api"
+	pack "quiz_core/internal/api/handlers/pack"
+	cards "quiz_core/internal/api/handlers/cards"
+	ping "quiz_core/internal/api/handlers/ping"
 	"quiz_core/internal/config"
 	"quiz_core/pkg/utils"
 
@@ -58,20 +60,21 @@ func Setup() *gin.Engine {
 	corsConfig.AllowCredentials = true
 	router.Use(cors.New(corsConfig))
 
-	router.GET("/ping", api.Pong)
+	router.GET("/ping", ping.Pong)
 
 	{
 		core := router.Group("/core")
 		core.Use(AuthMiddleware())
 
-		core.POST("/pack", api.CreatePack)
-		core.PATCH("/pack/:pack_id", api.UpdatePack)
-		core.DELETE("/pack/:pack_id", api.DeletePack)
-		core.GET("/packs", api.GetPacks)
-		core.POST("/cards/:pack_id", api.CreateCards)
-		core.PATCH("/cards", api.UpdateCards)
-		core.DELETE("/cards/:card_id", api.DeleteCard)
-		core.GET("/cards/:pack_id", api.GetCards)
+		core.POST("/pack", pack.CreatePack)
+		core.PATCH("/pack/:pack_id", pack.UpdatePack)
+		core.DELETE("/pack/:pack_id", pack.DeletePack)
+		core.GET("/packs", pack.GetPacks)
+		
+		core.POST("/cards/:pack_id", cards.CreateCards)
+		core.PATCH("/cards", cards.UpdateCards)
+		core.DELETE("/cards/:card_id", cards.DeleteCard)
+		core.GET("/cards/:pack_id", cards.GetCards)
 	}
 
 	return router

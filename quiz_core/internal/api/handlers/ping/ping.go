@@ -1,4 +1,4 @@
-package api
+package ping_handlers
 
 import "github.com/gin-gonic/gin"
 
