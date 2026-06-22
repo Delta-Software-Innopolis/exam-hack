@@ -64,10 +64,21 @@ services:
       quizhub-migration:
         condition: service_completed_successfully
 
+  llm-service:
+    build:
+      context: .
+      dockerfile: ./llm-service/Dockerfile
+    environment:
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
+      - LLM_MODEL=${LLM_MODEL:-openai/gpt-oss-20b:free}
+    ports:
+      - 7000:7000
+
   quizcore:
     build: ./quiz_core/
     environment:
       - CORS_ADDRS=${CORS_ADDRS}
+      - LLM_SERVICE_URL=${LLM_SERVICE_URL:-http://llm-service:7000}
    
       - POSTGRES_HOST=${QUIZCORE_POSTGRES_HOST}
       - POSTGRES_USER=${QUIZCORE_POSTGRES_USER}

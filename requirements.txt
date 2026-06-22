@@ -2,3 +2,5 @@ openai
 instructor
 pydantic
 python-dotenv
+fastapi
+uvicorn[standard]

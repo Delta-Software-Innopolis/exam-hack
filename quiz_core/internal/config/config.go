@@ -20,6 +20,9 @@ type Config struct {
 
 	Host string
 
+	LLMService struct {
+		URL string
+	}
 }
 
 var AppConfig Config
@@ -28,6 +31,11 @@ func Load() {
 	AppConfig.Routes.CORSAddresses = utils.ParseCommaSeparatedEnv("CORS_ADDRS")
 
 	AppConfig.Host = ":8001"
+
+	AppConfig.LLMService.URL = os.Getenv("LLM_SERVICE_URL")
+	if AppConfig.LLMService.URL == "" {
+		AppConfig.LLMService.URL = "http://localhost:7000"
+	}
 
 	AppConfig.Database.Host = os.Getenv("POSTGRES_HOST")
 	AppConfig.Database.User = os.Getenv("POSTGRES_USER")

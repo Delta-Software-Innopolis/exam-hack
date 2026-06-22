@@ -21,5 +21,10 @@ func Setup() *gin.Engine {
 
 	router.GET("/ping", api.Pong)
 
+	apiV1 := router.Group("/api/v1")
+	{
+		apiV1.POST("/quizzes/generate", api.GenerateCards)
+	}
+
 	return router
 }
