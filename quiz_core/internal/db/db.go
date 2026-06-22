@@ -3,6 +3,7 @@ package db
 import (
 	"log"
 	"quiz_core/internal/config"
+	"quiz_core/internal/models"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -17,7 +18,7 @@ func Connect() {
 	var err error
 	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
-	if err != nil {
+  if err != nil {
 		log.Fatalf("Error while connecting to database: %s\n", err.Error())
 	}
 }

@@ -1,0 +1,20 @@
+package models
+
+import "time"
+
+type Pack struct {
+	ID           uint       `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
+	Name         string     `gorm:"column:name;type:varchar(50);not null;index:ix_packs_name" json:"name"`
+	CreationDate time.Time  `gorm:"column:creation_date;type:timestamp with time zone;not null" json:"creation_date"`
+	UpdatingDate *time.Time `gorm:"column:updating_date;type:timestamp with time zone" json:"updating_date,omitempty"`
+	AuthorID     uint       `gorm:"column:author_id;not null;index:ix_packs_author_id" json:"-"`
+
+	Author      User   `gorm:"foreignKey:AuthorID;references:ID" json:"author,omitempty"`
+	Cards       []Card `gorm:"foreignKey:PackID;references:ID" json:"cards,omitempty"`
+	Forks       []Fork `gorm:"foreignKey:ForkID;references:ID" json:"forks,omitempty"`
+	OriginalFor []Fork `gorm:"foreignKey:OriginalID;references:ID" json:"original_for,omitempty"`
+}
+
+func (Pack) TableName() string {
+	return "packs"
+}
