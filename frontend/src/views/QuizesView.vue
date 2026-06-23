@@ -55,7 +55,7 @@ onUnmounted(() => {
     display: flex;
     flex-wrap: wrap;
     gap: 2rem 2.5rem;
-    justify-content: center;
+    justify-content: space-between;
 }
 
 .Quiz-Container > * {
