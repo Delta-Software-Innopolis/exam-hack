@@ -99,6 +99,7 @@ services:
     build: ./frontend
     environment:
       - VITE_AUTH_URL_DEV=${VITE_AUTH_URL_DEV}
+      - VITE_CORE_URL_DEV=${VITE_CORE_URL_DEV}
     ports:
       - 8080:8080
     depends_on:

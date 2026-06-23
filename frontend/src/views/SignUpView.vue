@@ -16,7 +16,7 @@ async function register(): Promise<void> {
 	console.log(import.meta.env.VITE_AUTH_URL_DEV)
 	console.log(import.meta.env.DEV)
 	//import.meta.env.DEV = true, if server in dev mode, else false
-	const address = import.meta.env.DEV ? "http://localhost:5173": import.meta.env.VITE_AUTH_URL_DEV 
+	const address = import.meta.env.DEV ? "http://localhost:8080": import.meta.env.VITE_AUTH_URL_DEV 
 	console.log(address)
 	const request = await fetch(`${address}/auth/reg`,{
 		method: "POST",
@@ -38,7 +38,7 @@ async function register(): Promise<void> {
 	userStore.name = username.value
 	userStore.password = password.value
 
-	router.push("/end-of-demo-0")
+	router.push({name: "quizzes"})
   
 }
 </script>

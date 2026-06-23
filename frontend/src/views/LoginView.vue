@@ -10,7 +10,7 @@ const password = ref("")
 const isValid = ref(true)
 
 async function logIn() {
-	const address = import.meta.env.DEV ? "http://localhost:5173": import.meta.env.VITE_AUTH_URL_DEV 
+	const address = import.meta.env.DEV ? "http://localhost:8081": import.meta.env.VITE_AUTH_URL_DEV 
 	console.log(address)
 	const request = await fetch(`${address}/auth/login`,{
 		method: "POST",
@@ -34,7 +34,10 @@ async function logIn() {
 	userStore.name = username.value
 	userStore.password = password.value
 	userStore.isNew = false
-	router.push("/end-of-demo-0")
+  userStore.refresh_token = response.refresh_token
+  userStore.access_token = response.access_token
+  localStorage.setItem('access_token', response.access_token)
+	router.push({name: "quizzes"})
 }
 </script>
 
