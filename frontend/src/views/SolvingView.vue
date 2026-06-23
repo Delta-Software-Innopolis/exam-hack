@@ -3,7 +3,7 @@ import { useRoute } from 'vue-router';
 import { useQuizzesStore } from '@/stores/quizzes';
 import { onBeforeMount, onUnmounted, type ComputedRef } from 'vue';
 import BasicButton from '@/components/basic/BasicButton.vue';
-import type Card from '@/types'
+import type { Card } from '@/types'
 import { ref, computed } from 'vue';
 const route = useRoute();
 const quizzesStore = useQuizzesStore()
@@ -42,15 +42,19 @@ function prevCard(){
 }
 function checkAnswer(index:number) {
     lastClicked.value = index
-    styles.value[index] = index == card?.value.correct ? 'green' : 'red'
-    if (index == card.value.correct) {
+    const doesInclude = card?.value.correct.includes(index)
+    styles.value[index] = doesInclude ? 'green' : 'red'
+    if (doesInclude) {
         styles.value[index] = "green"
         isDisabled.value = true
         setTimeout(()=> {nextCard(); isDisabled.value=false}, 1000)
     }
     else {
         styles.value[index] = "red"
-        styles.value[card.value.correct] = "green"
+        for (let ind of card.value.correct) {
+
+            styles.value[ind] = "green"
+        }
     }
 
 }

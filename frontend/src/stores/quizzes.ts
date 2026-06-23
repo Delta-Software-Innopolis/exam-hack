@@ -1,7 +1,7 @@
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 import type QuizItem from '@/types'
-
+import { useUserStore } from './user'
 
 export const useQuizzesStore = defineStore('quizzes', () => {
   const quizes = ref<QuizItem[]>([
@@ -141,6 +141,29 @@ export const useQuizzesStore = defineStore('quizzes', () => {
     },
         ])
   const headerInfo = ref("")
+  async function fetchQuizzes() {
+    const userStore = useUserStore()
+    try {
+      const token = userStore.access_token
+
+      const response = await fetch('http://localhost:8001/core/packs', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+
+      if (!response.ok) {
+        throw new Error(`Ошибка сети: ${response.status}`)
+      }
+
+      const data = await response.json()
+      
+      quizes.value = data.packs
+    } catch (error) {
+      console.error('Не удалось загрузить квизы:', error)
+    }
+  }
   function getQuizById(id: number) {
     return computed(() => {
       const result = quizes.value.find((quiz) => quiz.id === id)
@@ -195,6 +218,10 @@ export const useQuizzesStore = defineStore('quizzes', () => {
     setQuizes,
     getCardQuestionById,
     setCardQuestion,
-    headerInfo
+    headerInfo,
+    fetchQuizzes
   }
-})
+},
+  {
+    persist: true,
+  })

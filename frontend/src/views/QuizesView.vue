@@ -1,14 +1,23 @@
 <script setup lang="ts">
 import type QuizItem from "@/types"
-import { ref, onBeforeMount, onUnmounted } from "vue";
+import type { ComputedRef } from "vue";
+import { ref, onBeforeMount, onUnmounted, computed} from "vue";
 import QuizComponent from "@/components/QuizComponent.vue";
 import { useRouter } from "vue-router";
 import { useQuizzesStore } from "@/stores/quizzes";
 const router = useRouter();
 const quizzesStore = useQuizzesStore()
-const quizes = ref<QuizItem[]>(quizzesStore.quizes)
-onBeforeMount(()=> {
+const quizes = computed(() => quizzesStore.quizes) as ComputedRef<QuizItem[]>;
+const isLoading = ref(true);
+onBeforeMount(async ()=> {
   quizzesStore.headerInfo = "Your quizzes" 
+  try {
+    await quizzesStore.fetchQuizzes();
+  } catch (error) {
+    console.error("Error", error);
+  } finally {
+    isLoading.value = false;
+  }
 })
 onUnmounted(() => {
   quizzesStore.headerInfo == "Your quizzes" ? "" : quizzesStore.headerInfo
@@ -17,15 +26,16 @@ onUnmounted(() => {
 
 <template>
   <div class="main-container">
-    <div class="Quiz-Container">
+    <div v-if="!isLoading" class="Quiz-Container">
       <QuizComponent v-for="quiz in quizes" 
         :key="quiz.id" 
         :name="quiz.name"
-        :author="quiz.author"
+        :author="quiz.author.name"
         :description="quiz.description"
         @click="router.push({name: 'solving', params: {quizId: quiz.id}})">
       </QuizComponent>
     </div>
+    <div v-else>Loading</div>
   </div>
 </template>
 
