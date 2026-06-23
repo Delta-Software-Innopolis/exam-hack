@@ -30,7 +30,6 @@ class MultipleChoiceCard(BaseModel):
         description="Array of 0-based indices (0 to 3) representing the correct options. Can be one or multiple."
     )
     hint: str = Field(description="A short helpful hint.")
-    explanation: str = Field(description="Why the selected options are correct.")
 
 
 class MultipleChoiceList(BaseModel):
@@ -41,7 +40,6 @@ class SingleAnswerCard(BaseModel):
     question: str = Field(description="The question text itself, clear and unambiguous.")
     correct_answer: str = Field(description="The exact expected text answer.")
     hint: str = Field(description="A short helpful hint.")
-    explanation: str = Field(description="Why this is the correct answer.")
 
 
 class SingleAnswerList(BaseModel):
@@ -59,7 +57,6 @@ Each item must have:
 - "options": exactly 4 strings, no prefixes like A), B), 1), etc.
 - "correct_indices": 0-based indices of correct options, e.g. [0, 2]
 - "hint": short hint
-- "explanation": why the answers are correct
 """
 
 SYSTEM_PROMPT_SINGLE_ANSWER = """PRIMARY OBJECTIVE
@@ -71,7 +68,6 @@ Each item must have:
 - "question": string
 - "correct_answer": exact expected text answer
 - "hint": short hint
-- "explanation": why this is the correct answer
 """
 
 
@@ -121,7 +117,6 @@ async def generate_cards(
                     "correct_indices": item.correct_indices,
                     "correct_answer": None,
                     "hint": item.hint,
-                    "explanation": item.explanation,
                 }
             )
         else:
@@ -133,7 +128,6 @@ async def generate_cards(
                     "correct_indices": None,
                     "correct_answer": item.correct_answer,
                     "hint": item.hint,
-                    "explanation": item.explanation,
                 }
             )
 

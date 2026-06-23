@@ -47,7 +47,6 @@ class CardOut(BaseModel):
     correct_indices: list[int] | None
     correct_answer: str | None
     hint: str
-    explanation: str
 
 
 class GenerateResponse(BaseModel):
