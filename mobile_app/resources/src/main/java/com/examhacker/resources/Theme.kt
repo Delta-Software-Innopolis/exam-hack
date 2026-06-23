@@ -8,8 +8,8 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import com.examhacker.resources.ColorPreset.Companion.BackgroundDefaultPrimary
 import com.examhacker.resources.ColorPreset.Companion.Black
-import com.examhacker.resources.ColorPreset.Companion.White
 
 // Fill later with the actual theme
 
@@ -47,7 +47,8 @@ fun ExamHackerMobileTheme(
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
-        else                                                             -> lightColorScheme(primary = White, secondary = Black, tertiary = Black)
+        else                                                             -> lightColorScheme(primary = BackgroundDefaultPrimary, secondary = Black, tertiary = Black)
+
 
 //        darkTheme                                                      -> DarkColorScheme
 //        else                                                           -> LightColorScheme
