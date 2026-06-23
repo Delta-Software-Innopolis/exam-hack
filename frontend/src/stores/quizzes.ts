@@ -318,6 +318,7 @@ export const useQuizzesStore = defineStore('quizzes', () => {
     fetchQuizzes
   }
 },
-  {
-    persist: true,
-  })
+  // {
+  //   persist: true,
+  // }
+)

@@ -115,7 +115,8 @@ function checkAnswer(index:number) {
 }
 
 .card-num {
-    width: 38px;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
 }
 
 .progress {
