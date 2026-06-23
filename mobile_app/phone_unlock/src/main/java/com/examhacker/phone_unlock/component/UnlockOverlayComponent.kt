@@ -1,20 +1,22 @@
-package com.examhacker.question_phone_unlock.component
+package com.examhacker.phone_unlock.component
 
-import android.graphics.ColorSpace
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
 import com.examhacker.common.utility.AnswerVariant
 import com.examhacker.common.utility.Question
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 interface IUnlockOverlayComponent {
     val model: Value<Model>
     data class Model(
         val question: Question? = null,
-//        val selectedVariant: AnswerVariant? = null,
-        val finalAnswer: AnswerVariant? = null,
-        val isCorrect: Boolean? = null
+        val finalAnswer: AnswerVariant? = null
     )
 
     fun submitAnswer(answer: AnswerVariant)
@@ -31,11 +33,13 @@ class UnlockOverlayComponent(
     override val model: Value<IUnlockOverlayComponent.Model> = _model
 
     override fun submitAnswer(answer: AnswerVariant) {
-        val isCorrect = model.value.question?.variants?.filter { it.isCorrect }?.contains(answer)
-            ?: return
-
         _model.update {
-            it.copy(finalAnswer = answer, isCorrect = isCorrect)
+            it.copy(finalAnswer = answer)
+        }
+
+        CoroutineScope(Dispatchers.IO).launch {
+            delay(2000)
+            withContext(Dispatchers.Main) { dismissOverlay() }
         }
     }
 

@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.examhacker.question_phone_unlock"
+    namespace = "com.examhacker.phone_unlock"
     compileSdk {
         version = release(36)
     }
@@ -42,9 +42,15 @@ dependencies {
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
 
+    // Navigation
+    implementation(libs.decompose.core)
+    implementation(libs.decompose.compose)
+    implementation(libs.decompose.experimental)
+
     // Project
     implementation(project(":resources"))
     implementation(project(":common"))
+    implementation(project(":data_local"))
 
     // Testing
     testImplementation(libs.junit)
