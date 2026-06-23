@@ -8,6 +8,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY llm-service/ .
 
 WORKDIR /app
-EXPOSE 7000
 
 CMD ["uvicorn", "server:app", "--host", "0.0.0.0", "--port", "7000"]

@@ -78,10 +78,7 @@ func Setup() *gin.Engine {
 		core.GET("/cards/:pack_id", cards.GetCards)
 	}
 
-	apiV1 := router.Group("/api/v1")
-	{
-		apiV1.POST("/quizzes/generate", llm.GenerateCards)
-	}
+	router.POST("/core/quizzes/generate", llm.GenerateCards)
 
 	return router
 }
