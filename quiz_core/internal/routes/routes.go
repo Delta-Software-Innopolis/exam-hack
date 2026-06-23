@@ -1,7 +1,6 @@
 package routes
 
 import (
-	"log"
 	"errors"
 	"net/http"
 	pack "quiz_core/internal/api/handlers/pack"
