@@ -153,8 +153,10 @@ export const useQuizzesStore = defineStore('quizzes', () => {
     const userStore = useUserStore()
     try {
       const token = userStore.access_token
-
-      const response = await fetch('http://localhost:8001/core/packs', {
+      const address = import.meta.env.DEV ? "http://localhost:8001": import.meta.env.VITE_CORE_URL_DEV 
+      console.log(address)
+      console.log(import.meta.env.DEV)
+      const response = await fetch(`${address}/core/packs`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`
