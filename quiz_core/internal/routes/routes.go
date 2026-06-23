@@ -3,6 +3,7 @@ package routes
 import (
 	"errors"
 	"net/http"
+	llm "quiz_core/internal/api/handlers/llm"
 	pack "quiz_core/internal/api/handlers/pack"
 	cards "quiz_core/internal/api/handlers/cards"
 	ping "quiz_core/internal/api/handlers/ping"
@@ -75,6 +76,11 @@ func Setup() *gin.Engine {
 		core.PATCH("/cards", cards.UpdateCards)
 		core.DELETE("/cards/:card_id", cards.DeleteCard)
 		core.GET("/cards/:pack_id", cards.GetCards)
+	}
+
+	apiV1 := router.Group("/api/v1")
+	{
+		apiV1.POST("/quizzes/generate", llm.GenerateCards)
 	}
 
 	return router
