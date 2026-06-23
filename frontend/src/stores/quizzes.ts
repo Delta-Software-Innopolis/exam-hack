@@ -10,13 +10,14 @@ export const useQuizzesStore = defineStore('quizzes', () => {
         name: "name1",
         creation_date: new Date(),
         updation_date: new Date(),
+        author: {id: 1, name: "You"},
         forked_from: 2,
         cards: [
         {
           id:1,
           question: "How old is me?",
           options: ["option1", "option2", "option3", "option4"],
-          correct: 2,
+          correct: [2],
           hint: "some hint",
           explanation: "ww",
         }
@@ -27,12 +28,13 @@ export const useQuizzesStore = defineStore('quizzes', () => {
         name: "name2",
         creation_date: new Date(),
         updation_date: new Date(),
+        author: {id: 1, name: "You"},
         forked_from: 3,
         cards: [{
           id:2,
           question: "How old is me?",
           options: ["option1", "option2", "option3", "option4"],
-          correct: 3,
+          correct: [3],
           hint: "some hint",
           explanation: "ww",
         }]
@@ -42,12 +44,13 @@ export const useQuizzesStore = defineStore('quizzes', () => {
         name: "name3",
         creation_date: new Date(),
         updation_date: new Date(),
+        author: {id: 1, name: "You"},
         description: "some description",
         cards: [{
           id: 3,
           question: "How old is me?",
           options: ["option1", "option2", "option3", "option4"],
-          correct: 2,
+          correct: [2],
           hint: "some hint",
           explanation: "ww",
         },
@@ -55,7 +58,7 @@ export const useQuizzesStore = defineStore('quizzes', () => {
           id: 4,
           question: "How old is me?",
           options: ["option22", "option21l", "option38", "option44"],
-          correct: 3,
+          correct: [3],
           hint: "some hint",
           explanation: "ww",
         },
@@ -63,7 +66,7 @@ export const useQuizzesStore = defineStore('quizzes', () => {
           id: 5,
           question: "How old is me?",
           options: ["option22", "option21l", "option38", "option44"],
-          correct: 3,
+          correct: [3],
           hint: "some hint",
           explanation: "ww",
         }]
@@ -72,13 +75,14 @@ export const useQuizzesStore = defineStore('quizzes', () => {
         id: 4,
         name: "name4",
         creation_date: new Date(),
+        author: {id: 1, name: "You"},
         updation_date: new Date(),
         description: "Some long description bla bla bla some text that can be usless but maybe notalkdjfla, idk, actually",
         cards: [{
           id: 4,
           question: "How old is me?",
           options: ["option1", "option2", "option3", "option4"],
-          correct: 2,
+          correct: [2],
           hint: "some hint",
           explanation: "ww",
         }]
@@ -87,12 +91,13 @@ export const useQuizzesStore = defineStore('quizzes', () => {
         id: 5,
         name: "name5",
         creation_date: new Date(),
+        author: {id: 1, name: "You"},
         updation_date: new Date(),
         cards: [{
           id: 5,
           question: "How old is me?",
           options: ["option1", "option2", "option3", "option4"],
-          correct: 2,
+          correct: [2],
           hint: "some hint",
           explanation: "ww",
         }]
@@ -101,12 +106,13 @@ export const useQuizzesStore = defineStore('quizzes', () => {
         id: 6,
         name: "name6",
         creation_date: new Date(),
+        author: {id: 1, name: "You"},
         updation_date: new Date(),
         cards: [{
           id: 6,
           question: "How old is me?",
           options: ["option1", "option2", "option3", "option4"],
-          correct: 2,
+          correct: [2],
           hint: "some hint",
           explanation: "ww",
         }]
@@ -116,11 +122,12 @@ export const useQuizzesStore = defineStore('quizzes', () => {
         name: "name7",
         creation_date: new Date(),
         updation_date: new Date(),
+        author: {id: 1, name: "You"},
         cards: [{
           id: 7,
           question: "How old is me?",
           options: ["option1", "option2", "option3", "option4"],
-          correct: 2,
+          correct: [2],
           hint: "some hint",
           explanation: "ww",
         }]
@@ -128,13 +135,14 @@ export const useQuizzesStore = defineStore('quizzes', () => {
     {
         id: 8,
         name: "name8",
-                creation_date: new Date(),
+        creation_date: new Date(),
         updation_date: new Date(),
+        author: {id: 1, name: "You"},
         cards: [{
           id: 8,
           question: "How old is me?",
           options: ["option1", "option2", "option3", "option4"],
-          correct: 2,
+          correct: [2],
           hint: "some hint",
           explanation: "ww",
         }]
