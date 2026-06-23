@@ -5,6 +5,7 @@ enum ButtonVariants {
   DEFAULT = 'default',
   GREEN = 'green',
   YELLOW = 'yellow',
+  GRADIENT = 'gradient',
 }
 
 const props = defineProps({
@@ -68,5 +69,13 @@ button:active {
   background-color: #FFF1C2;
   border-color: #BF6A02;
   color: #BF6A02;
+}
+
+.gradient {
+  border: 2px solid transparent;
+  border-radius: 16px;
+  background:
+    linear-gradient(#EBFDFF, #EBFDFF) padding-box,
+    linear-gradient(to bottom, #68F2FF 60%, #FF61ED 90%) border-box;
 }
 </style>
