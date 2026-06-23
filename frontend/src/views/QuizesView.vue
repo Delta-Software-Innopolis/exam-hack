@@ -23,7 +23,7 @@ onUnmounted(() => {
         :name="quiz.name"
         :author="quiz.author"
         :description="quiz.description"
-        @click="router.push({name: 'quiz', params: {quizId: quiz.id}})">
+        @click="router.push({name: 'solving', params: {quizId: quiz.id}})">
       </QuizComponent>
     </div>
   </div>

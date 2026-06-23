@@ -4,6 +4,7 @@ import SignUpView from '@/views/SignUpView.vue'
 import WelcomeView from '@/views/WelcomeView.vue'
 import OneQuizView from '@/views/OneQuizView.vue'
 import QuizesView from '@/views/QuizesView.vue'
+import SolvingView from '@/views/SolvingView.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
 
@@ -40,6 +41,11 @@ const router = createRouter({
       path: "/quizzes/:quizId",
       name: "quiz",
       component: OneQuizView
+    },
+    {
+      path: "/quizzes/:quizId/solving",
+      name: "solving",
+      component: SolvingView
     },
     {
       path: "/quizzes",

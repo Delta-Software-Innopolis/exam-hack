@@ -2,6 +2,7 @@ import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 import type QuizItem from '@/types'
 
+
 export const useQuizzesStore = defineStore('quizzes', () => {
   const quizes = ref<QuizItem[]>([
     {
@@ -10,14 +11,16 @@ export const useQuizzesStore = defineStore('quizzes', () => {
         creation_date: new Date(),
         updation_date: new Date(),
         forked_from: 2,
-        cards: [{
+        cards: [
+        {
           id:1,
           question: "How old is me?",
           options: ["option1", "option2", "option3", "option4"],
           correct: 2,
           hint: "some hint",
           explanation: "ww",
-        }]
+        }
+      ]
     },
     {        
         id: 2,
@@ -29,7 +32,7 @@ export const useQuizzesStore = defineStore('quizzes', () => {
           id:2,
           question: "How old is me?",
           options: ["option1", "option2", "option3", "option4"],
-          correct: 2,
+          correct: 3,
           hint: "some hint",
           explanation: "ww",
         }]
@@ -45,6 +48,22 @@ export const useQuizzesStore = defineStore('quizzes', () => {
           question: "How old is me?",
           options: ["option1", "option2", "option3", "option4"],
           correct: 2,
+          hint: "some hint",
+          explanation: "ww",
+        },
+        {
+          id: 4,
+          question: "How old is me?",
+          options: ["option22", "option21l", "option38", "option44"],
+          correct: 3,
+          hint: "some hint",
+          explanation: "ww",
+        },
+        {
+          id: 5,
+          question: "How old is me?",
+          options: ["option22", "option21l", "option38", "option44"],
+          correct: 3,
           hint: "some hint",
           explanation: "ww",
         }]

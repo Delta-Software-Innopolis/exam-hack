@@ -1,3 +1,11 @@
+export default interface Card {
+    id: number,
+    question: string,
+    options: string[],
+    correct: number,
+    hint: string,
+    explanation: string,
+}
 export default interface QuizItem {
     id: number,
     name: string,
@@ -7,13 +15,4 @@ export default interface QuizItem {
     author?: string,
     description?: string
     cards: Card[]
-}
-
-interface Card {
-    id: number,
-    question: string,
-    options: string[],
-    correct: number,
-    hint: string,
-    explanation: string,
 }
