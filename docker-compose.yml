@@ -51,7 +51,7 @@ services:
       dockerfile: ./llm-service/Dockerfile
     environment:
       - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
-      - LLM_MODEL=${LLM_MODEL:-openai/gpt-oss-20b:free}
+      - LLM_MODEL=${LLM_MODEL}
     healthcheck:
       test: ["CMD", "python", "-c", "import http.client; c=http.client.HTTPConnection('localhost',7000); c.request('GET','/health'); r=c.getresponse(); assert r.status==200, r.status"]
       interval: 10s

@@ -91,7 +91,7 @@ async def generate_cards(
 
     try:
         response = await _get_client().chat.completions.parse(
-            model="google/gemma-4-31b-it:free",
+            model=os.getenv("LLM_MODEL"),
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": f"Context: {text}"},
