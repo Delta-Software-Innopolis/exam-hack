@@ -138,7 +138,7 @@ func GeneratePack(c *gin.Context) {
 	}
 	
 	client := &http.Client{
-		Timeout: 30 * time.Second,
+		Timeout: 120 * time.Second,
 	}
 
 	req, err := http.NewRequest(
