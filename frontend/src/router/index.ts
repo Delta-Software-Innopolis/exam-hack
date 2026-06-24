@@ -2,6 +2,7 @@ import EndOfDemo0View from '@/views/EndOfDemo0View.vue'
 import LoginView from '@/views/LoginView.vue'
 import SignUpView from '@/views/SignUpView.vue'
 import WelcomeView from '@/views/WelcomeView.vue'
+import GenerateQuizView from '@/views/GenerateQuizView.vue'
 import OneQuizView from '@/views/OneQuizView.vue'
 import QuizesView from '@/views/QuizesView.vue'
 import SolvingView from '@/views/SolvingView.vue'
@@ -51,6 +52,11 @@ const router = createRouter({
       path: "/quizzes",
       name: "quizzes",
       component: QuizesView
+    },
+    {
+      path: '/quizzes/generate',
+      name: 'generating',
+      component: GenerateQuizView
     },
   ],
 })
