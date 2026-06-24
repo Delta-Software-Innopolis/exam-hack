@@ -7,12 +7,14 @@ function handleFileSelect(e: Event) {
   const input = e.target as HTMLInputElement;
   const filesAsArray = Array.from(input?.files || []);
   files.value = files.value.concat(filesAsArray);
+  emit("changed", [...files.value])
 }
 
 const emit = defineEmits<{(e: "changed", files: File[]): void}>();
 
 function removeFile(index: number) {
   files.value.splice(index, 1);
+  emit("changed", [...files.value])
 }
 
 </script>
