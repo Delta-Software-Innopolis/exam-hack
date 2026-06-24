@@ -52,8 +52,6 @@ services:
     environment:
       - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
       - LLM_MODEL=${LLM_MODEL:-openai/gpt-oss-20b:free}
-    ports:
-      - 7000:7000
     healthcheck:
       test: ["CMD", "python", "-c", "import http.client; c=http.client.HTTPConnection('localhost',7000); c.request('GET','/health'); r=c.getresponse(); assert r.status==200, r.status"]
       interval: 10s
@@ -99,6 +97,7 @@ services:
     build: ./frontend
     environment:
       - VITE_AUTH_URL_DEV=${VITE_AUTH_URL_DEV}
+      - VITE_CORE_URL_DEV=${VITE_CORE_URL_DEV}
     ports:
       - 8080:8080
     depends_on:

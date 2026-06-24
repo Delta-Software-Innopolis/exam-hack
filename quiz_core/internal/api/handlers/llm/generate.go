@@ -38,7 +38,6 @@ type Card struct {
 	CorrectIndices []int    `json:"correct_indices"`
 	CorrectAnswer  *string  `json:"correct_answer"`
 	Hint           string   `json:"hint"`
-	Explanation    string   `json:"explanation"`
 }
 
 type GenerateCardsResponse struct {

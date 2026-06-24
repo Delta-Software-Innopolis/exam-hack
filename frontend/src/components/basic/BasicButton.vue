@@ -6,6 +6,7 @@ enum ButtonVariants {
   GREEN = 'green',
   YELLOW = 'yellow',
   GRADIENT = 'gradient',
+  RED = 'red',
 }
 
 const props = defineProps({
@@ -77,5 +78,14 @@ button:active {
   background:
     linear-gradient(#EBFDFF, #EBFDFF) padding-box,
     linear-gradient(to bottom, #68F2FF 60%, #FF61ED 90%) border-box;
+}
+  
+.red {
+  background-color: #FFBDBD;
+  border-color: #EC221F;
+}
+
+.clicked {
+    border-width: 2px;
 }
 </style>

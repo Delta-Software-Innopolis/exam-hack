@@ -47,7 +47,6 @@ class CardOut(BaseModel):
     correct_indices: list[int] | None
     correct_answer: str | None
     hint: str
-    explanation: str
 
 
 class GenerateResponse(BaseModel):
@@ -57,8 +56,11 @@ class GenerateResponse(BaseModel):
 @app.post("/generate", response_model=GenerateResponse)
 async def generate(req: GenerateRequest) -> GenerateResponse:
     """Generate cards from a raw text document."""
+    print("GENERATING CARDS...")
     try:
         cards = await generate_cards(req.text, req.card_type, req.count)
+        # print(cards)
     except CardGenerationError as exc:
+        print(str(exc))
         raise HTTPException(status_code=502, detail=str(exc)) from exc
     return GenerateResponse(cards=cards)
