@@ -32,11 +32,30 @@ Students can upload lecture materials and automatically generate quizzes and fla
 - Docker
 - Docker compose
 
+#### Clone the repository
 ```sh
-1) git clone https://github.com/Delta-Software-Innopolis/exam-hack && cd exam-hack
-2) cp .env.dev.example .env.dev
-3) docker compose -p dev -f docker-compose.yml -f docker-compose.dev.yml —env-file .env.dev up —build -d
+git clone https://github.com/Delta-Software-Innopolis/exam-hack && cd exam-hack
 ```
+#### Create secrets for JWT Auth
+```sh
+openssl genpkey -algorithm RSA -out jwt_private.pem -pkeyopt rsa_keygen_bits:2048
+openssl rsa -pubout -in jwt_private.pem -out jwt_public.pem
+mkdir auth/secrets
+mkdir quiz_core/secrets
+cp jwt_public.pem jwt_private.pem auth/secrets/
+cp jwt_public.pem quiz_core/secrets
+```
+
+#### Configure environment variables
+```sh
+cp .env.dev.example .env.dev
+```
+
+#### Run the project with Docker Compose
+```sh
+docker compose -p dev -f docker-compose.yml -f docker-compose.dev.yml --env-file .env.dev up --build -d
+```
+
 
 ## Team members
 - Timur Chumaraev - Frontend
