@@ -5,6 +5,7 @@ import { ref, onBeforeMount, onUnmounted, computed} from "vue";
 import QuizComponent from "@/components/QuizComponent.vue";
 import { useRouter } from "vue-router";
 import { useQuizzesStore } from "@/stores/quizzes";
+import BasicButton from "@/components/basic/BasicButton.vue";
 const router = useRouter();
 const quizzesStore = useQuizzesStore()
 const quizes = computed(() => quizzesStore.quizes) as ComputedRef<QuizItem[]>;
@@ -36,6 +37,7 @@ onUnmounted(() => {
       </QuizComponent>
     </div>
     <div v-else>Loading</div>
+    <BasicButton @click="router.push({name: 'generating'})" :variant="'green'" style="width: 50%;">Add quiz</BasicButton>
   </div>
 </template>
 
@@ -55,7 +57,7 @@ onUnmounted(() => {
     display: flex;
     flex-wrap: wrap;
     gap: 2rem 2.5rem;
-    justify-content: space-between;
+    justify-content: flex-start;
 }
 
 .Quiz-Container > * {

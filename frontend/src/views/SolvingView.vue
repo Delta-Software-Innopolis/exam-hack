@@ -5,6 +5,7 @@ import { onBeforeMount, onUnmounted, type ComputedRef } from 'vue';
 import BasicButton from '@/components/basic/BasicButton.vue';
 import type { Card } from '@/types'
 import { ref, computed } from 'vue';
+import router from '@/router';
 const route = useRoute();
 const quizzesStore = useQuizzesStore()
 const quiz = quizzesStore.getQuizById(Number(route.params.quizId))
@@ -32,7 +33,7 @@ function nextCard(){
         styles.value = new Array(4).fill('default')
         return
     }
-    //show congrats
+    router.push({name: "quizzes"})
 
 }
 function prevCard(){
@@ -147,6 +148,7 @@ function checkAnswer(index:number) {
     height: fit-content;
     width: 100%;
     padding: 16px;
+    margin: 0;
 }
 
 .option-container {
