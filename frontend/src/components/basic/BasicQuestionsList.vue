@@ -23,12 +23,16 @@
   const editText = ref("")
 
   function startEdit(index: number) {
-    editingIndex.value = index;
-    editText.value = questions.value[index].text;
+    editingIndex.value = index
+    const question = questions.value[index]
+    if (!question) return
+    editText.value = question.text
   }
 
   function saveEdit(index: number) {
-    questions.value[index].text = editText.value;
+    const question = questions.value[index]
+    if (!question) return
+    question.text = editText.value;
     editingIndex.value = null;
   }
 
