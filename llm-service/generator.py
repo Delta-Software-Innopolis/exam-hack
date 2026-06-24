@@ -91,7 +91,7 @@ async def generate_cards(
 
     try:
         response = await _get_client().chat.completions.parse(
-            model=os.getenv("LLM_MODEL", "openai/gpt-oss-20b:free"),
+            model="google/gemma-4-31b-it:free",
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": f"Context: {text}"},
@@ -99,6 +99,7 @@ async def generate_cards(
             response_format=response_format,
             temperature=0.1,
         )
+        print(response)
         parsed = response.choices[0].message.parsed
     except Exception as exc:
         raise CardGenerationError(f"LLM request failed: {exc}") from exc

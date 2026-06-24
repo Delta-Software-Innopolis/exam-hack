@@ -1,8 +1,12 @@
 package ping_handlers
 
-import "github.com/gin-gonic/gin"
+import (
+	"log"
+	"github.com/gin-gonic/gin"
+)
 
 
 func Pong(ctx *gin.Context) {
+	log.Println("hi from ping!")
 	ctx.String(200, "Pong")
 }
