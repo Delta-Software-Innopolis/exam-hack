@@ -26,8 +26,8 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="main-container">
-    <div v-if="!isLoading" class="Quiz-Container">
+  <div class="main-container" v-if="!isLoading">
+    <div class="Quiz-Container">
       <QuizComponent v-for="quiz in quizes" 
         :key="quiz.id" 
         :name="quiz.name"
@@ -36,9 +36,11 @@ onUnmounted(() => {
         @click="router.push({name: 'solving', params: {quizId: quiz.id}})">
       </QuizComponent>
     </div>
-    <div v-else>Loading</div>
-    <BasicButton @click="router.push({name: 'generating'})" :variant="'green'" style="width: 50%;">Add quiz</BasicButton>
+    <div class="button-container">
+      <BasicButton @click="router.push({name: 'generating'})" :variant="'green'" style="width: 20%;">Add quiz</BasicButton>
+    </div>
   </div>
+  <div v-else>Loading</div>
 </template>
 
 <style scoped>
@@ -65,5 +67,10 @@ onUnmounted(() => {
     box-sizing: border-box;
 }
 
+.button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
 </style>
