@@ -148,5 +148,6 @@ const quizDescription = ref("");
     width: 400px;
     font-size: 16px !important;
     height: 48px;
+    margin-top: 16px;
   }
 </style>

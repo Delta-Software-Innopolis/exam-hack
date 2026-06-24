@@ -1,4 +1,5 @@
 <script setup lang="ts">
+  import BasicButton from '@/components/basic/BasicButton.vue';
   import { ref } from 'vue';
 
   type Question = {
@@ -49,10 +50,10 @@
     <div v-for="(question, index) in questions" :key="question.id" class="question-card">
       <input v-if="editingIndex === index" v-model="editText" class="question-input" />
       <span v-else><span class="index-wrapper">{{index + 1}}.</span>{{ question.text }}</span>
-      <button v-if="editingIndex === index" class="save" @click="saveEdit(index)">✓</button>
-     <button v-else class="edit" @click="startEdit(index)">✎</button> 
+      <div v-if="editingIndex === index" class="save-button" @click="saveEdit(index)"><div class="checkmark-img"><img src="/save_question_icon.svg" alt="save_question_icon" /></div></div>
+      <div v-else class="edit-button" @click="startEdit(index)"><img src="/edit_question_icon.svg" alt="edit_question_icon.svg" /></div> 
     </div>
-    <button class="add" @click="addQuestion">+ Add question</button>
+    <BasicButton class="add-button" @click="addQuestion">+ Add question</BasicButton>
   </div>
 </template>
 
@@ -70,10 +71,44 @@
     padding: 16px;
     padding-top: 8px;
     padding-bottom: 8px;
-
+    font-size: 14px;
   }
 
   .index-wrapper {
     margin-right: 8px;
+  }
+
+  .save-button {
+   cursor: pointer;
+   margin-left: auto;
+  }
+
+  .edit-button {
+   cursor: pointer; 
+  }
+
+  .checkmark-img {
+    width: 20px;
+    height: 20px;
+  }
+
+  .checkmark-img img {
+    width: 100%;
+    height: auto;
+  }
+
+  .question-input {
+    border: none;
+    outline: none;
+    width: 348px;
+    display: flex;
+    flex: 1;
+  }
+
+  .add-button {
+    width: 400px;
+    height: 48px;
+    font-size: 16px !important;
+    margin-top: 16px;
   }
 </style>
