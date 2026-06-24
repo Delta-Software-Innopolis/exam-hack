@@ -22,7 +22,7 @@ import (
 )
 
 type GeneratePackRequest struct {
-	Name string `json:"name" binding:"required"`
+	Name string `form:"name" binding:"required"`
 }
 
 type CardOut struct {
@@ -65,8 +65,9 @@ func extractTextFromFiles(paths []string) (string, error) {
 
 func GeneratePack(c *gin.Context) {
 	var pack_req GeneratePackRequest
-	if err := c.ShouldBindJSON(&pack_req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "pack name is required"})
+	if err := c.ShouldBind(&pack_req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err})
+		return
 	}
 
 	pack_name, ok := sc.PackName(c, pack_req.Name)
