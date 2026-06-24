@@ -5,12 +5,59 @@ import BasicTextArea from '@/components/basic/BasicTextArea.vue';
 import BasicFileUpload from '@/components/basic/BasicFileUpload.vue';
 import BasicQuestionsList from '@/components/basic/BasicQuestionsList.vue';
 import { ref } from 'vue';
+import { useUserStore } from '@/stores/user';
+import router from '@/router';
+const userStore = useUserStore()
 const quizTitle = ref("");
 const quizDescription = ref("");
+const files = ref<File[]>([])
+const isLoading = ref(false)
+async function generateQuestions() {
+  try {
+    isLoading.value = true
+    const formData = new FormData()
+
+    formData.append('name', quizTitle.value)
+    console.log(files.value)
+
+    for (const file of files.value) {
+      formData.append('files', file)
+    }
+    const address = import.meta.env.DEV ? "http://localhost:8001": import.meta.env.VITE_CORE_URL_DEV 
+    const response = await fetch(
+      `${address}/core/pack/generate`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${userStore.access_token}`,
+        },
+        body: formData,
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`)
+    }
+
+    const data = await response.json()
+
+    console.log(data)
+    router.push({name: "quizzes"})
+
+  } catch (error) {
+    console.error('Failed to generate questions:', error)
+  } finally {
+    isLoading.value = false
+  }
+}
+function onFilesChanged(f: File[]) {
+  files.value = [...f]
+  console.log('saved', files.value)
+}
 </script>
 
 <template>
-  <div class="window-wrapper">
+  <div class="window-wrapper" v-if="!isLoading">
     <div class="segment">
       <div class="elements-wrapper">
         <div class="title">Name your new quiz</div>
@@ -29,10 +76,10 @@ const quizDescription = ref("");
         <p>3. Edit them as you want</p>
       </div>
       <p>Uploaded files</p>
-      <BasicFileUpload></BasicFileUpload>
+      <BasicFileUpload @changed="onFilesChanged"></BasicFileUpload>
       <div class="buttons-wrapper">
         <BasicButton class="skip-button">Skip</BasicButton>
-        <BasicButton class="generate-button" variant="gradient"><span>Generate Questions</span></BasicButton>
+        <BasicButton class="generate-button" variant="gradient" @click="generateQuestions()"><span>Generate Questions</span></BasicButton>
       </div>
     </div>
     <div class="segment">
@@ -41,6 +88,7 @@ const quizDescription = ref("");
       <BasicButton class="save-button" variant="green">Save Quiz</BasicButton>
     </div>
   </div>
+  <div v-else>Loading</div>
 </template>
 
 <style>

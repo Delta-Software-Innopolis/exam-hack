@@ -5,6 +5,7 @@ import { ref, onBeforeMount, onUnmounted, computed} from "vue";
 import QuizComponent from "@/components/QuizComponent.vue";
 import { useRouter } from "vue-router";
 import { useQuizzesStore } from "@/stores/quizzes";
+import BasicButton from "@/components/basic/BasicButton.vue";
 const router = useRouter();
 const quizzesStore = useQuizzesStore()
 const quizes = computed(() => quizzesStore.quizes) as ComputedRef<QuizItem[]>;
@@ -25,8 +26,8 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="main-container">
-    <div v-if="!isLoading" class="Quiz-Container">
+  <div class="main-container" v-if="!isLoading">
+    <div class="Quiz-Container">
       <QuizComponent v-for="quiz in quizes" 
         :key="quiz.id" 
         :name="quiz.name"
@@ -35,8 +36,11 @@ onUnmounted(() => {
         @click="router.push({name: 'solving', params: {quizId: quiz.id}})">
       </QuizComponent>
     </div>
-    <div v-else>Loading</div>
+    <div class="button-container">
+      <BasicButton @click="router.push({name: 'generating'})" :variant="'green'" style="width: 20%;">Add quiz</BasicButton>
+    </div>
   </div>
+  <div v-else>Loading</div>
 </template>
 
 <style scoped>
@@ -55,7 +59,7 @@ onUnmounted(() => {
     display: flex;
     flex-wrap: wrap;
     gap: 2rem 2.5rem;
-    justify-content: space-between;
+    justify-content: flex-start;
 }
 
 .Quiz-Container > * {
@@ -63,5 +67,10 @@ onUnmounted(() => {
     box-sizing: border-box;
 }
 
+.button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
 </style>
