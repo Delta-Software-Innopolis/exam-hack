@@ -1,4 +1,4 @@
-.PHONY: dev test prod down db-shell generate-secrets logs ps restart help
+.PHONY: prod dev test down db-shell generate-secrets logs ps restart help
 
 DC = docker compose
 ENV ?= dev
@@ -44,13 +44,13 @@ restart:
 	$(DC) -p $(ENV) restart
 
 help:
-	@echo "make dev               - start app in dev mode (dev docker compose up)"
-	@echo "make test              - start app in test mode (test docker compose up)"
-	@echo "make prod              - start app in production mode (prod docker compose up"
-	@echo "make down -ENV=...     - stop app (docker compose down)"
-	@echo "make db-shell -ENV=... - internactive database shell (docker exec -it psql)"
-	@echo "make logs -ENV=...     - attach to the logs (docker logs -f)"
-	@echo "make ps -ENV=...       - show running containers (docker compose ps"
-	@echo "make restart -ENV=...  - restart app (docker compose restart)"
-	@echo "make help              - show this message"
-	@echo "NOTE: some commands use -ENV=... flag. If you dont specify it, it's dev by default, so for example if you do 'make db-shell', it will treat it as 'make db-shell -ENV=dev'"
+	@echo "make dev              - start app in dev mode (dev docker compose up)"
+	@echo "make test             - start app in test mode (test docker compose up)"
+	@echo "make prod             - start app in production mode (prod docker compose up"
+	@echo "make down ENV=...     - stop app (docker compose down)"
+	@echo "make db-shell ENV=... - internactive database shell (docker exec -it psql)"
+	@echo "make logs ENV=...     - attach to the logs (docker logs -f)"
+	@echo "make ps ENV=...       - show running containers (docker compose ps"
+	@echo "make restart ENV=...  - restart app (docker compose restart)"
+	@echo "make help             - show this message"
+	@echo "NOTE: some commands use ENV=... option. If you dont specify it, it's dev by default, so for example if you do 'make db-shell', it will treat it as 'make db-shell ENV=dev'"
