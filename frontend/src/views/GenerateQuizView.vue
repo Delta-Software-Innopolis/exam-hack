@@ -36,7 +36,8 @@ async function generateQuestions() {
     )
 
     if (!response.ok) {
-      throw new Error(`HTTP ${response.status}`)
+      const text = await response.text()
+      throw new Error(`Error generating quiz: ${text}`)
     }
 
     const data = await response.json()

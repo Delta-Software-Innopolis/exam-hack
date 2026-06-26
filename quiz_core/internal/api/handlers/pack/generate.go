@@ -66,7 +66,7 @@ func extractTextFromFiles(paths []string) (string, error) {
 func GeneratePack(c *gin.Context) {
 	var pack_req GeneratePackRequest
 	if err := c.ShouldBind(&pack_req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -172,12 +172,28 @@ func GeneratePack(c *gin.Context) {
 		return
 	}
 
-	log.Println("!!!!BODY:", body)
-
 	var generateResp GenerateResponse
 	if err := json.Unmarshal(body, &generateResp); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
+	}
+	
+	log.Printf("-------------------PACK-----------------------")
+	for i, card := range generateResp.Cards {
+		log.Printf("CARD No%d:\n", i)
+		log.Printf("Question: %s\n", card.Question)
+		log.Printf("Hint: %s\n", card.Hint)
+		log.Printf("Options:\n")
+		correct := sc.CorrectIndexSet(card.CorrectIndices)
+		for j, option := range card.Options {
+			log.Printf("%d: %s ", j, option)
+			if correct[j] {
+				log.Printf("(CORRECT)\n")
+			} else {
+				log.Printf("(INCORRECT)\n")
+			}
+		}
+		log.Printf("\n")
 	}
 
 	pack := models.Pack{
@@ -187,7 +203,7 @@ func GeneratePack(c *gin.Context) {
 	}
 
 	if err := db.DB.Create(&pack).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to create pack"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to create pack: " + err.Error()})
 		return
 	}
 
@@ -226,7 +242,7 @@ func GeneratePack(c *gin.Context) {
 	})
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to create cards"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to create cards: " + err.Error()})
 		return
 	}
 
