@@ -48,6 +48,22 @@ CREATE INDEX ix_packs_name ON packs (name);
 
 CREATE INDEX ix_packs_author_id ON packs (author_id);
 
+CREATE TABLE pack_permissions (
+    user_id INTEGER NOT NULL, 
+    pack_id INTEGER NOT NULL, 
+    permission INTEGER NOT NULL,
+    
+    PRIMARY KEY (user_id, pack_id), 
+    FOREIGN KEY(user_id) REFERENCES users (id), 
+    FOREIGN KEY(pack_id) REFERENCES packs (id)
+);
+
+CREATE INDEX ix_pack_permissions_user_id ON pack_permissions (user_id);
+
+CREATE INDEX ix_pack_permissions_pack_id ON pack_permissions (pack_id);
+
+CREATE INDEX ix_pack_permissions_permission ON pack_permissions (permission);
+
 CREATE TABLE cards (
     id SERIAL NOT NULL, 
     question TEXT NOT NULL, 

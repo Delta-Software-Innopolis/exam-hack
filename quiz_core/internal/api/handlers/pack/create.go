@@ -10,8 +10,8 @@ import (
 	"quiz_core/internal/models"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
-
 
 func CreatePack(c *gin.Context) {
 	var req structs.CreatePackRequest
@@ -37,7 +37,19 @@ func CreatePack(c *gin.Context) {
 		AuthorID:     authorID,
 	}
 
-	if err := db.DB.Create(&pack).Error; err != nil {
+	if err := db.DB.Transaction(func(tx *gorm.DB) error {
+		if err := tx.Create(&pack).Error; err != nil {
+			return err
+		}
+
+		permission := models.PackPermission{
+			UserID:     authorID,
+			PackID:     pack.ID,
+			Permission: 1,
+		}
+
+		return tx.Create(&permission).Error
+	}); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to create pack"})
 		return
 	}

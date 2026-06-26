@@ -12,7 +12,6 @@ import (
 	"gorm.io/gorm"
 )
 
-
 func GetPacks(c *gin.Context) {
 	authorID, ok := sc.CurrentUserID(c)
 	if !ok {
@@ -23,13 +22,15 @@ func GetPacks(c *gin.Context) {
 	var packs []models.Pack
 
 	if err := db.DB.
+		Joins("JOIN pack_permissions ON pack_permissions.pack_id = packs.id").
+		Preload("Author").
 		Preload("Cards", func(tx *gorm.DB) *gorm.DB {
 			return tx.Order("id ASC")
 		}).
 		Preload("Cards.Options", func(tx *gorm.DB) *gorm.DB {
 			return tx.Order("id ASC")
 		}).
-		Where("author_id = ?", authorID).
+		Where("pack_permissions.user_id = ? AND pack_permissions.permission IN ?", authorID, []int{1, 2}).
 		Order("id ASC").
 		Find(&packs).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to get packs"})
@@ -47,8 +48,11 @@ func GetPacks(c *gin.Context) {
 			Name:         pack.Name,
 			CreationDate: pack.CreationDate,
 			UpdatingDate: pack.UpdatingDate,
-			Author:       sc.CurrentUserResponse(c, authorID),
-			Cards:        sc.CardResponses(pack.Cards),
+			Author: structs.UserResponse{
+				ID:   pack.Author.ID,
+				Name: pack.Author.Name,
+			},
+			Cards: sc.CardResponses(pack.Cards),
 		})
 	}
 
