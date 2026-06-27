@@ -20,7 +20,6 @@ class Pack(Base):
     updating_date: Mapped[datetime|None] = mapped_column(DateTime(timezone=True), default=None)
     author_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
 
-    published: Mapped["Published_pack | None"] = relationship("Published_pack", back_populates="source", uselist=False)
+    published: Mapped["Published_pack | None"] = relationship("Published_pack", back_populates="source", uselist=False, lazy="noload")
     cards: Mapped[list["Card"]] = relationship("Card", back_populates="pack")
     comments: Mapped[list["Comment"]] = relationship("Comment", back_populates="pack")
-    forks: Mapped[list["Pack"]] = relationship("Pack", secondary=forks)

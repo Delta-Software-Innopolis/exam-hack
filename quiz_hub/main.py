@@ -1,12 +1,14 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
-
-app = FastAPI()
+from routers.pack import router as pack_router
+app = FastAPI(root_path="/hub")
 
 origins = [
     "http://localhost:5173"
 ]
+
+app.include_router(pack_router)
 
 app.add_middleware(
     CORSMiddleware,
