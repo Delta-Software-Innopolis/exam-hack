@@ -1,16 +1,24 @@
 package com.examhacker.quiz_edit.component
 
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.router.stack.ChildStack
+import com.arkivanov.decompose.router.stack.StackNavigation
+import com.arkivanov.decompose.router.stack.childStack
+import com.arkivanov.decompose.router.stack.items
+import com.arkivanov.decompose.router.stack.pop
+import com.arkivanov.decompose.router.stack.push
+import com.arkivanov.decompose.router.stack.pushNew
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
+import kotlinx.serialization.Serializable
 
 interface IQuizCreationComponent {
-    val childStack: Value<ChildStack>
+    val stack: Value<ChildStack<*, Child>>
 
-    sealed class ChildStack {
-        data class Name(val component: IQuizNameComponent) : ChildStack()
-        data class Generate(val component: IQuizGenerateComponent) : ChildStack()
-        data class Edit(val component: IQuizEditComponent) : ChildStack()
+    sealed class Child {
+        data class Name(val component: IQuizNameComponent) : Child()
+        data class Generate(val component: IQuizGenerateComponent) : Child()
+        data class Edit(val component: IQuizEditComponent) : Child()
     }
 
     fun goBack()
@@ -19,52 +27,69 @@ interface IQuizCreationComponent {
 
 class QuizCreationComponent(
     componentContext: ComponentContext,
+    private val back: () -> Unit,
     private val onFinish: () -> Unit
 ) : IQuizCreationComponent, ComponentContext by componentContext {
 
-    // Текущий экран (храним вручную)
-    private var currentScreen: Screen = Screen.NAME
+    private val navigation = StackNavigation<Config>()
 
-    // Создаём компоненты
-    private val nameComponent = QuizNameComponent(
-        componentContext,
-        onNext = { navigateToGenerate() }
-    )
+    override val stack: Value<ChildStack<*, IQuizCreationComponent.Child>> =
+        childStack(
+            source = navigation,
+            serializer = Config.serializer(),
+            initialConfiguration = Config.Name,
+            handleBackButton = false,
+            childFactory = ::createChild
+        )
 
-    private val generateComponent = QuizGenerateComponent(componentContext)
-    private val editComponent = QuizEditComponent(componentContext)
+    private fun createChild(config: Config, componentContext: ComponentContext): IQuizCreationComponent.Child =
+        when(config) {
+            is Config.Name ->
+                IQuizCreationComponent.Child.Name(
+                    QuizNameComponent(
+                        componentContext = componentContext,
+                        onNext = ::navigateToGenerate
+                    )
+                )
 
-    // Стек дочерних компонентов (активный компонент)
-    private val _childStack = MutableValue<IQuizCreationComponent.ChildStack>(
-        IQuizCreationComponent.ChildStack.Name(nameComponent)
-    )
-    override val childStack: Value<IQuizCreationComponent.ChildStack> = _childStack
+            is Config.Generate ->
+                IQuizCreationComponent.Child.Generate(
+                    QuizGenerateComponent(
+                        componentContext
+                    )
+                )
 
-    private enum class Screen {
-        NAME, GENERATE, EDIT
-    }
+            is Config.Edit ->
+                IQuizCreationComponent.Child.Edit(
+                    QuizEditComponent(
+                        componentContext
+                    )
+                )
+        }
 
     private fun navigateToGenerate() {
-        currentScreen = Screen.GENERATE
-        _childStack.value = IQuizCreationComponent.ChildStack.Generate(generateComponent)
+        navigation.pushNew(Config.Generate)
     }
 
     override fun navigateToEdit() {
-        currentScreen = Screen.EDIT
-        _childStack.value = IQuizCreationComponent.ChildStack.Edit(editComponent)
+        navigation.pushNew(Config.Edit)
     }
 
     override fun goBack() {
-        when (currentScreen) {
-            Screen.NAME -> { /* Ничего не делаем, это первый экран */ }
-            Screen.GENERATE -> {
-                currentScreen = Screen.NAME
-                _childStack.value = IQuizCreationComponent.ChildStack.Name(nameComponent)
-            }
-            Screen.EDIT -> {
-                currentScreen = Screen.GENERATE
-                _childStack.value = IQuizCreationComponent.ChildStack.Generate(generateComponent)
-            }
+        if (stack.items.size > 1) {
+            navigation.pop()
+        } else {
+            back()
         }
+    }
+
+    @Serializable
+    sealed class Config {
+        @Serializable
+        data object Name: Config()
+        @Serializable
+        data object Generate: Config()
+        @Serializable
+        data object Edit: Config()
     }
 }

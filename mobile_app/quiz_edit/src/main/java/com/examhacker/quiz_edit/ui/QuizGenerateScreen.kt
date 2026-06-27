@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedButton
@@ -25,11 +24,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.examhacker.quiz_edit.component.IQuizGenerateComponent
 import com.examhacker.resources.ColorPreset
 
 @Composable
-fun QuizGenerateScreen() {
+fun QuizGenerateScreen(
+    component: IQuizGenerateComponent
+) {
+    QuizGenerateUI()
+}
 
+@Composable
+private fun QuizGenerateUI() {
     Scaffold(
         containerColor = ColorPreset.Background
     ) { padding ->
@@ -192,6 +198,5 @@ fun QuizGenerateScreen() {
 )
 @Composable
 private fun QuizGenerateScreenPreview() {
-
-    QuizGenerateScreen()
+    QuizGenerateUI()
 }
