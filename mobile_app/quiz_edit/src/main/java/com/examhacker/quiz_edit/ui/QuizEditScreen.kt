@@ -19,9 +19,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.examhacker.quiz_edit.component.IQuizEditComponent
 
 @Composable
-fun QuizEditScreen() {
+fun QuizEditScreen(component: IQuizEditComponent) {
+    QuizEditUI()
+}
+
+@Composable
+private fun QuizEditUI() {
     // Временные данные для примера
     val questions = listOf(
         "Why do dogs think their tails are...",
@@ -89,6 +95,6 @@ fun QuizEditScreen() {
 @Composable
 private fun PreviewQuizEditUI() {
     MaterialTheme {
-        QuizEditScreen()
+        QuizEditUI()
     }
 }
