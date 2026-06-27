@@ -4,7 +4,6 @@ import com.arkivanov.decompose.ComponentContext
 
 interface IQuizGenerateComponent {
     val hasFiles: Boolean
-
     fun addFile()
 }
 

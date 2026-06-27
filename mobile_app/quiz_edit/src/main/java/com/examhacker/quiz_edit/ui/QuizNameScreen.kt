@@ -49,6 +49,138 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Icon
 
 @Composable
+fun QuizNameScreen(
+    component: IQuizNameComponent
+) {
+    val model by component.model.subscribeAsState()
+
+    QuizNameUI(
+        model = model,
+        onTitleChange = component::onTitleChange,
+        onDescriptionChange = component::onDescriptionChange,
+        onNextClick = component::onNextClick
+    )
+}
+
+@Composable
+private fun QuizNameUI(
+    model: IQuizNameComponent.Model,
+    onTitleChange: (String) -> Unit,
+    onDescriptionChange: (String) -> Unit,
+    onNextClick: () -> Unit
+) {
+    Scaffold(
+        containerColor = ColorPreset.Background
+    ) { padding ->
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+                .padding(16.dp)
+                .statusBarsPadding()
+        ) {
+
+            QuizProgressHeader(1)
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            Text(
+                text = "Name your new quiz",
+                fontSize = 28.sp,
+                fontWeight = FontWeight.Bold
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = "Everything starts with a name, right?",
+                color = ColorPreset.Gray,
+                fontSize = 16.sp
+            )
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            OutlinedTextField(
+                value = model.title,
+                onValueChange = onTitleChange,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(107.dp),
+                shape = RoundedCornerShape(16.dp),
+                placeholder = {
+                    Text(
+                        text = "Quiz title",
+                        color = ColorPreset.Gray
+                    )
+                },
+                singleLine = true,
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = ColorPreset.Background,
+                    unfocusedContainerColor = ColorPreset.Background,
+                    focusedBorderColor = ColorPreset.LightGray,
+                    unfocusedBorderColor = ColorPreset.LightGray,
+                    focusedTextColor = ColorPreset.Black,
+                    unfocusedTextColor = ColorPreset.Black
+                )
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            OutlinedTextField(
+                value = model.description,
+                onValueChange = onDescriptionChange,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(107.dp),
+                shape = RoundedCornerShape(16.dp),
+                placeholder = {
+                    Text(
+                        text = "Quiz description",
+                        color = ColorPreset.Gray
+                    )
+                },
+                singleLine = false,
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = ColorPreset.Background,
+                    unfocusedContainerColor = ColorPreset.Background,
+                    focusedBorderColor = ColorPreset.LightGray,
+                    unfocusedBorderColor = ColorPreset.LightGray,
+                    focusedTextColor = ColorPreset.Black,
+                    unfocusedTextColor = ColorPreset.Black
+                )
+            )
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            OutlinedButton(
+                onClick = onNextClick,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp),
+                shape = RoundedCornerShape(16.dp),
+                border = BorderStroke(
+                    width = 1.dp,
+                    color = ColorPreset.Green
+                ),
+                colors = ButtonDefaults.outlinedButtonColors(
+                    containerColor = ColorPreset.LightGreen,
+                    contentColor = ColorPreset.Black
+                ),
+                contentPadding = PaddingValues(16.dp)
+            ) {
+                Text(
+                    text = "Next",
+                    fontSize = 16.sp
+                )
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+        }
+    }
+}
+
+@Composable
 private fun ProgressDot(
     active: Boolean
 ) {
@@ -98,7 +230,7 @@ fun QuizProgressHeader(
                 .size(48.dp)
                 .align(Alignment.CenterStart),
             shape = RoundedCornerShape(16.dp),
-            color = ColorPreset.White,
+            color = ColorPreset.BackgroundDefaultPrimary,
             shadowElevation = 4.dp
         ) {
 
@@ -121,7 +253,7 @@ fun QuizProgressHeader(
                 .height(48.dp)
                 .align(Alignment.Center),
             shape = RoundedCornerShape(16.dp),
-            color = ColorPreset.White,
+            color = ColorPreset.BackgroundDefaultPrimary,
             shadowElevation = 4.dp
         ) {
 
@@ -167,123 +299,6 @@ fun QuizProgressHeader(
                     active = currentStep >= 3
                 )
             }
-        }
-    }
-}
-
-@Composable
-fun QuizNameScreen(
-    component: IQuizNameComponent
-) {
-    val model by component.model.subscribeAsState()
-
-    Scaffold(
-        containerColor = ColorPreset.Background
-    ) { padding ->
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .padding(16.dp)
-                .statusBarsPadding()
-        ) {
-
-            QuizProgressHeader(1)
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            Text(
-                text = "Name your new quiz",
-                fontSize = 28.sp,
-                fontWeight = FontWeight.Bold
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text(
-                text = "Everything starts with a name, right?",
-                color = ColorPreset.Gray,
-                fontSize = 16.sp
-            )
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            OutlinedTextField(
-                value = model.title,
-                onValueChange = component::onTitleChange,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(107.dp),
-                shape = RoundedCornerShape(16.dp),
-                placeholder = {
-                    Text(
-                        text = "Quiz title",
-                        color = ColorPreset.Gray
-                    )
-                },
-                singleLine = true,
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = ColorPreset.Background,
-                    unfocusedContainerColor = ColorPreset.Background,
-                    focusedBorderColor = ColorPreset.LightGray,
-                    unfocusedBorderColor = ColorPreset.LightGray,
-                    focusedTextColor = ColorPreset.Black,
-                    unfocusedTextColor = ColorPreset.Black
-                )
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            OutlinedTextField(
-                value = model.description,
-                onValueChange = component::onDescriptionChange,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(107.dp),
-                shape = RoundedCornerShape(16.dp),
-                placeholder = {
-                    Text(
-                        text = "Quiz description",
-                        color = ColorPreset.Gray
-                    )
-                },
-                singleLine = false,
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = ColorPreset.Background,
-                    unfocusedContainerColor = ColorPreset.Background,
-                    focusedBorderColor = ColorPreset.LightGray,
-                    unfocusedBorderColor = ColorPreset.LightGray,
-                    focusedTextColor = ColorPreset.Black,
-                    unfocusedTextColor = ColorPreset.Black
-                )
-            )
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            OutlinedButton(
-                onClick = component::onNextClick,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(48.dp),
-                shape = RoundedCornerShape(16.dp),
-                border = BorderStroke(
-                    width = 1.dp,
-                    color = ColorPreset.Green
-                ),
-                colors = ButtonDefaults.outlinedButtonColors(
-                    containerColor = ColorPreset.LightGreen,
-                    contentColor = ColorPreset.Black
-                ),
-                contentPadding = PaddingValues(16.dp)
-            ) {
-                Text(
-                    text = "Next",
-                    fontSize = 16.sp
-                )
-            }
-
-            Spacer(modifier = Modifier.height(12.dp))
         }
     }
 }
