@@ -19,5 +19,5 @@ jobs:
           script: |
             cd ~/exam-hack-test
             git pull origin test
-            make down -ENV=test
+            make down ENV=test
             make test

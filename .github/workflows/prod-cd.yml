@@ -19,5 +19,5 @@ jobs:
           script: |
             cd ~/exam-hack
             git pull origin main
-            make down -ENV=prod
+            make down ENV=prod
             make prod
