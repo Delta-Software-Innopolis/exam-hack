@@ -1,23 +1,23 @@
 package pack_handlers
 
 import (
+	"bytes"
+	"encoding/json"
+	"errors"
+	"io"
 	"log"
 	"net/http"
 	"os"
 	"path/filepath"
-	"time"
-	"errors"
-	"encoding/json"
-	"bytes"
-	"io"
 	"strconv"
+	"time"
 
 	sc "quiz_core/internal/api/shortcuts"
 	"quiz_core/internal/db"
 	"quiz_core/internal/models"
 
-	"github.com/gin-gonic/gin"
 	"code.sajari.com/docconv/v2"
+	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
 
@@ -80,7 +80,7 @@ func GeneratePack(c *gin.Context) {
 	if !ok {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid token user"})
 		return
-	}	
+	}
 
 	form, err := c.MultipartForm()
 	if err != nil {
@@ -118,11 +118,11 @@ func GeneratePack(c *gin.Context) {
 	}
 
 	defer cleanupFiles(savedFiles)
-	
+
 	text, err := extractTextFromFiles(paths)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return 
+		return
 	}
 
 	log.Println("sending request to llm service...")
@@ -136,7 +136,7 @@ func GeneratePack(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	
+
 	client := &http.Client{
 		Timeout: 120 * time.Second,
 	}
@@ -158,6 +158,7 @@ func GeneratePack(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+
 	log.Println("req sent")
 	defer resp.Body.Close()
 
@@ -180,40 +181,36 @@ func GeneratePack(c *gin.Context) {
 		return
 	}
 
-	pack := models.Pack{
-		Name: pack_name,
-		CreationDate: time.Now(),
-		AuthorID: authorID,
-	}
-
-	if err := db.DB.Create(&pack).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to create pack"})
-		return
-	}
-
+	var pack models.Pack
 	createdCards := make([]models.Card, 0, len(generateResp.Cards))
 	err = db.DB.Transaction(func(tx *gorm.DB) error {
+		var err error
+		pack, err = sc.CreatePackWithOwnerPermission(tx, pack_name, authorID)
+		if err != nil {
+			return err
+		}
+
 		for _, cardReq := range generateResp.Cards {
 			card := models.Card{
 				Question: cardReq.Question,
-				Hint: cardReq.Hint,
-				PackID: pack.ID,
+				Hint:     cardReq.Hint,
+				PackID:   pack.ID,
 			}
 
 			if err := tx.Create(&card).Error; err != nil {
 				return err
 			}
-			
+
 			correct := sc.CorrectIndexSet(cardReq.CorrectIndices)
 			options := make([]models.CardOption, 0, len(cardReq.Options))
 			for i, option := range cardReq.Options {
 				options = append(options, models.CardOption{
 					Content: option,
 					IsRight: correct[i],
-					CardID: card.ID,
+					CardID:  card.ID,
 				})
 			}
-			
+
 			if err := tx.Create(&options).Error; err != nil {
 				return err
 			}
@@ -229,7 +226,6 @@ func GeneratePack(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to create cards"})
 		return
 	}
-
 
 	c.JSON(http.StatusOK, gin.H{
 		"status": "ok",

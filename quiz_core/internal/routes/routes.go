@@ -3,8 +3,8 @@ package routes
 import (
 	"errors"
 	"net/http"
-	pack "quiz_core/internal/api/handlers/pack"
 	cards "quiz_core/internal/api/handlers/cards"
+	pack "quiz_core/internal/api/handlers/pack"
 	ping "quiz_core/internal/api/handlers/ping"
 	"quiz_core/internal/config"
 	"quiz_core/pkg/utils"
@@ -63,6 +63,7 @@ func Setup() *gin.Engine {
 	router.GET("/ping", ping.Pong)
 	{
 		core := router.Group("/core")
+		core.GET("/share/:share_code", pack.GetSharedPack)
 		core.Use(AuthMiddleware())
 
 		core.POST("/pack", pack.CreatePack)
@@ -70,13 +71,14 @@ func Setup() *gin.Engine {
 		core.DELETE("/pack/:pack_id", pack.DeletePack)
 		core.GET("/packs", pack.GetPacks)
 		core.POST("/pack/generate", pack.GeneratePack)
-		
+		core.POST("/pack/fork/:share_code", pack.ForkPack)
+		core.POST("/pack/:share_code", pack.AddSharedPack)
+
 		core.POST("/cards/:pack_id", cards.CreateCards)
 		core.PATCH("/cards", cards.UpdateCards)
 		core.DELETE("/cards/:card_id", cards.DeleteCard)
 		core.GET("/cards/:pack_id", cards.GetCards)
 	}
-
 
 	return router
 }

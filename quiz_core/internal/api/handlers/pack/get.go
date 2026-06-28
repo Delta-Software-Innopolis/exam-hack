@@ -43,17 +43,7 @@ func GetPacks(c *gin.Context) {
 	}
 
 	for _, pack := range packs {
-		response.Packs = append(response.Packs, structs.PackWithCardsResponse{
-			ID:           pack.ID,
-			Name:         pack.Name,
-			CreationDate: pack.CreationDate,
-			UpdatingDate: pack.UpdatingDate,
-			Author: structs.UserResponse{
-				ID:   pack.Author.ID,
-				Name: pack.Author.Name,
-			},
-			Cards: sc.CardResponses(pack.Cards),
-		})
+		response.Packs = append(response.Packs, sc.PackWithCardsResponse(pack))
 	}
 
 	c.JSON(http.StatusOK, response)

@@ -37,6 +37,7 @@ CREATE TABLE packs (
     name VARCHAR(50) NOT NULL, 
     creation_date TIMESTAMP WITH TIME ZONE NOT NULL, 
     updating_date TIMESTAMP WITH TIME ZONE, 
+    share_code VARCHAR(64) NOT NULL, 
     author_id INTEGER NOT NULL, 
     PRIMARY KEY (id), 
     FOREIGN KEY(author_id) REFERENCES users (id)
@@ -47,6 +48,8 @@ CREATE INDEX ix_packs_id ON packs (id);
 CREATE INDEX ix_packs_name ON packs (name);
 
 CREATE INDEX ix_packs_author_id ON packs (author_id);
+
+CREATE UNIQUE INDEX ix_packs_share_code ON packs (share_code);
 
 CREATE TABLE pack_permissions (
     user_id INTEGER NOT NULL, 
