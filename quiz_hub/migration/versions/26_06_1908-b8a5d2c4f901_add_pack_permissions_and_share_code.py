@@ -20,11 +20,12 @@ depends_on: Union[str, Sequence[str], None] = None
 
 def upgrade() -> None:
     """Upgrade schema."""
-    op.add_column('packs', sa.Column('author_id', sa.Integer(), nullable=False))
-    op.add_column('packs', sa.Column('share_code', sa.String(length=64), nullable=False))
-    op.create_index(op.f('ix_packs_author_id'), 'packs', ['author_id'], unique=False)
+    op.add_column('packs', sa.Column('share_code', sa.String(length=64), nullable=True))
+    op.create_index('ix_packs_share_code', 'packs', ['share_code'], unique=False)
+    op.execute("UPDATE packs SET share_code = 'mock_code_lol'|| id")
+    op.drop_index("ix_packs_share_code", 'packs')
     op.create_index('ix_packs_share_code', 'packs', ['share_code'], unique=True)
-    op.create_foreign_key('fk_packs_author_id_users', 'packs', 'users', ['author_id'], ['id'])
+    op.alter_column('packs', 'share_code', nullable=False)
 
     op.create_table(
         'pack_permissions',
