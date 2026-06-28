@@ -7,9 +7,9 @@ from models.published_pack import Published_pack as PublishedPackModel
 from models.user import User as UserModel
 from models.pack import Pack as PackModel
 from sqlalchemy import select
-from pydantic_models.published_quiz import PublishedQuizesResponse
+from pydantic_models.published_quiz import PublishedQuizesResponse, PublishedPackNew
 from typing import cast
-
+from dependencies import validate_token
 router = APIRouter(
     prefix="/posts",
     tags=["posts"]
@@ -52,4 +52,29 @@ async def get_packs(
         print(object.id)
     return {"packs": result}
     
+
+@router.post("/")
+async def publish_pack(new_pack_data: PublishedPackNew, session: AsyncSession = Depends(get_async_db), user_data = Depends(validate_token)):
+    id = new_pack_data.pack_id
+    user_id = user_data["user_id"]
+    stmt = select(PackModel).where(PackModel.id == id)
+    local_quiz = (await session.scalars(stmt)).first()
+    if not local_quiz:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="There is no quiz with such id")
+    new_pack = (PublishedPackModel(
+        id=id,
+        user_id=user_id, 
+        subject = new_pack_data.subject,
+        university = new_pack_data.university,
+        professor = new_pack_data.professor,
+        course_book = new_pack_data.course_book)
+        )
+
+    session.add(new_pack)
+    await session.flush()
+    if new_pack.original:
+        new_pack.original.forks.append(new_pack)
+    await session.commit()
+    return {"added": "complite"}
+
 

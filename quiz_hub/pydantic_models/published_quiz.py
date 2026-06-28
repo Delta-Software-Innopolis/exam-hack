@@ -23,3 +23,10 @@ class PublishedQuiz(BaseModel):
 
 class PublishedQuizesResponse(BaseModel):
     packs: list[PublishedQuiz]
+
+class PublishedPackNew(BaseModel):
+    pack_id: PositiveInt
+    subject: str
+    university: str
+    professor: str
+    course_book: str

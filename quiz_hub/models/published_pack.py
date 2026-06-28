@@ -17,9 +17,9 @@ class Published_pack(Base):
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
     rating: Mapped[float|None] = mapped_column(Float, nullable=True)
     subject: Mapped[str] = mapped_column(String(30), index=True, nullable=False)
-    university: Mapped[str] = mapped_column(String(30), index=True, nullable=False)
+    university: Mapped[str] = mapped_column(String(100), index=True, nullable=False)
     professor: Mapped[str] = mapped_column(String(60), index=True, nullable=False)
-    course_book: Mapped[str] = mapped_column(String(80), index=True)
+    course_book: Mapped[str] = mapped_column(String(120), index=True)
     @property
     def name(self):
         return self.source.name
