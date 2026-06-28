@@ -4,6 +4,23 @@
   --color-background-secondary: #FFFFFF;
   --color-text: #000000;
   --color-text-secondary: #757575;
+  
+  --primary: #00B093;
+  --primary-light: #A1E3D8;
+  --primary-dimm: #007360;
+  --primary-dark: #003930;
+  --secondary: #AAAAAA;
+  --secondary-dimm: #676767;
+  --background-light: #EEEEEE;
+  --background-dimm: #C0C0C0;
+  --background-blueish: #F3F6F7;
+  --white: #FFFFFF;
+  --black: #000000;
+  --raddish: #FF4F4F;
+  --quiz-green: #CFF7D3;
+  --quiz-red: #FFA8A8;
+  --background-yellow: #FFF1C2;
+  --orange: #BF6A02;
 }
 
 
