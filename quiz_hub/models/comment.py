@@ -25,7 +25,7 @@ class Comment(Base):
     replies = relationship(
         "Comment",
         secondary=replies,
-        primaryjoin=lambda: Comment.id == replies.c.initial_id,
-        secondaryjoin=lambda: Comment.id == replies.c.reply_id,
+        primaryjoin="Comment.id == replies.c.initial_id",
+        secondaryjoin="Comment.id == replies.c.reply_id",
         lazy="noload",
     )
