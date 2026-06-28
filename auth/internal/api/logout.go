@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"time"
 
+	"auth/internal/config"
 	"auth/internal/database"
 	"auth/internal/models"
 	"auth/pkg/utils"
@@ -15,7 +16,7 @@ import (
 )
 
 type logoutRequest struct {
-	RefreshToken string `json:"refresh_token" binding:"required"`
+	RefreshToken string `json:"refresh_token"`
 }
 
 type logoutResponse struct {
@@ -25,7 +26,15 @@ type logoutResponse struct {
 func Logout(c *gin.Context) {
 	var req logoutRequest
 
-	if err := c.ShouldBindJSON(&req); err != nil || req.RefreshToken == "" {
+	_ = c.ShouldBindJSON(&req)
+	if req.RefreshToken == "" {
+		cookieToken, err := c.Cookie("refresh_token")
+		if err == nil {
+			req.RefreshToken = cookieToken
+		}
+	}
+
+	if req.RefreshToken == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "refresh token is required"})
 		return
 	}
@@ -69,6 +78,16 @@ func Logout(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to logout"})
 		return
 	}
+
+	c.SetCookie(
+		"refresh_token",
+		"",
+		-1,
+		"/",
+		"",
+		config.AppConfig.IsHttps,
+		true,
+	)
 
 	c.JSON(http.StatusOK, logoutResponse{Status: "ok"})
 }

@@ -21,6 +21,7 @@ type Config struct {
 	}
 
 	Secret *rsa.PrivateKey
+	IsHttps bool
 }
 
 var AppConfig Config
@@ -32,6 +33,8 @@ func Load() {
 	AppConfig.Database.User = os.Getenv("POSTGRES_USER")
 	AppConfig.Database.Password = os.Getenv("POSTGRES_PASSWORD")
 	AppConfig.Database.Name = os.Getenv("POSTGRES_DB")
+
+	AppConfig.IsHttps = os.Getenv("IS_HTTPS") != "0"
 
 	privateKeyBytes, err := os.ReadFile(os.Getenv("SECRET_FILE"))
 	if err != nil {

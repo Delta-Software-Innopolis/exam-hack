@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"auth/internal/config"
 	"auth/internal/database"
 	"auth/internal/models"
 	"auth/pkg/utils"
@@ -80,6 +81,16 @@ func Login(c *gin.Context) {
 
 		return
 	}
+
+	c.SetCookie(
+		"refresh_token",
+		refreshToken,
+		int(utils.RefreshTokenTTL.Seconds()),
+		"/",
+		"",
+		config.AppConfig.IsHttps,
+		true,
+	)
 
 	c.JSON(http.StatusOK, loginResponse{
 		AccessToken:  accessToken,
