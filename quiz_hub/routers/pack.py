@@ -6,9 +6,9 @@ from database import get_async_db
 from models.published_pack import Published_pack as PublishedPackModel
 from models.user import User as UserModel
 from models.pack import Pack as PackModel
-from sqlalchemy import select
+from sqlalchemy import select, text
 from pydantic_models.published_quiz import PublishedQuizesResponse, PublishedPackNew
-from typing import cast
+from typing import cast, Any
 from dependencies import validate_token
 router = APIRouter(
     prefix="/posts",
@@ -77,4 +77,24 @@ async def publish_pack(new_pack_data: PublishedPackNew, session: AsyncSession = 
     await session.commit()
     return {"added": "complite"}
 
-
+@router.post("/{pack_id}")
+async def add_pack(
+    pack_id: int,
+    user_data: dict[str, Any] = Depends(validate_token),
+    session: AsyncSession = Depends(get_async_db)
+    )-> dict[str, str]:
+    stmt = select(PackModel).where(PackModel.id == pack_id)
+    result = (await session.scalars(stmt)).first()
+    if not result:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="There is no pack with such id")
+    query = text("""
+        INSERT INTO pack_permissions (user_id, pack_id, permission) VALUES
+                 (:user_id, :pack_id, 2);
+                 """)
+    await session.execute(query,
+        {
+            "user_id": user_data["user_id"],
+            "pack_id": pack_id
+        })
+    await session.commit()
+    return {"adding": "success"}
