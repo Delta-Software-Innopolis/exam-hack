@@ -7,6 +7,8 @@ import OneQuizView from '@/views/OneQuizView.vue'
 import QuizesView from '@/views/QuizesView.vue'
 import SolvingView from '@/views/SolvingView.vue'
 import { createRouter, createWebHistory } from 'vue-router'
+import { useAttrs } from 'vue'
+import { useUserStore } from '@/stores/user'
 
 
 
@@ -15,10 +17,14 @@ const router = createRouter({
   routes: [
     {
       path: '/',
+      name: 'root',
+      redirect: '/quizzes',
+    },
+    {
+      path: '/welcome',
       name: 'welcome',
       component: WelcomeView,
       meta: {headerClass: "hidden"}
-      
     },
     {
       path: '/auth/signup',
@@ -59,6 +65,26 @@ const router = createRouter({
       component: GenerateQuizView
     },
   ],
+})
+
+
+const AUTH_PATHS = ['welcome', 'signup', 'login']
+
+function isNotAuthLocation(to: any) {
+    return (
+        typeof to.name === 'string'
+        && !AUTH_PATHS.includes(to.name)
+    )
+}
+
+router.beforeEach(async (to, from) => {
+    const userStore = useUserStore()
+    const authenticated = await userStore.isAuthenticated()
+    if (!authenticated && isNotAuthLocation(to)) {
+        return { name: 'welcome' }
+    } else {
+        return true
+    }
 })
 
 export default router
