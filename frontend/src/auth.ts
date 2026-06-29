@@ -53,3 +53,52 @@ export async function login(username: string, password: string): Promise<AuthRes
 	console.debug(response)
     return response
 }
+
+
+export async function refresh(refreshToken: string): Promise<AuthResponse> {
+	const request = await fetch(`${AUTH_URL}/auth/refresh`, {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json"
+		},
+		body: JSON.stringify({
+			"refresh_token": refreshToken
+		})
+	})
+	
+	if (!request.ok) {
+		const response = await request.json()
+		console.error(response)
+		throw response.error
+	}
+
+	const response = await request.json()
+	console.debug(response)
+	return response
+}
+
+
+export async function validate(accessToken: string): Promise<boolean> {
+	const request = await fetch(`${AUTH_URL}/auth/validate`, {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json"
+		},
+		body: JSON.stringify({
+			"access_token": accessToken
+		})
+	})
+
+	if (!request.ok) {
+		const response = await request.json()
+		console.error(response)
+		return false
+	}
+
+	const response = await request.json()
+	if (response.status === 'ok') {
+		return true
+	} else {
+		return false
+	}
+}
