@@ -6,6 +6,7 @@ import GenerateQuizView from '@/views/GenerateQuizView.vue'
 import OneQuizView from '@/views/OneQuizView.vue'
 import QuizesView from '@/views/QuizesView.vue'
 import SolvingView from '@/views/SolvingView.vue'
+import ShowcaseView from '@/views/ShowcaseView.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAttrs } from 'vue'
 import { useUserStore } from '@/stores/user'
@@ -64,6 +65,12 @@ const router = createRouter({
       name: 'generating',
       component: GenerateQuizView
     },
+    {
+      path: '/showcase',
+      name: 'showcase',
+      component: ShowcaseView,
+      meta: {headerClass: "hidden"}
+    }
   ],
 })
 
