@@ -9,11 +9,10 @@ import BasicButton from "@/components/newBasic/BasicButton.vue";
 
 const router = useRouter();
 const quizzesStore = useQuizzesStore()
-const quizes = computed(() => quizzesStore.quizes) as ComputedRef<QuizItem[]>;
+const quizes = computed(() => quizzesStore.quizzes) as ComputedRef<QuizItem[]>;
 const isLoading = ref(true);
 
 onBeforeMount(async ()=> {
-  quizzesStore.headerInfo = "Your quizzes" 
   try {
     await quizzesStore.fetchQuizzes();
   } catch (error) {
@@ -22,11 +21,6 @@ onBeforeMount(async ()=> {
     isLoading.value = false;
   }
 })
-
-onUnmounted(() => {
-  quizzesStore.headerInfo == "Your quizzes" ? "" : quizzesStore.headerInfo
-})
-
 </script>
 
 <template>
@@ -41,9 +35,9 @@ onUnmounted(() => {
       <QuizComponent v-for="quiz in quizes" 
         :key="quiz.id" 
         :name="quiz.name"
-        :author="quiz.author.name"
+        :author="quiz.author.username"
         :description="quiz.description"
-        @click="router.push({name: 'solving', params: {quizId: quiz.id}})">
+        @click="router.push({name: 'quiz', params: {quizId: quiz.id}})">
       </QuizComponent>
     </div>
   </div>

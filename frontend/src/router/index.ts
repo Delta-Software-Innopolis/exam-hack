@@ -3,7 +3,7 @@ import LoginView from '@/views/LoginView.vue'
 import SignUpView from '@/views/SignUpView.vue'
 import WelcomeView from '@/views/WelcomeView.vue'
 import GenerateQuizView from '@/views/GenerateQuizView.vue'
-import OneQuizView from '@/views/OneQuizView.vue'
+import QuizInfoView from '@/views/QuizInfoView.vue'
 import QuizesView from '@/views/QuizesView.vue'
 import SolvingView from '@/views/SolvingView.vue'
 import ShowcaseView from '@/views/ShowcaseView.vue'
@@ -50,7 +50,7 @@ const router = createRouter({
     {
       path: "/quizzes/:quizId",
       name: "quiz",
-      component: OneQuizView,
+      component: QuizInfoView,
       meta: { showSidebar: true }
     },
     {
