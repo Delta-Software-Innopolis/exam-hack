@@ -44,6 +44,7 @@ button {
   font-size: 16px;
 
   border-radius: 16px;
+  cursor: pointer;
 }
 
 .primary {

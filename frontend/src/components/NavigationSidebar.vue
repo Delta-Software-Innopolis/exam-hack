@@ -69,7 +69,9 @@ const router = useRouter()
         flex-direction: row;
         align-items: center;
         gap: 8px;
-        padding: 12px;
+        padding: 16px;
+        padding-top: 8px;
+        padding-bottom: 8px;
         border-radius: 16px;
         cursor: pointer;
         color: var(--secondary-dimm);

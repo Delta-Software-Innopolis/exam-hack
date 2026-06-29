@@ -34,10 +34,10 @@ onBeforeMount(async ()=> {
     <div class="Quiz-Container">
       <QuizComponent v-for="quiz in quizes" 
         :key="quiz.id" 
+        :id="quiz.id"
         :name="quiz.name"
         :author="quiz.author.username"
         :description="quiz.description"
-        @click="router.push({name: 'quiz', params: {quizId: quiz.id}})">
       </QuizComponent>
     </div>
   </div>

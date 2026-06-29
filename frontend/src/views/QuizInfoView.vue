@@ -51,7 +51,7 @@ function notImplemented() {
                 </div>
                 <div class="actions">
                     <div class="top-buttons">
-                        <BasicButton>Attempt</BasicButton>
+                        <BasicButton @click="router.push(`/quizzes/${quiz.id}/solving`)">Attempt</BasicButton>
                         <BasicButton variant="secondary" @click="notImplemented">To favourites</BasicButton>
                     </div>
                     <div class="bottom-buttons">
@@ -63,7 +63,7 @@ function notImplemented() {
         <div class="right-side">
             <div class="top-action-bar">
                 <h2>Questions</h2>
-                <BasicButton>Add</BasicButton>
+                <BasicButton variant="secondary">Add</BasicButton>
             </div>
             <div class="questions-wrapper">
                 <EditQuestion :index="q.id" :question="q.question" v-for="q in quiz.cards"/>
@@ -78,14 +78,37 @@ function notImplemented() {
     padding: 64px;
     gap: 32px;
     display: flex;
-    flex-direction: row;
+    flex-wrap: wrap;
 }
 
-.left-side, .right-side { 
-    width: 100%;
+button a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.top-action-bar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.left-side {
+    flex: 0 0 40%;
+    min-width: 300px;
     display: flex;
     flex-direction: column;
     gap: 32px;
+    height: 100%;
+}
+
+.right-side {
+    flex: 1 1 50%;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    height: 100%;
 }
 
 .title {
@@ -145,12 +168,15 @@ function notImplemented() {
     flex-direction: column;
     justify-content: space-between;
     width: fit-content;
+    box-sizing: border-box;
+    text-wrap-mode: nowrap;
 }
 
 .top-buttons, .bottom-buttons {
     display: flex;
     flex-direction: column;
     gap: 16px;
+    box-sizing: border-box;
 }
 
 .red-button {
@@ -168,7 +194,8 @@ function notImplemented() {
     background-color: var(--white);
     padding: 16px;
     border-radius: 16px;
-
+    height: 100%;
+    overflow-y: auto;
 }
 
 </style>

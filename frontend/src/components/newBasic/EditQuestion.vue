@@ -10,9 +10,9 @@
   <div class="question-wrapper">
     <div class="text-wrapper">
       <span class="number-wrapper">{{ props.index }}.</span>
-      <span>{{ props.question }}</span>
+      <span class="question-text">{{ props.question }}</span>
     </div>
-    <PencilSVG/>
+    <PencilSVG class="pencil-icon"/>
   </div>
 </template>
 
@@ -20,20 +20,14 @@
 .question-wrapper {
   display: flex;
   justify-content: space-between;
-  width: 100%;
-  background-color: var(--background-blueish);
   align-items: center;
-  overflow: hidden;
-  box-sizing: border-box;
+  width: 100%;
+  gap: 12px;
+  background-color: var(--background-blueish);
   border-radius: 16px;
-  padding: 16px;
-  padding-bottom: 8px;
-  padding-top: 8px;
-
-  --icon-stroke: var(--secondary);
-  --icon-width: 16px;
-  --icon-height: 16px;
+  padding: 8px 16px;
   cursor: pointer;
+  min-width: 0;
 }
 
 .question-wrapper:hover {
@@ -42,12 +36,31 @@
 
 .text-wrapper {
   display: flex;
-  width: 100%;
   flex-direction: row;
   gap: 8px;
-  color: var(--secondary-dimm);
-  text-wrap-mode: nowrap;
-  text-overflow: ellipsis;
+  align-items: center;
+  min-width: 0;
+  flex: 1 1 auto; 
+  overflow: hidden;
 }
 
+.number-wrapper {
+  flex-shrink: 0;
+  color: var(--secondary-dimm);
+}
+
+.question-text {
+  color: var(--secondary-dimm);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.pencil-icon {
+  flex-shrink: 0;
+  --icon-stroke: var(--secondary);
+  --icon-width: 16px;
+  --icon-height: 16px;
+}
 </style>

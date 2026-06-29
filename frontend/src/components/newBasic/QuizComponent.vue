@@ -1,11 +1,16 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import PlaySVG from '@/assets/Play.svg'
+import { useRouter } from 'vue-router';
+
 const props = defineProps({
     variant: {type: String, default: 'white'},
+    id: { type: Number, required: true },
     name: String,
     author: String,
 });
+
+const router = useRouter()
 
 
 enum ButtonVariants {
@@ -24,11 +29,13 @@ const variantClass = computed(() => {
 </script>
 <template>
     <div class="quiz-item" :class="variantClass">
-        <div class="header">
+        <div class="header"
+          @click="router.push({name: 'quiz', params: {quizId: id}})"
+        >
             <div class="name">{{ props.name }}</div>
             <div class="author">by {{ props.author === undefined ? "You" : props.author }}</div>
         </div>
-        <div class="icon">
+        <div class="icon" @click="router.push(`/quizzes/${props.id}/solving`)">
           <PlaySVG/>
         </div>
     </div>
