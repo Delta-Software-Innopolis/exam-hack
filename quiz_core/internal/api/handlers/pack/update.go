@@ -44,7 +44,7 @@ func UpdatePack(c *gin.Context) {
 	err = db.DB.
 		Where("id = ? AND author_id = ?", packID, authorID).
 		First(&pack).Error
-		
+
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			c.JSON(http.StatusNotFound, gin.H{"error": "pack not found"})
@@ -68,6 +68,7 @@ func UpdatePack(c *gin.Context) {
 		Name:         pack.Name,
 		CreationDate: pack.CreationDate,
 		UpdatingDate: pack.UpdatingDate,
+		ShareCode:    pack.ShareCode,
 		Author:       sc.CurrentUserResponse(c, pack.AuthorID),
 	})
 }

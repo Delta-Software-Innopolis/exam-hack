@@ -19,5 +19,5 @@ jobs:
           script: |
             cd ~/exam-hack
             git pull origin main
-            docker compose -p prod down
-            docker compose -p prod up -d --build
+            make down ENV=prod
+            make prod

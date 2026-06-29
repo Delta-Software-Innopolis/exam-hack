@@ -2,56 +2,68 @@
 import BasicButton from '@/components/basic/BasicButton.vue';
 import BasicInput from '@/components/basic/BasicInput.vue';
 import { useRouter } from 'vue-router';
-import { ref } from 'vue';
+import { onMounted, onUnmounted, ref, useTemplateRef, type Ref } from 'vue';
 import { useUserStore } from '@/stores/user';
+import * as Auth from '@/auth';
+import { errorToString } from '@/utils';
 
 const router = useRouter();
 const username = ref("")
 const password = ref("")
 const second_password = ref("")
 
+const inputs = useTemplateRef("inputs");
 
+const errorMessage: Ref<string | null> = ref(null);
 
 async function register(): Promise<void> {
-	console.log(import.meta.env.VITE_AUTH_URL_DEV)
-	console.log(import.meta.env.DEV)
-	//import.meta.env.DEV = true, if server in dev mode, else false
-	const address = import.meta.env.DEV ? "http://localhost:5173": import.meta.env.VITE_AUTH_URL_DEV 
-	console.log(address)
-	const request = await fetch(`${address}/auth/reg`,{
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json"
-		},
-		body: JSON.stringify({
-			"username": username.value,
-			"password": password.value
-		})
-	})
-	if (!request.ok){
-		const error = await request.json()
-		console.error(error)
-	}
-	const response = await request.json()
-	console.log(response)
-	const userStore = useUserStore()
-	userStore.name = username.value
-	userStore.password = password.value
+    const userStore = useUserStore()
 
-	router.push("/end-of-demo-0")
-  
+    if (password.value !== second_password.value) {
+        console.log("Passwords don't match")
+        errorMessage.value = "Passwords don't match"
+        return
+    }
+
+    try {
+        const response = await Auth.register(username.value, password.value)
+        userStore.saveAccessToken(response.access_token)
+        userStore.saveRefreshToken(response.refresh_token)
+        router.push({name: "quizzes"})
+    } catch (err) {
+        errorMessage.value = errorToString(err)
+        console.log(err)
+        return
+    }
 }
+
+function onInput() {
+    errorMessage.value = null;
+}
+
+onMounted(()=>{
+    if (inputs.value) {
+        inputs.value.addEventListener("input", onInput)
+    }
+})
+
+onUnmounted(()=>{
+    if (inputs.value) {
+        inputs.value.removeEventListener("input", onInput)
+    }
+})
 </script>
 
 <template>
   <div class="window-wrapper">
     <div class="sidebar">
       <h1>Sign Up to ExamHacker</h1>
-      <div class="inputs-wrapper">
+      <div ref="inputs" class="inputs-wrapper">
         <BasicInput placeholder="Enter your email" type="email" v-model="username"></BasicInput>
         <BasicInput placeholder="Come up with a password" type="password" v-model="password"></BasicInput>
         <BasicInput placeholder="Repeat the password" type="password" v-model="second_password"></BasicInput>
       </div>
+      <div v-if="errorMessage" style="color: red;">{{ errorMessage }}</div>
       <div class="buttons-wrapper">
         <BasicButton variant="green" @click="register()">Continue</BasicButton>
         <BasicButton @click="router.push('/auth/login')">I already have an account</BasicButton>

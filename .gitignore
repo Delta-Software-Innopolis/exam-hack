@@ -1,10 +1,10 @@
 .env
 .env.test
 .env.dev
-.env.test
-.env.dev
+.env.prod
 venv
 __pycache__
 .DS_Store
 .vscode
 app
+*.pem

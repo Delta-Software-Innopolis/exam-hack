@@ -29,14 +29,31 @@ Students can upload lecture materials and automatically generate quizzes and fla
 #### Or you can build the app yourself:
 
 #### Prerequisites
+- Git
 - Docker
-- Docker compose
+- Docker Compose
+- GNU Make
 
+#### Clone the repository
 ```sh
-1) git clone https://github.com/Delta-Software-Innopolis/exam-hack && cd exam-hack
-2) cp .env.dev.example .env.dev
-3) docker compose -p dev -f docker-compose.yml -f docker-compose.dev.yml —env-file .env.dev up —build -d
+git clone https://github.com/Delta-Software-Innopolis/exam-hack && cd exam-hack
 ```
+
+#### Create secrets for JWT Auth
+```sh
+make generate-secrets 
+```
+
+#### Configure environment variables
+```sh
+cp .env.dev.example .env.dev
+```
+
+#### Run the project with Docker Compose
+```sh
+make run
+```
+
 
 ## Team members
 - Timur Chumaraev - Frontend

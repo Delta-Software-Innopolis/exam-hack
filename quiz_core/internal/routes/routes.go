@@ -3,9 +3,8 @@ package routes
 import (
 	"errors"
 	"net/http"
-	llm "quiz_core/internal/api/handlers/llm"
-	pack "quiz_core/internal/api/handlers/pack"
 	cards "quiz_core/internal/api/handlers/cards"
+	pack "quiz_core/internal/api/handlers/pack"
 	ping "quiz_core/internal/api/handlers/ping"
 	"quiz_core/internal/config"
 	"quiz_core/pkg/utils"
@@ -53,7 +52,7 @@ func AuthMiddleware() gin.HandlerFunc {
 
 func Setup() *gin.Engine {
 	router := gin.Default()
-
+	router.MaxMultipartMemory = 100 << 20 // 100 MB
 	corsConfig := cors.DefaultConfig()
 	corsConfig.AllowOrigins = config.AppConfig.Routes.CORSAddresses
 	corsConfig.AllowMethods = []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"}
@@ -62,23 +61,24 @@ func Setup() *gin.Engine {
 	router.Use(cors.New(corsConfig))
 
 	router.GET("/ping", ping.Pong)
-
 	{
 		core := router.Group("/core")
+		core.GET("/share/:share_code", pack.GetSharedPack)
 		core.Use(AuthMiddleware())
 
 		core.POST("/pack", pack.CreatePack)
 		core.PATCH("/pack/:pack_id", pack.UpdatePack)
 		core.DELETE("/pack/:pack_id", pack.DeletePack)
 		core.GET("/packs", pack.GetPacks)
-		
+		core.POST("/pack/generate", pack.GeneratePack)
+		core.POST("/pack/fork/:share_code", pack.ForkPack)
+		core.POST("/pack/:share_code", pack.AddSharedPack)
+
 		core.POST("/cards/:pack_id", cards.CreateCards)
 		core.PATCH("/cards", cards.UpdateCards)
 		core.DELETE("/cards/:card_id", cards.DeleteCard)
 		core.GET("/cards/:pack_id", cards.GetCards)
 	}
-
-	router.POST("/core/quizzes/generate", llm.GenerateCards)
 
 	return router
 }

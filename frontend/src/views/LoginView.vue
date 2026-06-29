@@ -1,54 +1,66 @@
 <script setup lang="ts">
 import BasicButton from '@/components/basic/BasicButton.vue';
 import BasicInput from '@/components/basic/BasicInput.vue';
-import { ref } from 'vue';
+import { onMounted, onUnmounted, ref, useTemplateRef, type Ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '@/stores/user';
-const router = useRouter();
+
+import * as Auth from "@/auth"
+import { errorToString } from '@/utils';
+
+
+const router = useRouter()
 const username = ref("")
 const password = ref("")
-const isValid = ref(true)
 
-async function logIn() {
-	const address = import.meta.env.DEV ? "http://localhost:5173": import.meta.env.VITE_AUTH_URL_DEV 
-	console.log(address)
-	const request = await fetch(`${address}/auth/login`,{
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json"
-		},
-		body: JSON.stringify({
-			"username": username.value,
-			"password": password.value
-		})
-	})
-	if (!request.ok){
-		const error = await request.json()
-		console.error(error.error)
-		isValid.value = !isValid.value
-		return
-	}
-	const response = await request.json()
-	console.log(response)
-	const userStore = useUserStore()
-	userStore.name = username.value
-	userStore.password = password.value
-	userStore.isNew = false
-	router.push("/end-of-demo-0")
+const errorMessage: Ref<string | null> = ref(null)
+
+
+const inputs = useTemplateRef("inputs")
+
+
+async function login() {
+    const userStore = useUserStore()
+    try {
+        const response = await Auth.login(username.value, password.value)
+        userStore.username = username.value
+        userStore.isNew = false
+        userStore.saveAccessToken(response.access_token)
+        userStore.saveRefreshToken(response.refresh_token)
+        router.push({name: "quizzes"})
+    } catch (err) {
+        errorMessage.value = errorToString(err)
+    }
 }
+
+function onInput() {
+    errorMessage.value = null;
+}
+
+onMounted(()=>{
+    if (inputs.value) {
+        inputs.value.addEventListener("input", onInput)
+    }
+})
+
+onUnmounted(()=>{
+    if (inputs.value) {
+        inputs.value.removeEventListener("input", onInput)
+    }
+})
 </script>
 
 <template>
   <div class="window-wrapper">
     <div class="sidebar">
       <h1>Login to ExamHacker</h1>
-	  <div v-if="!isValid" style="color: red;">Invalide username or password</div>
-      <div class="inputs-wrapper">
+      <div ref="inputs" class="inputs-wrapper">
         <BasicInput placeholder="Enter your email" type="email" v-model="username"></BasicInput>
         <BasicInput placeholder="Enter your password" type="password" v-model="password"></BasicInput>
       </div>
+      <div v-if="errorMessage" style="color: red;">{{ errorMessage }}</div>
       <div class="buttons-wrapper">
-        <BasicButton variant="green" @click="logIn()">Continue</BasicButton>
+        <BasicButton variant="green" @click="login()">Continue</BasicButton>
         <BasicButton @click="router.push('/auth/signup')">I don't have an account yet</BasicButton>
       </div>
     </div>

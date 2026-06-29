@@ -19,5 +19,5 @@ jobs:
           script: |
             cd ~/exam-hack-test
             git pull origin test
-            docker compose -p test down
-            docker compose -p test -f docker-compose.yml -f docker-compose.test.yml --env-file .env.test up -d --build
+            make down ENV=test
+            make test
