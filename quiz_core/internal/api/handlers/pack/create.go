@@ -7,11 +7,10 @@ import (
 	sc "quiz_core/internal/api/shortcuts"
 	structs "quiz_core/internal/api/structures"
 	"quiz_core/internal/db"
-	"quiz_core/internal/models"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
-
 
 func CreatePack(c *gin.Context) {
 	var req structs.CreatePackRequest
@@ -31,22 +30,30 @@ func CreatePack(c *gin.Context) {
 		return
 	}
 
-	pack := models.Pack{
-		Name:         name,
-		CreationDate: time.Now(),
-		AuthorID:     authorID,
-	}
+	var packID uint
+	var packShareCode string
+	var packCreationDate time.Time
 
-	if err := db.DB.Create(&pack).Error; err != nil {
+	if err := db.DB.Transaction(func(tx *gorm.DB) error {
+		pack, err := sc.CreatePackWithOwnerPermission(tx, name, authorID)
+		if err != nil {
+			return err
+		}
+
+		packID = pack.ID
+		packShareCode = pack.ShareCode
+		packCreationDate = pack.CreationDate
+		return nil
+	}); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to create pack"})
 		return
 	}
 
 	c.JSON(http.StatusCreated, structs.PackResponse{
-		ID:           pack.ID,
-		Name:         pack.Name,
-		CreationDate: pack.CreationDate,
-		UpdatingDate: pack.UpdatingDate,
+		ID:           packID,
+		Name:         name,
+		CreationDate: packCreationDate,
+		ShareCode:    packShareCode,
 		Author:       sc.CurrentUserResponse(c, authorID),
 	})
 }

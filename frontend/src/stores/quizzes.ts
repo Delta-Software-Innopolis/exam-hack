@@ -236,7 +236,7 @@ export const useQuizzesStore = defineStore('quizzes', () => {
   async function fetchQuizzes() {
     const userStore = useUserStore()
     try {
-      const token = userStore.access_token
+      const token = userStore.getAccessToken()
       const address = import.meta.env.DEV ? "http://localhost:8001": import.meta.env.VITE_CORE_URL_DEV 
       console.log(address)
       console.log(import.meta.env.DEV)

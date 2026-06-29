@@ -3,6 +3,7 @@ services:
   db:
     image: postgres:15-alpine
     volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/data.sql
       - db-data:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
