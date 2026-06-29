@@ -11,6 +11,7 @@ type PackResponse struct {
 	Name         string       `json:"name"`
 	CreationDate time.Time    `json:"creation_date"`
 	UpdatingDate *time.Time   `json:"updating_date,omitempty"`
+	ShareCode    string       `json:"share_code"`
 	Author       UserResponse `json:"author"`
 }
 
@@ -23,6 +24,7 @@ type PackWithCardsResponse struct {
 	Name         string         `json:"name"`
 	CreationDate time.Time      `json:"creation_date"`
 	UpdatingDate *time.Time     `json:"updating_date,omitempty"`
+	ShareCode    string         `json:"share_code"`
 	Author       UserResponse   `json:"author"`
 	Cards        []CardResponse `json:"cards"`
 }

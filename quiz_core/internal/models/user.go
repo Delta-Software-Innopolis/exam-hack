@@ -5,7 +5,8 @@ type User struct {
 	Name     string `gorm:"column:name;type:varchar(30);not null;index:ix_users_name" json:"name"`
 	PassHash string `gorm:"column:pass_hash;type:text;not null;index:ix_users_pass_hash" json:"-"`
 
-	Packs []Pack `gorm:"foreignKey:AuthorID;references:ID" json:"packs,omitempty"`
+	Packs           []Pack           `gorm:"foreignKey:AuthorID;references:ID" json:"packs,omitempty"`
+	PackPermissions []PackPermission `gorm:"foreignKey:UserID;references:ID" json:"pack_permissions,omitempty"`
 }
 
 func (User) TableName() string {
