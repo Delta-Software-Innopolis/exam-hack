@@ -32,6 +32,9 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.activity.compose.BackHandler
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.examhacker.authentication.component.IAuthenticationComponent
 import com.examhacker.authentication.component.ScreenMode
@@ -51,7 +54,8 @@ fun AuthenticationScreen(component: IAuthenticationComponent) {
         onPasswordChange = component::onPasswordChange,
         onRepeatedPasswordChange = component::onRepeatedPasswordChange,
         onLogin = component::onLogin,
-        onSignUp = component::onSignUp
+        onSignUp = component::onSignUp,
+        back = component::back
     )
 }
 
@@ -63,8 +67,11 @@ private fun AuthenticationUI(
     onPasswordChange: (String) -> Unit,
     onRepeatedPasswordChange: (String) -> Unit,
     onLogin: () -> Unit,
-    onSignUp: () -> Unit
+    onSignUp: () -> Unit,
+    back: () -> Unit
 ) {
+    BackHandler { back() }
+
     Scaffold(
         topBar = {
             ScreenTitle(
@@ -135,6 +142,7 @@ private fun RegisterAndLoginUI(
             email = model.email,
             password = model.password,
             repeatedPassword = model.repeatedPassword,
+            errors = model.errors,
             onEmailChange = onEmailChange,
             onPasswordChange = onPasswordChange,
             onRepeatedPasswordChange = onRepeatedPasswordChange,
@@ -205,6 +213,7 @@ private fun InputFields(
     email: String,
     password: String,
     repeatedPassword: String,
+    errors: IAuthenticationComponent.Errors,
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
     onRepeatedPasswordChange: (String) -> Unit,
@@ -219,6 +228,7 @@ private fun InputFields(
             value = email,
             onValueChange = onEmailChange,
             label = stringResource(R.string.email_input_label),
+            error = errors.email,
             modifier = Modifier.fillMaxWidth(),
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Next,
@@ -234,6 +244,7 @@ private fun InputFields(
                     stringResource(R.string.password_register_label)
                 else
                     stringResource(R.string.password_login_label),
+            error = errors.password,
             modifier = Modifier.fillMaxWidth(),
             keyboardOptions = KeyboardOptions(
                 imeAction =
@@ -249,6 +260,7 @@ private fun InputFields(
                 value = repeatedPassword,
                 onValueChange = onRepeatedPasswordChange,
                 label = stringResource(R.string.repeat_password_label),
+                error = errors.repeatedPassword,
                 modifier = Modifier.fillMaxWidth(),
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)
             )
@@ -290,6 +302,7 @@ private fun InputTextField(
     value: String,
     onValueChange: (String) -> Unit,
     label: String,
+    error: String? = null,
     modifier: Modifier = Modifier,
     keyboardOptions: KeyboardOptions = KeyboardOptions()
 ) {
@@ -309,6 +322,7 @@ private fun InputTextField(
         },
         textStyle = textStyle,
         singleLine = true,
+        isError = error != null,
         keyboardOptions = keyboardOptions,
         modifier = modifier,
         shape = RoundedCornerShape(Dimensions.InputFieldRadius),
@@ -319,13 +333,31 @@ private fun InputTextField(
             focusedContainerColor = ColorPreset.Transparent,
             unfocusedContainerColor = ColorPreset.Transparent,
 
-            focusedBorderColor = ColorPreset.BorderDefault,
-            unfocusedBorderColor = ColorPreset.BorderDefault,
+            focusedBorderColor =
+                if (error == null) ColorPreset.BorderDefault else ColorPreset.ErrorPrimary,
+
+            unfocusedBorderColor =
+                if (error == null) ColorPreset.BorderDefault else ColorPreset.ErrorPrimary,
+
+            errorBorderColor = ColorPreset.ErrorPrimary,
+            errorLabelColor = ColorPreset.ErrorPrimary,
 
             focusedLabelColor = ColorPreset.TextDefaultSecondary,
             unfocusedLabelColor = ColorPreset.TextDefaultSecondary
         )
     )
+
+    if (error != null) {
+        Text(
+            text = error,
+            color = ColorPreset.ErrorPrimary,
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Normal,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 4.dp)
+        )
+    }
 }
 
 @Composable
@@ -391,6 +423,7 @@ private fun AuthenticationUIPreview() {
         onPasswordChange = {},
         onRepeatedPasswordChange = {},
         onLogin = {},
-        onSignUp = {}
+        onSignUp = {},
+        back = {}
     )
 }

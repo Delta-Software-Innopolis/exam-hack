@@ -6,6 +6,8 @@ import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.pop
+import com.arkivanov.decompose.router.stack.replaceCurrent
+import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.pushToFront
 import com.arkivanov.decompose.router.stack.replaceCurrent
 import kotlinx.serialization.Serializable
@@ -48,6 +50,13 @@ class RootComponent(
 
     private val navigation = StackNavigation<Config>()
 
+    private fun navigateToQuizList() {
+        navigation.replaceCurrent(Config.QuizList)
+    }
+
+    private fun back() {
+        navigation.pop()
+    }
     override val stack: Value<ChildStack<*, IRootComponent.Child>> =
         childStack(
             source = navigation,
@@ -72,7 +81,11 @@ class RootComponent(
 
             Config.Authentication ->
                 IRootComponent.Child.Authentication(
-                    AuthenticationComponent(componentContext)
+                    AuthenticationComponent(
+                        componentContext = componentContext,
+                        goToQuizList = ::navigateToQuizList,
+                        goBack = ::back
+                    )
                 )
 
             Config.AIInteractions ->
@@ -123,10 +136,6 @@ class RootComponent(
 
     private fun navigateToSettings() {
         navigation.pushToFront(Config.Settings)
-    }
-
-    private fun back() {
-        navigation.pop()
     }
 
     private fun fromIntroductionToAuth() {
