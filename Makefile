@@ -5,13 +5,13 @@ ENV ?= dev
 
 prod:
 	$(DC) \
-		-p prod \
+		-p exam-hacker-prod \
 		--env-file .env.prod \
 		up --build -d
 
 dev:
 	$(DC) \
-		-p dev \
+		-p exam-hacker-dev \
 		-f docker-compose.yml \
 		-f docker-compose.dev.yml \
 		--env-file .env.dev \
@@ -19,29 +19,29 @@ dev:
 
 test:
 	$(DC) \
-		-p test \
+		-p exam-hacker-test \
 		-f docker-compose.yml \
 		-f docker-compose.test.yml \
 		--env-file .env.test \
 		up --build -d
 
 down:
-	$(DC) -p $(ENV) down
+	$(DC) -p exam-hacker-$(ENV) down
 
 db-shell:
-	. ./.env.$(ENV) && $(DC) -p $(ENV) exec db psql -U $$POSTGRES_USER -d $$POSTGRES_DB
+	. ./.env.$(ENV) && $(DC) -p exam-hacker-$(ENV) exec db psql -U $$POSTGRES_USER -d $$POSTGRES_DB
 
 generate-secrets:
 	openssl genpkey -algorithm RSA -out jwt_private.pem -pkeyopt rsa_keygen_bits:2048 && openssl rsa -pubout -in jwt_private.pem -out jwt_public.pem && mkdir auth/secrets && mkdir quiz_core/secrets && cp jwt_public.pem jwt_private.pem auth/secrets/ && cp jwt_public.pem quiz_core/secrets/
 
 logs:
-	$(DC) -p $(ENV) logs -f
+	$(DC) -p exam-hacker-$(ENV) logs -f
 
 ps:
-	$(DC) -p $(ENV) ps
+	$(DC) -p exam-hacker-$(ENV) ps
 
 restart:
-	$(DC) -p $(ENV) restart
+	$(DC) -p exam-hacker-$(ENV) restart
 
 help:
 	@echo "make dev              - start app in dev mode (dev docker compose up)"
