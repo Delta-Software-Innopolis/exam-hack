@@ -5,6 +5,7 @@
   import QuestionOption from '@/components/newBasic/QuestionOption.vue';
   import QuizOption from '@/components/newBasic/QuizOption.vue';
   import EditQuestion from '@/components/newBasic/EditQuestion.vue';
+  import NavigationSidebar from '@/components/NavigationSidebar.vue';
   import { ref } from 'vue';
 
   const quiz = ref({ name: "Quiz Name", author: "User", variant: "white" });
@@ -39,6 +40,8 @@
 
 <style scoped>
 .wrapper {
+  overscroll-behavior: contain;
+  padding: 64px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;

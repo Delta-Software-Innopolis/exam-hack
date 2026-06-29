@@ -11,11 +11,11 @@ const headerInfo = computed(() => quizzesStore.headerInfo)
     <div :class="$route.meta.headerClass ? $route.meta.headerClass: 'header-container'">
         <nav class="icons">
             <div @click="">
-                <img src="@/assets/Profile.svg" alt="Profile">
+                <img src="@/assets/User.svg" alt="Profile">
                 <div>Profile</div>
             </div>
             <div @click="$router.push({name: 'quizzes'})">
-                <img src="@/assets/Quizzes.svg" alt="Profile">
+                <img src="@/assets/Book.svg" alt="Profile">
                 <div>Quizzes</div>
             </div>
             <div>

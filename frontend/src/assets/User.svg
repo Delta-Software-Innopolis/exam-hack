@@ -1,0 +1,18 @@
+<svg 
+
+    width="var(--icon-width, 31)"
+    height="var(--icon-height, 35)"
+
+viewBox="0 0 31 35" 
+
+fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M29.5 33C29.5 28.1675 23.232 24.25 15.5 24.25C7.76801 24.25 1.5 28.1675 1.5 33M15.5 19C10.6675 19 6.75 15.0825 6.75 10.25C6.75 5.41751 10.6675 1.5 15.5 1.5C20.3325 1.5 24.25 5.41751 24.25 10.25C24.25 15.0825 20.3325 19 15.5 19Z"
+
+    stroke="var(--icon-stroke, black)"
+    fill="var(--icon-fill, none)"
+    stroke-width="var(--icon-stroke-width, 3)"
+
+stroke-linecap="round" stroke-linejoin="round"
+
+/>
+</svg>

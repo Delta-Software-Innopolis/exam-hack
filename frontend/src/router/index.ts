@@ -10,6 +10,7 @@ import ShowcaseView from '@/views/ShowcaseView.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAttrs } from 'vue'
 import { useUserStore } from '@/stores/user'
+import UnknownView from '@/views/UnknownView.vue'
 
 
 
@@ -20,57 +21,86 @@ const router = createRouter({
       path: '/',
       name: 'root',
       redirect: '/quizzes',
+      meta: { showSidebar: true }
     },
     {
       path: '/welcome',
       name: 'welcome',
       component: WelcomeView,
-      meta: {headerClass: "hidden"}
+      meta: { showSidebar: false }
     },
     {
       path: '/auth/signup',
       name: 'signup',
       component: SignUpView,
-      meta: {headerClass: "hidden"}
+      meta: { showSidebar: false }
     },
     {
       path: '/auth/login',
       name: 'login',
       component: LoginView,
-      meta: {headerClass: "hidden"}
+      meta: { showSidebar: false }
     },
     {
       path: '/end-of-demo-0',
       name: 'end-of-demo-0',
       component: EndOfDemo0View,
-      meta: {headerClass: "hidden"}
+      meta: { showSidebar: false }
     },
     {
       path: "/quizzes/:quizId",
       name: "quiz",
-      component: OneQuizView
+      component: OneQuizView,
+      meta: { showSidebar: true }
     },
     {
       path: "/quizzes/:quizId/solving",
       name: "solving",
-      component: SolvingView
+      component: SolvingView,
+      meta: { showSidebar: true }
     },
     {
       path: "/quizzes",
       name: "quizzes",
-      component: QuizesView
+      component: QuizesView,
+      meta: { showSidebar: true }
     },
     {
       path: '/quizzes/generate',
       name: 'generating',
-      component: GenerateQuizView
+      component: GenerateQuizView,
+      meta: { showSidebar: true }
     },
     {
       path: '/showcase',
       name: 'showcase',
       component: ShowcaseView,
-      meta: {headerClass: "hidden"}
-    }
+      meta: { showSidebar: true }
+    },
+    {
+      path: '/quizhub',
+      name: 'quizhub',
+      component: UnknownView,
+      meta: { showSidebar: true}
+    },
+    {
+      path: '/profile',
+      name: 'profile',
+      component: UnknownView,
+      meta: { showSidebar: true}
+    },
+    {
+      path: '/settings',
+      name: 'settings',
+      component: UnknownView,
+      meta: { showSidebar: true}
+    },
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'unknown',
+      component: UnknownView,
+      meta: { showSidebar: true }
+    },
   ],
 })
 

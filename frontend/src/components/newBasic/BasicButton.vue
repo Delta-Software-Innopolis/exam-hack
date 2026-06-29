@@ -34,6 +34,7 @@ button {
   display: flex;
   justify-content: center;
   align-items: center;
+  transition: 0.2s;
   border: 0;
 
   padding: 16px;
