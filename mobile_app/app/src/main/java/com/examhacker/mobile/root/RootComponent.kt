@@ -5,11 +5,15 @@ import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.router.stack.replaceCurrent
 import kotlinx.serialization.Serializable
 import com.examhacker.authentication.component.AuthenticationComponent
 import com.examhacker.authentication.component.IAuthenticationComponent
 import com.examhacker.ai_interactions.component.AIGenerationComponent
 import com.examhacker.ai_interactions.component.IAIGenerationComponent
+import com.examhacker.mobile.introduction_screen.IIntroductionComponent
+import com.examhacker.mobile.introduction_screen.IntroductionComponent
+import com.examhacker.mobile.util.IPermissionHandler
 import com.examhacker.quiz_edit.component.IQuizEditComponent
 import com.examhacker.quiz_list.component.IQuizListComponent
 import com.examhacker.quiz_solve.component.IQuizSolveComponent
@@ -24,6 +28,7 @@ interface IRootComponent {
     val stack: Value<ChildStack<*, Child>>
 
     sealed class Child {
+        class Introduction(val component: IIntroductionComponent) : Child()
         class Authentication(val component: IAuthenticationComponent) : Child()
         class AIInteractions(val component: IAIGenerationComponent) : Child()
         class QuizList(val component: IQuizListComponent) : Child()
@@ -33,8 +38,11 @@ interface IRootComponent {
     }
 }
 
-class RootComponent(private val componentContext: ComponentContext)
-    : ComponentContext by componentContext, IRootComponent {
+class RootComponent(
+    private val componentContext: ComponentContext,
+    private val permissionHandler: IPermissionHandler,
+    private val startOverlayService: () -> Unit
+) : ComponentContext by componentContext, IRootComponent {
 
     private val navigation = StackNavigation<Config>()
 
@@ -42,7 +50,7 @@ class RootComponent(private val componentContext: ComponentContext)
         childStack(
             source = navigation,
             serializer = Config.serializer(),
-            initialConfiguration = Config.Authentication,
+            initialConfiguration = Config.Introduction,
             handleBackButton = false,
             childFactory = ::createChild,
         )
@@ -50,6 +58,16 @@ class RootComponent(private val componentContext: ComponentContext)
     private fun createChild(config: Config, componentContext: ComponentContext,)
     : IRootComponent.Child =
         when (config) {
+            Config.Introduction ->
+                IRootComponent.Child.Introduction(
+                    IntroductionComponent(
+                        componentContext = componentContext,
+                        permissionHandler = permissionHandler,
+                        startOverlayService = startOverlayService,
+                        goToAuth = ::fromIntroductionToAuth
+                    )
+                )
+
             Config.Authentication ->
                 IRootComponent.Child.Authentication(
                     AuthenticationComponent(componentContext)
@@ -81,8 +99,14 @@ class RootComponent(private val componentContext: ComponentContext)
                 )
         }
 
+    private fun fromIntroductionToAuth() {
+        navigation.replaceCurrent(Config.Authentication)
+    }
+
     @Serializable
     sealed class Config {
+        @Serializable
+        data object Introduction : Config()
         @Serializable
         data object Authentication : Config()
         @Serializable

@@ -1,23 +1,19 @@
 plugins {
-    alias(libs.plugins.android.application)
+    alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.compose)
-    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
-    namespace = "com.examhacker.mobile"
+    namespace = "com.examhacker.question_phone_unlock"
     compileSdk {
         version = release(36)
     }
 
     defaultConfig {
-        applicationId = "com.examhacker.mobile"
         minSdk = 26
-        targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
@@ -30,14 +26,12 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    buildFeatures {
-        compose = true
-    }
 }
 
 dependencies {
     // Core + UI
     implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
@@ -56,17 +50,11 @@ dependencies {
     implementation(libs.decompose.experimental)
 
     // Project
-    implementation(project(":authentication"))
-    implementation(project(":ai_interactions"))
-    implementation(project(":quiz_edit"))
-    implementation(project(":quiz_list"))
-    implementation(project(":quiz_solve"))
-    implementation(project(":phone_unlock"))
-    implementation(project(":settings"))
-    implementation(project(":common"))
     implementation(project(":resources"))
+    implementation(project(":common"))
+    implementation(project(":data_local"))
 
-    // Tests
+    // Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

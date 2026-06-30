@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<color name="background_primary">#FFFFFFFF</color>
+	<color name="secondary">#FF000000</color>
+	<color name="progress_bar_track">#FFF3F6F7</color>
+	<color name="progress_bar_fill">#FF00B093</color>
+	<color name="hint_button_stroke">#FFC8B6FF</color>
+</resources>

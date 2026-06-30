@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:fitsSystemWindows="false"
+	xmlns:tools="http://schemas.android.com/tools"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:orientation="vertical"
+	android:background="@color/background_primary"
+	android:padding="16dp">
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal"
+		android:gravity="center_vertical"
+		android:padding="16dp">
+
+		<TextView
+			android:id="@+id/tvProgress"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginEnd="12dp"
+			android:textSize="16sp"
+			android:textColor="@color/secondary"
+			android:textStyle="normal"
+			tools:text="1 / 5"/>
+
+		<ProgressBar
+			android:id="@+id/progress"
+			style="?android:attr/progressBarStyleHorizontal"
+			android:layout_width="match_parent"
+			android:layout_height="16dp"
+			android:max="100"
+			android:minHeight="16dp"
+			android:maxHeight="16dp"
+			android:progressDrawable="@drawable/progress_horizontal"
+			android:indeterminate="false"/>
+	</LinearLayout>
+
+	<TextView
+		android:id="@+id/tvQuestion"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="16dp"
+		android:padding="16dp"
+		android:textSize="20sp"
+		android:textColor="@color/secondary"
+		android:textStyle="bold"
+		tools:text="Question description, may span several lines, we’ll discuss the font size and boldness later"/>
+
+	<ScrollView
+		android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:layout_weight="1">
+
+		<LinearLayout
+			android:id="@+id/answersContainer"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="16dp"
+			android:orientation="vertical"/>
+
+	</ScrollView>
+
+
+	<ImageButton
+		android:id="@+id/btnHint"
+		android:layout_width="56dp"
+		android:layout_height="56dp"
+		android:layout_gravity="center_horizontal"
+		android:layout_marginBottom="50dp"
+		android:layout_marginTop="32dp"
+		android:background="@drawable/bg_hint_button"
+		android:src="@drawable/ic_gradient_star"
+		android:contentDescription="hint"
+		android:padding="8dp"
+		android:scaleType="centerInside"
+		app:tint="@null" />
+
+</LinearLayout>
