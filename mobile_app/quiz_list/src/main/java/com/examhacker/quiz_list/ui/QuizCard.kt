@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.PlayArrow
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,7 +19,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.examhacker.resources.ColorPreset
 import com.examhacker.resources.Dimensions
-import com.examhacker.resources.Dimensions.Companion.AuthLabelFontSize
+import androidx.compose.ui.res.painterResource
+import com.examhacker.resources.R
 
 @Composable
 fun QuizCard(
@@ -44,7 +43,7 @@ fun QuizCard(
 
             Text(
                 text = quizName,
-                fontSize = AuthLabelFontSize,
+                fontSize = Dimensions.AuthLabelFontSize,
                 fontWeight = FontWeight.SemiBold
             )
 
@@ -56,9 +55,10 @@ fun QuizCard(
         }
 
         Icon(
-            imageVector = Icons.Outlined.PlayArrow,
+            painter = painterResource(R.drawable.icon_button),
             contentDescription = null,
-            modifier = Modifier.size(28.dp)
+            tint = ColorPreset.TextDefaultSecondary,
+            modifier = Modifier.size(20.dp)
         )
     }
 }
