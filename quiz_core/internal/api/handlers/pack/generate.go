@@ -208,7 +208,6 @@ func GeneratePack(c *gin.Context) {
 			options = append(options, models.CardOption{
 				Content: option,
 				IsRight: correct[i],
-				CardID:  card.ID,
 			})
 		}
 
