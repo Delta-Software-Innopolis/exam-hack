@@ -26,6 +26,7 @@ const allowGenerate = ref(false)
 
 const currentStep = ref(1)
 
+
 const NEW_QUESTION = { 
     id: -1,
     question: 'new question',
@@ -39,6 +40,8 @@ const NEW_QUESTION = {
     hint: 'some hint here',
     explanation: 'some explanation here',
 }
+
+
 const activeQuestion: Ref<Card> = ref(structuredClone(NEW_QUESTION))
 const newQuestion = ref(true)
 
@@ -262,8 +265,6 @@ async function onFinishCreation() {
 </template>
 
 <style scoped>
-
-
 .question-edit-window {
     background-color: var(--white);
     padding: 16px;
