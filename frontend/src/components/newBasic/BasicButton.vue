@@ -130,6 +130,17 @@ button {
     linear-gradient(to bottom, #68F2FF 40%, #FF61ED) border-box;
 }
 
+.ai:disabled {
+  background-color: var(--white);
+  font-weight: 700;
+  border: 2px solid transparent;
+  border-radius: 16px;
+  background:
+    linear-gradient(var(--white), var(--white)) padding-box,
+    linear-gradient(to bottom, #9ef7ff 40%, #ffacf5) border-box;
+  cursor: default;
+}
+
 /* in order to make .ai:disabled i think we should use svg image of the disabled button,
    since it's quite difficult to implement it using clean css */
 

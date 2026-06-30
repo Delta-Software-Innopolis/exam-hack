@@ -11,6 +11,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import { useAttrs } from 'vue'
 import { useUserStore } from '@/stores/user'
 import UnknownView from '@/views/UnknownView.vue'
+import QuizCreationView from '@/views/QuizCreationView.vue'
 
 
 
@@ -66,9 +67,9 @@ const router = createRouter({
       meta: { showSidebar: true }
     },
     {
-      path: '/quizzes/generate',
-      name: 'generating',
-      component: GenerateQuizView,
+      path: '/quizzes/new',
+      name: 'quizzes-new',
+      component: QuizCreationView,
       meta: { showSidebar: true }
     },
     {

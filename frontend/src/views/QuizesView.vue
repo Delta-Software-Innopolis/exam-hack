@@ -28,7 +28,7 @@ onBeforeMount(async ()=> {
     <div class="top-container">
       <h1>Saved Quizzes</h1>
       <div class="actions-wrapper">
-        <BasicButton @click="router.push({name: 'generating'})">Create New</BasicButton>
+        <BasicButton @click="router.push({name: 'quizzes-new'})">Create New</BasicButton>
       </div>
     </div>
     <div class="Quiz-Container">
