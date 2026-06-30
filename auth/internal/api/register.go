@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"auth/internal/config"
 	"auth/internal/database"
 	"auth/internal/models"
 	"auth/pkg/utils"
@@ -74,7 +75,7 @@ func Register(c *gin.Context) {
 		if err := tx.Create(&user).Error; err != nil {
 			return err
 		}
-
+		
 		accessToken, refreshToken, err := utils.GenerateTokens(int(user.ID), user.Name)
 
 		if err != nil {
@@ -109,6 +110,16 @@ func Register(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to register user"})
 		return
 	}
+
+	c.SetCookie(
+		"refresh_token",
+		response.RefreshToken,
+		int(utils.RefreshTokenTTL.Seconds()),
+		"/",
+		"",
+		config.AppConfig.IsHttps,
+		true,
+	)
 
 	c.JSON(http.StatusOK, response)
 }

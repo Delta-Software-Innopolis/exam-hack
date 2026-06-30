@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"time"
 
+	"auth/internal/config"
 	"auth/internal/database"
 	"auth/internal/models"
 	"auth/pkg/utils"
@@ -26,7 +27,15 @@ type refreshResponse struct {
 func Refresh(c *gin.Context) {
 	var req refreshRequest
 
-	if err := c.ShouldBindJSON(&req); err != nil || req.RefreshToken == "" {
+	_ = c.ShouldBindJSON(&req)
+	if req.RefreshToken == "" {
+		cookieToken, err := c.Cookie("refresh_token")
+		if err == nil {
+			req.RefreshToken = cookieToken
+		}
+	}
+
+	if req.RefreshToken == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "refresh token is required"})
 		return
 	}
@@ -91,12 +100,22 @@ func Refresh(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid refresh token"})
 		return
 	}
-	
+
 	if err != nil {
 		utils.LogEndpointError(c, http.StatusInternalServerError, "failed to refresh tokens", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to refresh tokens"})
 		return
 	}
+
+	c.SetCookie(
+		"refresh_token",
+		response.RefreshToken,
+		int(utils.RefreshTokenTTL.Seconds()),
+		"/",
+		"",
+		config.AppConfig.IsHttps,
+		true,
+	)
 
 	c.JSON(http.StatusOK, response)
 }
