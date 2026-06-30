@@ -37,6 +37,7 @@ const NEW_QUESTION = {
 const overlayClass = ref({'hidden-overlay': true})
 const showOverlay = ref(false)
 const activeQuestion: Ref<Card> = ref(structuredClone(NEW_QUESTION))
+const activeQuestionId = ref(-1)
 const newQuestion = ref(true)
 const overlayRef = useTemplateRef('overlay')
 
@@ -44,6 +45,7 @@ const overlayRef = useTemplateRef('overlay')
 function closeOverlay() {
     overlayClass.value['hidden-overlay'] = true;
     setTimeout(()=>{ showOverlay.value = false; }, 180)
+    activeQuestionId.value = -1
 }
 
 
@@ -52,6 +54,8 @@ function onmousedown(event: MouseEvent) {
         closeOverlay()
     }
 }
+
+
 function openOverlay() {
     overlayClass.value['hidden-overlay'] = false;
     showOverlay.value = true;
@@ -63,7 +67,7 @@ function onStartAddNewQuestion() {
         newQuestion.value = true
         activeQuestion.value = structuredClone(NEW_QUESTION)
     }
-    activeQuestion.value.id = quiz.value.cards.length + 1
+    activeQuestionId.value = quiz.value.cards.length + 1
     openOverlay()
 }
 
@@ -72,6 +76,7 @@ function onStartEditQuestion(q_id: number) {
     if (q) {
         newQuestion.value = false
         activeQuestion.value = q 
+        activeQuestionId.value = q_id
         openOverlay()
     }
 }
@@ -96,8 +101,8 @@ function onAddQuestion() {
 }
 
 function onDeleteQuestion() {
-    quiz.value.cards.splice(activeQuestion.value.id-1, 1)
-    for (const [i, card] of quiz.value.cards.entries()) { card.id = i+1 }  // fix the ids
+    quiz.value.cards.splice(activeQuestionId.value, 1)
+    // for (const [i, card] of quiz.value.cards.entries()) { card.id = i+1 }  // fix the ids
     activeQuestion.value = structuredClone(NEW_QUESTION)
     closeOverlay()
 }
@@ -111,8 +116,8 @@ function onDeleteQuestion() {
 
             <div class="question-edit-window" v-if="activeQuestion">
                 <div class="top-line">
-                    <h3 v-if="newQuestion">Add {{ activeQuestion.id }}th Question</h3>
-                    <h3 v-else>Edit Question {{ activeQuestion.id }}</h3>
+                    <h3 v-if="newQuestion">Add {{ activeQuestionId }}th Question</h3>
+                    <h3 v-else>Edit Question {{ activeQuestionId }}</h3>
                     <CrossSVG @click="closeOverlay"/>
                 </div>
                 <BasicInput v-model="activeQuestion.question"/>
@@ -133,7 +138,7 @@ function onDeleteQuestion() {
             <div class="title">
                 <h1>{{ quiz.name }}</h1>
                 <span class="author">
-                    by <a href="#">{{ quiz.author.username }}</a>
+                    by <a href="#">{{ quiz.author.username || 'You'}}</a>
                 </span>
             </div>
             <div class="description">
@@ -174,7 +179,7 @@ function onDeleteQuestion() {
                 <BasicButton variant="secondary" @click="onStartAddNewQuestion()">Add</BasicButton>
             </div>
             <div class="questions-wrapper">
-                <EditQuestion @click="onStartEditQuestion(q.id-1)" :index="q.id" :question="q.question" v-for="q in quiz.cards"/>
+                <EditQuestion @click="onStartEditQuestion(i)" :index="i+1" :question="q.question" v-for="[i, q] in quiz.cards.entries()"/>
             </div>
         </div>
     </div>

@@ -11,6 +11,7 @@ import { onMounted, onUnmounted, ref, useTemplateRef, type Ref } from 'vue';
 import type { Card } from '@/types';
 import { fetchCreateQuiz } from '@/core';
 import { useRouter } from 'vue-router';
+import { generateCards } from '@/generation';
 
 
 const router = useRouter()
@@ -25,6 +26,26 @@ const showOverlay = ref(false)
 const allowGenerate = ref(false)
 
 const currentStep = ref(1)
+
+
+async function onGenerate() {
+    if (uploadedFiles.value.length == 0) {
+        alert('upload at list one file')
+        return
+    } else {
+        let file = uploadedFiles.value[0]
+        console.log(file)
+        if (file === undefined) {
+            alert('first file undefined')
+        } else {
+            const result = await generateCards(file, quizTitle.value, "multiple_choice", 10);
+            console.log("GOT RESULT", result)
+            questions.value = questions.value.concat(result.cards)
+        }
+        alert("Start generating")
+        if (currentStep.value < 3) { nextStep() }
+    }
+}
 
 
 const NEW_QUESTION = { 
@@ -43,6 +64,7 @@ const NEW_QUESTION = {
 
 
 const activeQuestion: Ref<Card> = ref(structuredClone(NEW_QUESTION))
+const activeQuestionId = ref(-1)
 const newQuestion = ref(true)
 
 const firstBtnLine = useTemplateRef('disappearing-buttons-line')
@@ -86,12 +108,6 @@ function playStepChangeAnimation() {
 }
 
 
-async function generateQuestions() {
-    alert("Start generating")
-    if (currentStep.value < 3) { nextStep() }
-}
-
-
 function openOverlay() {
     overlayClass.value['hidden-overlay'] = false;
     showOverlay.value = true;
@@ -102,7 +118,7 @@ function onStartAddNewQuestion() {
         newQuestion.value = true
         activeQuestion.value = structuredClone(NEW_QUESTION)
     }
-    activeQuestion.value.id = questions.value.length + 1
+    activeQuestionId.value = questions.value.length + 1
     openOverlay()
 }
 
@@ -111,6 +127,7 @@ function onStartEditQuestion(q_id: number) {
     if (q) {
         newQuestion.value = false
         activeQuestion.value = q 
+        activeQuestionId.value = q_id
         openOverlay()
     }
 }
@@ -119,6 +136,7 @@ function onStartEditQuestion(q_id: number) {
 function closeOverlay() {
     overlayClass.value['hidden-overlay'] = true;
     setTimeout(()=>{ showOverlay.value = false; }, 180)
+    activeQuestionId.value = -1
 }
 
 
@@ -151,8 +169,7 @@ function onAddQuestion() {
 }
 
 function onDeleteQuestion() {
-    questions.value.splice(activeQuestion.value.id-1, 1)
-    for (const [i, card] of questions.value.entries()) { card.id = i+1 }  // fix the ids
+    questions.value.splice(activeQuestionId.value, 1)
     activeQuestion.value = structuredClone(NEW_QUESTION)
     closeOverlay()
 }
@@ -186,8 +203,8 @@ async function onFinishCreation() {
 
         <div class="question-edit-window" v-if="activeQuestion">
             <div class="top-line">
-                <h3 v-if="newQuestion">Add {{ activeQuestion.id }}th Question</h3>
-                <h3 v-else>Edit Question {{ activeQuestion.id }}</h3>
+                <h3 v-if="newQuestion">Add {{ activeQuestionId }}th Question</h3>
+                <h3 v-else>Edit Question {{ activeQuestionId }}</h3>
                 <CrossSVG @click="closeOverlay"/>
             </div>
             <BasicInput v-model="activeQuestion.question"/>
@@ -231,7 +248,7 @@ async function onFinishCreation() {
                 <BasicFileUpload @changed="onFilesChanged"></BasicFileUpload>
                 <div class="buttons-line">
                     <BasicButton class="skip-btn" :class="skipBtnClass" variant="secondary" @click="nextStep">Skip</BasicButton>
-                    <BasicButton :disabled="!allowGenerate" class="generate-btn" variant="ai" @click="generateQuestions">Generate Questions</BasicButton>
+                    <BasicButton :disabled="!allowGenerate" class="generate-btn" variant="ai" @click="onGenerate">Generate Questions</BasicButton>
                 </div>
             </div>
         </div>
@@ -247,10 +264,10 @@ async function onFinishCreation() {
                 <h2 class="step-title">Edit generated questions</h2>
             </div>
             <div class="questions-list">
-                <EditQuestion v-for="q in questions"
-                    :index="q.id"
+                <EditQuestion v-for="[index, q] in questions.entries()"
+                    :index="index+1"
                     :question="q.question"
-                    @click="onStartEditQuestion(q.id-1)"
+                    @click="onStartEditQuestion(index)"
                 />
             </div>
             <div class="buttons-line">
@@ -297,6 +314,15 @@ async function onFinishCreation() {
 .question-edit-window h4 {
     color: var(--secondary)
 }
+
+.red-button {
+    background-color: var(--raddish);
+}
+.red-button:hover {
+    background-color: var(--raddish-dimm);
+}
+
+
 
 .options-wrapper {
     display: flex;
