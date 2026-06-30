@@ -67,11 +67,15 @@ func CurrentUserResponse(c *gin.Context, userID uint) structs.UserResponse {
 }
 
 func CreatePackWithOwnerPermission(tx *gorm.DB, name string, authorID uint) (models.Pack, error) {
+	// Needed for tests
+	if tx.Dialector.Name() != "postgres" {
+		return createPackWithOwnerPermissionPortable(tx, name, authorID)
+	}
+
 	var packID uint
 	if err := tx.Raw("SELECT nextval(pg_get_serial_sequence('packs', 'id'))").Scan(&packID).Error; err != nil {
 		return models.Pack{}, err
 	}
-
 	pack := models.Pack{
 		ID:           packID,
 		Name:         name,
@@ -81,6 +85,37 @@ func CreatePackWithOwnerPermission(tx *gorm.DB, name string, authorID uint) (mod
 	}
 
 	if err := tx.Create(&pack).Error; err != nil {
+		return models.Pack{}, err
+	}
+
+	permission := models.PackPermission{
+		UserID:     authorID,
+		PackID:     pack.ID,
+		Permission: 1,
+	}
+
+	if err := tx.Create(&permission).Error; err != nil {
+		return models.Pack{}, err
+	}
+
+	return pack, nil
+}
+
+// Needed for tests
+func createPackWithOwnerPermissionPortable(tx *gorm.DB, name string, authorID uint) (models.Pack, error) {
+	pack := models.Pack{
+		Name:         name,
+		CreationDate: time.Now(),
+		ShareCode:    "pending",
+		AuthorID:     authorID,
+	}
+
+	if err := tx.Create(&pack).Error; err != nil {
+		return models.Pack{}, err
+	}
+
+	pack.ShareCode = packShareCode(pack.ID)
+	if err := tx.Model(&pack).Update("share_code", pack.ShareCode).Error; err != nil {
 		return models.Pack{}, err
 	}
 
