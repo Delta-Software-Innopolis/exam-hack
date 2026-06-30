@@ -51,7 +51,9 @@ services:
       context: .
       dockerfile: ./llm-service/Dockerfile
     environment:
+      - LLM_PROVIDER=${LLM_PROVIDER:-openrouter}
       - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY}
       - LLM_MODEL=${LLM_MODEL}
     healthcheck:
       test: ["CMD", "python", "-c", "import http.client; c=http.client.HTTPConnection('localhost',7000); c.request('GET','/health'); r=c.getresponse(); assert r.status==200, r.status"]
