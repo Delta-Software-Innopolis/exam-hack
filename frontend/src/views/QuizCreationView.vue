@@ -5,6 +5,57 @@ import BasicInput from '@/components/newBasic/BasicInput.vue';
 import BasicTextArea from '@/components/newBasic/BasicTextArea.vue';
 import EditQuestion from '@/components/newBasic/EditQuestion.vue';
 
+import { ref, useTemplateRef, type Ref } from 'vue';
+import type { Card } from '@/types';
+
+
+const quizTitle: Ref<string | null> = ref(null)
+const quizDescription: Ref<string | null> = ref(null)
+const uploadedFiles: Ref<File[]> = ref([])
+const questions: Ref<Card[]> = ref([])
+
+const currentStep = ref(1)
+const generateBtnClass = ref({})
+
+const firstBtnLine = useTemplateRef('disappearing-buttons-line')
+const skipBtnClass = ref({ hidden: false, 'not-displayed': false })
+const stepGenerate = useTemplateRef('step-2')
+const stepEdit = useTemplateRef('step-3')
+
+
+function nextStep() {
+    playStepChangeAnimation()
+    currentStep.value += 1
+}
+
+function playStepChangeAnimation() {
+    switch (currentStep.value) {
+        case (1): {
+            let btnLine: HTMLDivElement | null = null
+            if (btnLine = firstBtnLine.value) {
+                btnLine.classList.add('hidden')
+                if (stepGenerate.value) {
+                    stepGenerate.value.classList.remove('not-displayed')
+                    stepGenerate.value.classList.remove('hidden')
+                }
+                setTimeout(()=>{
+                    if (btnLine) { btnLine.style.display = 'none' }
+                }, 500)
+            }
+            break
+        }
+        case (2): {
+            skipBtnClass.value.hidden = true
+            setTimeout(()=>{skipBtnClass.value['not-displayed'] = true}, 500)
+            if (stepEdit.value) {
+                stepEdit.value.classList.remove('not-displayed')
+                stepEdit.value.classList.remove('hidden')
+            }
+            break
+        }
+    }
+}
+
 
 function onFilesChanged(f: File[]) {
     console.log(f)
@@ -21,13 +72,15 @@ function onFilesChanged(f: File[]) {
                 <h2 class="step">Step 1</h2>
                 <h2 class="step-title">Name new Quiz</h2>
             </div>
-            <BasicInput placeholder="Enter Quiz title"></BasicInput>
-            <BasicTextArea placeholder="Enter Quiz description (optional)"></BasicTextArea>
-            <div class="buttons-line">
-                <BasicButton>Continue</BasicButton>
+            <div class="inputs">
+                <BasicInput placeholder="Enter Quiz title"></BasicInput>
+                <BasicTextArea placeholder="Enter Quiz description (optional)"></BasicTextArea>
+            </div>
+            <div ref="disappearing-buttons-line" class="buttons-line">
+                <BasicButton @click="nextStep">Continue</BasicButton>
             </div>
         </div>
-        <div class="step-generate">
+        <div class="step-generate hidden not-displayed" ref="step-2">
             <div class="title-line">
                 <h2 class="step">Step 2</h2>
                 <h2 class="step-title">Use <span class="ai-text">AI</span> to generate questions</h2>
@@ -35,22 +88,22 @@ function onFilesChanged(f: File[]) {
             <div class="actions">
                 <BasicFileUpload @changed="onFilesChanged"></BasicFileUpload>
                 <div class="buttons-line">
-                    <BasicButton variant="secondary">Skip</BasicButton>
+                    <BasicButton class="skip-btn" :class="skipBtnClass" variant="secondary" @click="nextStep">Skip</BasicButton>
                     <BasicButton disabled class="generate-btn" variant="ai">Generate Questions</BasicButton>
                 </div>
             </div>
         </div>
     </div>
     <div class="right-side">
-        <div class="step-edit">
+        <div class="step-edit hidden not-displayed" ref="step-3">
             <div class="title-line">
                 <h2 class="step">Step 3</h2>
                 <h2 class="step-title">Edit generated questions</h2>
             </div>
             <div class="questions-list">
-                <EditQuestion v-for="i in 20"
-                    :index="i"
-                    question="First question"
+                <EditQuestion v-for="q in questions"
+                    :index="q.id"
+                    :question="q.question"
                 />
             </div>
             <div class="buttons-line">
@@ -71,6 +124,22 @@ function onFilesChanged(f: File[]) {
     flex-wrap: wrap;
 }
 
+.buttons-line.hidden {
+    opacity: 0;
+    margin-top: -3.5em;
+}
+
+.skip-btn {
+    opacity: 1;
+    width: 5em;
+    transition: 0.5s;
+}
+
+.skip-btn.hidden {
+    opacity: 0;
+    margin-left: -6em;
+}
+
 .left-side {
     flex: 0 0 40%;
     min-width: 300px;
@@ -89,13 +158,25 @@ function onFilesChanged(f: File[]) {
     height: 100%;
 }
 
+.not-displayed {
+    display: none;
+}
+
+.step-generate.hidden, .step-edit.hidden {
+    opacity: 0;
+    user-select: none;
+    cursor: default;
+}
+
 .step-quiz-name, .step-generate, .step-edit {
+    opacity: 1;
     background-color: var(--white);
     padding: 16px;
     gap: 16px;
     display: flex;
     flex-direction: column;
     border-radius: 16px;
+    transition: 0.5s;
 }
 
 .buttons-line {
@@ -103,7 +184,11 @@ function onFilesChanged(f: File[]) {
     flex-direction: row;
     justify-content: end;
     gap: 8px;
+    opacity: 1;
+    transition: 0.5s;
+    height: 2.5em;
 }
+
 
 .step-edit .buttons-line {
     justify-content: space-between;
@@ -136,6 +221,12 @@ function onFilesChanged(f: File[]) {
 .step-quiz-name textarea {
     height: 6em;
     min-height: 4em;
+}
+
+.step-quiz-name .inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
 .questions-list { 

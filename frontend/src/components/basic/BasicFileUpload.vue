@@ -30,7 +30,7 @@ function removeFile(index: number) {
   </div>
   <label for="file-input" class="btn">
 	  <span>
-        <img src="/add_files_icon.svg" alt="add_files_icon.svg" />
+        <!-- <img src="/add_files_icon.svg" alt="add_files_icon.svg" /> -->
         <span class="button-text">Add files</span>
     </span>
   </label>
