@@ -1,24 +1,64 @@
+import json
 import os
-from typing import List, Literal
+from typing import Dict, List, Literal
 
 from openai import AsyncOpenAI
 from pydantic import BaseModel, Field
 
 
-_client: AsyncOpenAI | None = None
+class _ProviderConfig:
+    def __init__(self, base_url: str, api_key_env: str, default_model: str):
+        self.base_url = base_url
+        self.api_key_env = api_key_env
+        self.default_model = default_model
 
 
-def _get_client() -> AsyncOpenAI:
-    global _client
-    if _client is None:
-        api_key = os.getenv("OPENROUTER_API_KEY")
+_PROVIDERS: Dict[str, _ProviderConfig] = {
+    "openrouter": _ProviderConfig(
+        base_url="https://openrouter.ai/api/v1",
+        api_key_env="OPENROUTER_API_KEY",
+        default_model="openai/gpt-oss-20b:free",
+    ),
+    "deepseek": _ProviderConfig(
+        base_url="https://api.deepseek.com",
+        api_key_env="DEEPSEEK_API_KEY",
+        default_model="deepseek-v4-pro",
+    ),
+}
+
+_clients: Dict[str, AsyncOpenAI] = {}
+
+
+class CardGenerationError(Exception):
+    """Raised when the LLM fails to produce valid cards."""
+
+    pass
+
+
+def _detect_provider() -> str:
+    """Pick the LLM provider from env, falling back to whichever key is set."""
+    provider = os.getenv("LLM_PROVIDER", "").lower().strip()
+    if provider in _PROVIDERS:
+        return provider
+    if os.getenv("DEEPSEEK_API_KEY"):
+        return "deepseek"
+    if os.getenv("OPENROUTER_API_KEY"):
+        return "openrouter"
+    raise CardGenerationError(
+        "No LLM provider configured. Set LLM_PROVIDER to 'openrouter' or 'deepseek' "
+        "and provide the matching API key."
+    )
+
+
+def _get_client(provider: str) -> AsyncOpenAI:
+    """Return (and cache) an AsyncOpenAI client configured for the provider."""
+    if provider not in _clients:
+        config = _PROVIDERS[provider]
+        api_key = os.getenv(config.api_key_env)
         if not api_key:
-            raise CardGenerationError("OPENROUTER_API_KEY is not set")
-        _client = AsyncOpenAI(
-            base_url="https://openrouter.ai/api/v1",
-            api_key=api_key,
-        )
-    return _client
+            raise CardGenerationError(f"{config.api_key_env} is not set")
+        _clients[provider] = AsyncOpenAI(base_url=config.base_url, api_key=api_key)
+    return _clients[provider]
 
 
 class MultipleChoiceCard(BaseModel):
@@ -71,17 +111,17 @@ Each item must have:
 """
 
 
-class CardGenerationError(Exception):
-    """Raised when the LLM fails to produce valid cards."""
-    pass
-
-
 async def generate_cards(
     text: str,
     card_type: Literal["multiple_choice", "single_answer"],
     count: int,
 ) -> List[dict]:
     """Generate study cards from raw text using the configured LLM."""
+    provider = _detect_provider()
+    client = _get_client(provider)
+    config = _PROVIDERS[provider]
+    model = os.getenv("LLM_MODEL", config.default_model)
+
     if card_type == "multiple_choice":
         response_format = MultipleChoiceList
         system_prompt = SYSTEM_PROMPT_MULTIPLE_CHOICE.format(count=count)
@@ -90,21 +130,25 @@ async def generate_cards(
         system_prompt = SYSTEM_PROMPT_SINGLE_ANSWER.format(count=count)
 
     try:
-        response = await _get_client().chat.completions.parse(
-            model=os.getenv("LLM_MODEL"),
+        response = await client.chat.completions.create(
+            model=model,
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": f"Context: {text}"},
             ],
-            response_format=response_format,
+            response_format={"type": "json_object"},
             temperature=0.1,
         )
-        print(response)
-        parsed = response.choices[0].message.parsed
+        content = response.choices[0].message.content
+        if content is None:
+            raise CardGenerationError("LLM returned empty content")
+        parsed = response_format.model_validate_json(content)
+    except CardGenerationError:
+        raise
     except Exception as exc:
         raise CardGenerationError(f"LLM request failed: {exc}") from exc
 
-    if parsed is None or not parsed.items:
+    if not parsed.items:
         raise CardGenerationError("LLM returned no cards")
 
     cards: List[dict] = []
