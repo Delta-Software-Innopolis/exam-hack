@@ -6,6 +6,7 @@ import BasicTextArea from '@/components/newBasic/BasicTextArea.vue';
 import EditQuestion from '@/components/newBasic/EditQuestion.vue';
 import CrossSVG from '@/assets/Cross.svg';
 import CheckSVG from '@/assets/Check.svg';
+import LoadingThingSVG from '@/assets/LoadingThing.svg';
 
 import { onMounted, onUnmounted, ref, useTemplateRef, type Ref } from 'vue';
 import type { Card } from '@/types';
@@ -38,13 +39,18 @@ async function onGenerate() {
         if (file === undefined) {
             alert('first file undefined')
         } else {
-            const result = await generateCards(file, quizTitle.value, "multiple_choice", 10);
-            console.log("GOT RESULT", result)
-            questions.value = questions.value.concat(result.cards)
+            try {
+                openLoadingOverlay()
+                const result = await generateCards(file, quizTitle.value, "multiple_choice", 10);
+                console.log("GOT RESULT", result)
+                questions.value = questions.value.concat(result.cards)
+            } catch (err) {
+                alert(`Sorry, we experienced some error: ${err}. But you can create your quiz manually!`)
+            }
         }
-        alert("Start generating")
         if (currentStep.value < 3) { nextStep() }
     }
+    closeLoadingOverlay()
 }
 
 
@@ -66,6 +72,7 @@ const NEW_QUESTION = {
 const activeQuestion: Ref<Card> = ref(structuredClone(NEW_QUESTION))
 const activeQuestionId = ref(-1)
 const newQuestion = ref(true)
+const showLoading = ref(false)
 
 const firstBtnLine = useTemplateRef('disappearing-buttons-line')
 const skipBtnClass = ref({ hidden: false, 'not-displayed': false })
@@ -77,6 +84,19 @@ const overlayRef = useTemplateRef('overlay')
 function nextStep() {
     playStepChangeAnimation()
     currentStep.value += 1
+}
+
+function openLoadingOverlay() {
+    window.removeEventListener('mousedown', onmousedown)
+    openOverlay()
+    activeQuestionId.value =-1
+    showLoading.value = true
+}
+
+function closeLoadingOverlay() {
+    window.addEventListener('mousedown', onmousedown)
+    closeOverlay()
+    showLoading.value = false
 }
 
 function playStepChangeAnimation() {
@@ -201,7 +221,7 @@ async function onFinishCreation() {
 
     <div ref="overlay" class="overlay" v-if="showOverlay" :class="overlayClass">
 
-        <div class="question-edit-window" v-if="activeQuestion">
+        <div class="question-edit-window" v-if="activeQuestionId != -1">
             <div class="top-line">
                 <h3 v-if="newQuestion">Add {{ activeQuestionId }}th Question</h3>
                 <h3 v-else>Edit Question {{ activeQuestionId }}</h3>
@@ -218,6 +238,12 @@ async function onFinishCreation() {
             </div>
             <BasicButton v-if="newQuestion" @click="onAddQuestion">Add Question</BasicButton>
             <BasicButton v-else class="red-button" @click="onDeleteQuestion">Delete Question</BasicButton>
+        </div>
+
+        <div class="loading-window" v-if="showLoading">
+            <LoadingThingSVG class="loading-icon"/>
+            <h1>Generating Questions</h1>
+            <p>Please wait for ~30 seconds</p>
         </div>
 
     </div>
@@ -294,6 +320,38 @@ async function onFinishCreation() {
     --icon-width: 12px;
     --icon-height: 12px;
 }
+
+.loading-window {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 16px;
+    padding-left: 32px;
+    padding-right: 32px;
+    background-color: var(--white);
+    border-radius: 16px;
+    justify-content: center;
+    align-items: center;
+}
+
+.loading-window h1 {
+    font-size: 24px;
+}
+
+.loading-window p {
+    font-size: 16px;
+    color: var(--secondary)
+}
+
+.loading-icon {
+    -webkit-animation:spin 2s linear infinite;
+    -moz-animation:spin 2s linear infinite;
+    animation:spin 2s linear infinite;
+}
+
+@-moz-keyframes spin { 100% { -moz-transform: rotate(360deg); } }
+@-webkit-keyframes spin { 100% { -webkit-transform: rotate(360deg); } }
+@keyframes spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
 
 .question-edit-window .top-line {
     display: flex;

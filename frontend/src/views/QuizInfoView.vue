@@ -142,7 +142,7 @@ function onDeleteQuestion() {
                 </span>
             </div>
             <div class="description">
-                {{ quiz.description }}
+                {{ quiz.description || "This quiz has no description..." }}
             </div>
             <div class="stats-n-actions">
                 <div class="stats">
