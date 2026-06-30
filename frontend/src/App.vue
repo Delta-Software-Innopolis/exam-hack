@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { RouterView, useRoute } from 'vue-router'
 import NavigationSidebar from './components/NavigationSidebar.vue';
+import { ref } from 'process';
 
 const route = useRoute()
+
 </script>
 
 <template>
@@ -13,6 +15,7 @@ const route = useRoute()
 </template>
 
 <style scoped>
+
 
 .page-content {
   padding: 0;
