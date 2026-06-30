@@ -6,6 +6,7 @@ import androidx.compose.ui.graphics.TileMode
 
 class ColorPreset {
     companion object {
+
         val Black = Color(0xFF000000)
         val Transparent = Black.copy(alpha = 0f)
 

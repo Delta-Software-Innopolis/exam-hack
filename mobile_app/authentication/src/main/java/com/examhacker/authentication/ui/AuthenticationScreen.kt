@@ -417,7 +417,9 @@ enum class AuthButtonType {
 @Composable
 private fun AuthenticationUIPreview() {
     AuthenticationUI(
-        model = IAuthenticationComponent.Model(),
+        model = IAuthenticationComponent.Model().copy(
+            errors = IAuthenticationComponent.Errors(email = "ghfgh")
+        ),
         onSwitchScreenMode = {},
         onEmailChange = {},
         onPasswordChange = {},
