@@ -5,16 +5,18 @@ enum ButtonVariants {
   PRIMARY = 'primary',
   SECONDARY = 'secondary',
   TERITARY = 'teritary',
+  GREEN = 'green',
+  RED = 'red',
   AI = 'ai',
 }
 
 const props = defineProps({
-  variant: {type: String, default: 'primary'},
+  variant: {type: String, default: 'secondary'},
 })
 
 const variantClass = computed(() => {
   if (!Object.values<string>(ButtonVariants).includes(props.variant)) {
-    return 'primary';
+    return 'secondary';
   }
   return props.variant;
 })
@@ -139,6 +141,22 @@ button {
     linear-gradient(var(--white), var(--white)) padding-box,
     linear-gradient(to bottom, #9ef7ff 40%, #ffacf5) border-box;
   cursor: default;
+}
+
+.green {
+  background-color: var(--quiz-green)
+}
+
+.green:hover {
+  background-color: var(--quiz-green-dimm);
+}
+
+.red {
+  background-color: var(--quiz-red);
+}
+
+.red:hover {
+  background-color: var(--quiz-red-dimm);
 }
 
 /* in order to make .ai:disabled i think we should use svg image of the disabled button,

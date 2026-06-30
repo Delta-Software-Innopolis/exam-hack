@@ -236,8 +236,8 @@ async function onFinishCreation() {
                     <CrossSVG v-else class="option-cross" @click="chooseCorrectOption(i-1)"/>
                 </div>
             </div>
-            <BasicButton v-if="newQuestion" @click="onAddQuestion">Add Question</BasicButton>
-            <BasicButton v-else class="red-button" @click="onDeleteQuestion">Delete Question</BasicButton>
+            <BasicButton variant="primary" v-if="newQuestion" @click="onAddQuestion">Add Question</BasicButton>
+            <BasicButton variant="primary" v-else class="red-button" @click="onDeleteQuestion">Delete Question</BasicButton>
         </div>
 
         <div class="loading-window" v-if="showLoading">
@@ -261,7 +261,7 @@ async function onFinishCreation() {
                 <BasicTextArea placeholder="Enter Quiz description (optional)" v-model="quizDescription"></BasicTextArea>
             </div>
             <div ref="disappearing-buttons-line" class="buttons-line">
-                <BasicButton @click="nextStep">Continue</BasicButton>
+                <BasicButton variant="primary" @click="nextStep">Continue</BasicButton>
             </div>
         </div>
 
@@ -298,7 +298,7 @@ async function onFinishCreation() {
             </div>
             <div class="buttons-line">
                 <BasicButton variant="secondary" @click="onStartAddNewQuestion()">Add Question</BasicButton>
-                <BasicButton @click="onFinishCreation">Finish Creation</BasicButton>
+                <BasicButton variant="primary" @click="onFinishCreation">Finish Creation</BasicButton>
             </div>
         </div>
 
