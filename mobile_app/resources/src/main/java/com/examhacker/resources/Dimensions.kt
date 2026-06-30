@@ -11,6 +11,7 @@ class Dimensions {
         val ThickBorderWidth = 2.dp
         val NavigationButtonRadius = 16.dp
         val NavigationButtonSize = 36.dp
+        val NavigationButtonPadding = 8.dp
         val ScreenTitleFontSize = 24.sp
 
         // Authentication

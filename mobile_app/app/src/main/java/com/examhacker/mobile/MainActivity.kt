@@ -32,21 +32,8 @@ class MainActivity : ComponentActivity() {
 
     private val notificationPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
-    ) { isGranted ->
-        if (isGranted) {
-            startOverlayServiceIfPermitted()
-        } else {
-            startOverlayServiceIfPermitted()
-        }
-    }
-
-    private val overlayPermissionLauncher = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
     ) {
-        if (Settings.canDrawOverlays(this)) {
-            startOverlayServiceIfPermitted()
-        } else {
-        }
+        requestAllPermissions()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,17 +42,17 @@ class MainActivity : ComponentActivity() {
 
         val root = RootComponent(componentContext = defaultComponentContext())
 
+        requestAllPermissions()
+
         setContent {
 //            ExamHackerMobileTheme {} TODO Add when theme is ready
             RootContent(root, Modifier.fillMaxSize())
         }
-
-        requestAllPermissions()
-        startOverlayServiceIfPermitted()
     }
 
     override fun onResume() {
         super.onResume()
+
         if (Settings.canDrawOverlays(this)) {
             startOverlayServiceIfPermitted()
         }
@@ -108,7 +95,8 @@ class MainActivity : ComponentActivity() {
                 Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
                 "package:$packageName".toUri()
             )
-            overlayPermissionLauncher.launch(intent)
+            startActivity(intent)
+//            overlayPermissionLauncher.launch(intent)
         }
     }
 
@@ -116,7 +104,6 @@ class MainActivity : ComponentActivity() {
         if (!isOverlayPermissionGranted()) {
             return
         }
-
         startOverlayService()
     }
 

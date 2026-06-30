@@ -26,7 +26,7 @@ fun QuizSolveNavigationButton(
             containerColor = ColorPreset.BackgroundDefaultPrimary
         ),
         border = borderStroke,
-//        contentPadding = PaddingValues(Dimensions.NavigationButtonPadding)
+        contentPadding = PaddingValues(Dimensions.NavigationButtonPadding)
     ) {
         Icon(
             painter = icon,

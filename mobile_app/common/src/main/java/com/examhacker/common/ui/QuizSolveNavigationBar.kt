@@ -46,7 +46,7 @@ fun QuizSolveNavigationBar(
                 brush = ColorPreset.AIBackground
             ),
             iconModifier = Modifier
-                .size(Dimensions.NavigationButtonSize)
+//                .size(Dimensions.NavigationButtonSize)
                 .graphicsLayer {
                     compositingStrategy = androidx.compose.ui.graphics.CompositingStrategy.Offscreen
                 }

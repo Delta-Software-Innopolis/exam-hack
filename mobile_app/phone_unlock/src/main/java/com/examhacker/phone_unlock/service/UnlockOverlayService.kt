@@ -9,22 +9,21 @@ import android.content.Context
 import android.content.Intent
 import android.content.Intent.ACTION_USER_PRESENT
 import android.content.IntentFilter
-import android.graphics.PixelFormat
-import android.os.Build
 import android.os.IBinder
 import android.util.Log
-import android.view.WindowManager
-import androidx.compose.ui.platform.ComposeView
 import androidx.core.app.NotificationCompat
-import com.arkivanov.decompose.DefaultComponentContext
-import com.arkivanov.essenty.lifecycle.LifecycleRegistry
-import com.examhacker.phone_unlock.component.UnlockOverlayComponent
-import com.examhacker.phone_unlock.ui.UnlockOverLayScreen
+import com.examhacker.phone_unlock.controller.UnlockOverlayController
+import com.examhacker.phone_unlock.ui.UnlockOverlayWindow
 import com.examhacker.resources.R
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 
 class UnlockOverlayService : Service() {
-    private lateinit var windowManager: WindowManager
-    private var composeView: ComposeView? = null
+    private lateinit var controller: UnlockOverlayController
+    private lateinit var unlockOverlayWindow: UnlockOverlayWindow
+    private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
 
     private val unlockReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -37,18 +36,37 @@ class UnlockOverlayService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-        windowManager = getSystemService(WINDOW_SERVICE) as WindowManager
+
+        controller = UnlockOverlayController(
+//            repository = ...,
+        dismissOverlay = ::dismissOverlay,
+        scope = serviceScope
+        )
+
+        unlockOverlayWindow = UnlockOverlayWindow(
+            context = this,
+            controller = controller,
+            scope = serviceScope
+        )
+
+        registerReceiver(unlockReceiver, IntentFilter(ACTION_USER_PRESENT))
         createNotificationChannel()
     }
 
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         startForeground(NOTIFICATION_ID, createNotification())
-        registerReceiver(unlockReceiver, IntentFilter(ACTION_USER_PRESENT))
         return START_STICKY
     }
 
     override fun onBind(intent: Intent?): IBinder? {
         return null
+    }
+
+    override fun onDestroy() {
+        unregisterReceiver(unlockReceiver)
+        serviceScope.cancel()
+        unlockOverlayWindow.dismiss()
+        super.onDestroy()
     }
 
     private fun createNotificationChannel() {
@@ -79,49 +97,12 @@ class UnlockOverlayService : Service() {
     }
 
     fun showOverlay() {
-        if (composeView != null && composeView?.parent != null) {
-            Log.d("OverlayService", "Overlay already showing")
-            return
-        }
-
-        val overlayComponent = UnlockOverlayComponent(
-            componentContext = DefaultComponentContext(
-                lifecycle = LifecycleRegistry()
-            ),
-            dismissOverlay = ::dismissOverlay
-        )
-
-        if (composeView == null) {
-            composeView = ComposeView(this).apply {
-                setContent {
-                    UnlockOverLayScreen(overlayComponent)
-                }
-                // Set lifecycle owner for proper Compose behavior
-//                ViewTreeLifecycleOwner.set(this, LifecycleOwnerImpl())
-            }
-        }
-
-        val params = WindowManager.LayoutParams(
-            WindowManager.LayoutParams.MATCH_PARENT,
-            WindowManager.LayoutParams.MATCH_PARENT,
-            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
-                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN or
-                WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or
-                WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH,
-            PixelFormat.TRANSLUCENT
-        ).apply {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
-            }
-        }
-
-        windowManager.addView(composeView, params)
+        controller.reset()
+        unlockOverlayWindow.show()
     }
 
     private fun dismissOverlay() {
-        composeView?.let { windowManager.removeView(it) }
-        composeView = null
+        unlockOverlayWindow.dismiss()
     }
 
     companion object {

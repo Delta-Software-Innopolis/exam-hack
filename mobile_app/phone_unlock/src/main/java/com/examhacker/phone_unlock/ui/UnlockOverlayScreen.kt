@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
@@ -20,33 +19,30 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.examhacker.common.ui.AnswerVariantCard
 import com.examhacker.common.ui.AnswerVariantStatus
 import com.examhacker.common.ui.QuizProgressBar
 import com.examhacker.common.ui.QuizSolveNavigationBar
 import com.examhacker.common.utility.AnswerVariant
 import com.examhacker.common.utility.Question
-import com.examhacker.phone_unlock.component.IUnlockOverlayComponent
+import com.examhacker.phone_unlock.controller.UnlockOverlayController
 import com.examhacker.resources.ColorPreset
 import com.examhacker.resources.Dimensions
 
+@Deprecated("Migrated to View")
 @Composable
-fun UnlockOverLayScreen(component: IUnlockOverlayComponent) {
-    val model by component.model.subscribeAsState()
-
+fun UnlockOverLayScreen() {
     UnlockOverlayUI(
-        model = model,
-        submitAnswer = component::submitAnswer,
-        takeHint = component::takeHint,
-        back = component::back
+        model = UnlockOverlayController.State(),
+        submitAnswer = {},
+        takeHint = {},
+        back = {}
     )
 }
 
 @Composable
 private fun UnlockOverlayUI(
-    model: IUnlockOverlayComponent.Model,
+    model: UnlockOverlayController.State,
     submitAnswer: (AnswerVariant) -> Unit,
     takeHint: () -> Unit,
     back: () -> Unit
@@ -58,7 +54,6 @@ private fun UnlockOverlayUI(
                 modifier = Modifier
                     .fillMaxWidth()
                     .navigationBarsPadding()
-                    .padding(bottom = 75.dp)
             )
         },
         containerColor = ColorPreset.BackgroundVariant,
@@ -72,7 +67,6 @@ private fun UnlockOverlayUI(
                 .fillMaxSize()
                 .padding(contentPadding)
                 .padding(Dimensions.ScreenPadding)
-                .padding(top = Dimensions.OverlayTopPadding)
         ) {
             QuizProgressBar(
                 solvedQuestions = 1,
@@ -122,9 +116,9 @@ fun QuestionSection(
                 onClick = { submitAnswer(it) },
                 enabled = finalAnswer == null,
                 status =
-                    if (finalAnswer == null || finalAnswer != it)
+                    if (finalAnswer == null || (finalAnswer != it && !it.isCorrect))
                         AnswerVariantStatus.DEFAULT
-                    else if (finalAnswer == it && it.isCorrect)
+                    else if (it.isCorrect)
                         AnswerVariantStatus.ANSWERED_CORRECT
                     else
                         AnswerVariantStatus.ANSWERED_WRONG,
@@ -137,11 +131,11 @@ fun QuestionSection(
     }
 }
 
-@Preview(device = Devices.PIXEL, showBackground = true)
+@Preview(device = Devices.PIXEL, showBackground = true, showSystemUi = true)
 @Composable
 fun UnlockOverlayPreview() {
     UnlockOverlayUI(
-        model = IUnlockOverlayComponent.Model().copy(
+        model = UnlockOverlayController.State().copy(
             question = Question(
                 description = "Question description, may span several lines, we’ll discuss the font size and boldness later",
                 variants = listOf(
