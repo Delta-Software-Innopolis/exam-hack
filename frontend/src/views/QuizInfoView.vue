@@ -129,8 +129,8 @@ function onDeleteQuestion() {
                         <CrossSVG v-else class="option-cross" @click="chooseCorrectOption(i-1)"/>
                     </div>
                 </div>
-                <BasicButton v-if="newQuestion" @click="onAddQuestion">Add Question</BasicButton>
-                <BasicButton v-else class="red-button" @click="onDeleteQuestion">Delete Question</BasicButton>
+                <BasicButton variant="primary" v-if="newQuestion" @click="onAddQuestion">Add Question</BasicButton>
+                <BasicButton variant="primary" v-else class="red-button" @click="onDeleteQuestion">Delete Question</BasicButton>
             </div>
 
         </div>
@@ -164,11 +164,11 @@ function onDeleteQuestion() {
                 </div>
                 <div class="actions">
                     <div class="top-buttons">
-                        <BasicButton @click="router.push(`/quizzes/${quiz.id}/solving`)">Attempt</BasicButton>
+                        <BasicButton variant="primary" @click="router.push(`/quizzes/${quiz.id}/solving`)">Attempt</BasicButton>
                         <BasicButton variant="secondary" @click="notImplemented">To favourites</BasicButton>
                     </div>
                     <div class="bottom-buttons">
-                        <BasicButton class="red-button" @click="notImplemented">Delete</BasicButton>
+                        <BasicButton variant="primary" class="red-button" @click="notImplemented">Delete</BasicButton>
                     </div>
                 </div>
             </div>
