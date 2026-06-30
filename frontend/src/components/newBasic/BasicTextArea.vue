@@ -1,17 +1,17 @@
 <script setup lang="ts">
-const value = defineModel()
+const value = defineModel<string>({ default: '' })
 </script>
 
 
 <template>
-  <input v-bind="$attrs" v-model="value">
+  <textarea v-bind="$attrs" v-model="value">
     <slot></slot>
-  </input>
+  </textarea>
 </template>
 
 
 <style scoped>
-input {
+textarea {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -27,20 +27,25 @@ input {
 
   background-color: var(--white);
   color: var(--secondary);
+  resize: vertical;
 }
 
-input:hover {
+textarea::placeholder {
+  font-family: inter;
+}
+
+textarea:hover {
   background-color: var(--background-light);
 }
 
-input:focus {
+textarea:focus {
   border: 1px solid var(--secondary-dimm);
   background-color: var(--white);
   color: var(--secondary-dimm);
   outline: none;
 }
 
-input:disabled {
+textarea:disabled {
   border: 1px dashed var(--secondary);
   background-color: var(--background-light);
   color: var(--secondary);

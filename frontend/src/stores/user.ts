@@ -23,9 +23,9 @@ export const useUserStore = defineStore('user', () => {
         if (accessToken.value === '') { return false }
         if (refreshToken.value === '') { return false }  // TODO: remove later (cookie)
 
-        let valid = await Auth.validate(accessToken.value)
-        if (valid) { return true }
         try {
+            let valid = await Auth.validate(accessToken.value)
+            if (valid) { return true }
             let response = await Auth.refresh(refreshToken.value)
             saveAccessToken(response.access_token)
             saveRefreshToken(response.refresh_token)

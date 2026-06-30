@@ -2,23 +2,30 @@
 import { useRoute } from 'vue-router';
 import { useQuizzesStore } from '@/stores/quizzes';
 import { onBeforeMount, onUnmounted, type ComputedRef } from 'vue';
-import BasicButton from '@/components/basic/BasicButton.vue';
+import BasicButton from '@/components/newBasic/BasicButton.vue';
 import type { Card } from '@/types'
 import { ref, computed } from 'vue';
 import router from '@/router';
+
+import LeftArrowSVG from '@/assets/LeftArrow.svg'
+import RightArrowSVG from '@/assets/RightArrow.svg'
+
 const route = useRoute();
 const quizzesStore = useQuizzesStore()
 const quiz = quizzesStore.getQuizById(Number(route.params.quizId))
 const questionNum = ref(0)
 const card = computed(() => quiz.value.cards[questionNum.value]) as ComputedRef<Card>
 const lastClicked = ref<number|null>(null)
+
 const progressWidth = computed(()=> {
     const total = quiz.value.cards.length || 1
     const current = questionNum.value + 1
     return `${current/total * 100}%` 
 })
+
 const isDisabled = ref(false)
 const styles = ref<string[]>(new Array(4).fill('default'))
+
 onBeforeMount(() => {
     console.log(quiz)
     quizzesStore.headerInfo = quiz.value ? quiz.value.name : ""
@@ -26,6 +33,7 @@ onBeforeMount(() => {
 onUnmounted(() => {
     quizzesStore.headerInfo = quizzesStore.headerInfo == quiz.value.name ? "" : quizzesStore.headerInfo
 })
+
 function nextCard(){
     lastClicked.value = null
     if (questionNum.value < quiz.value.cards.length - 1) {
@@ -36,11 +44,13 @@ function nextCard(){
     router.push({name: "quizzes"})
 
 }
+
 function prevCard(){
     lastClicked.value = null
     questionNum.value--;
     styles.value = new Array(4).fill('default')
 }
+
 function checkAnswer(index:number) {
     lastClicked.value = index
     const doesInclude = card?.value.correct.includes(index)
@@ -83,8 +93,8 @@ function checkAnswer(index:number) {
                 </div>
             </div>
             <div class="arrow-container">
-                <button  v-if="questionNum != 0" @click="prevCard" class="arrow" :disabled="isDisabled"><img src="@/assets/LeftArrow.svg" alt=""></button>
-                <button v-if="questionNum != quiz.cards.length-1" @click="nextCard" class="arrow" :disabled="isDisabled" style="right: 0; position: absolute;"><img src="@/assets/RightArrow.svg" alt=""></button>
+                <button  v-if="questionNum != 0" @click="prevCard" class="arrow" :disabled="isDisabled"><LeftArrowSVG/></button>
+                <button v-if="questionNum != quiz.cards.length-1" @click="nextCard" class="arrow" :disabled="isDisabled" style="right: 0; position: absolute;"><RightArrowSVG/></button>
             </div>
         </div>
     </div>
@@ -163,7 +173,16 @@ function checkAnswer(index:number) {
     padding: 16px;
     font-size: 18px;
     color: var(--color-text);
+    border: none;
     justify-content: left;
+}
+
+.option.secondary {
+    background-color: var(--white);
+}
+
+.option.secondary:hover {
+    background-color: var(--background-light);
 }
 
 .arrow-container {
@@ -175,12 +194,17 @@ function checkAnswer(index:number) {
 .arrow {
     width: 48px;
     height: 48px;
-    background-color: var(--color-background-secondary);
+    background-color: var(--white);
     border-radius: 16px;
     display: flex;
     justify-content: center;
     align-items: center;
     border: 0;
+    cursor: pointer;
+}
+
+.arrow:hover {
+    background-color: var(--background-light);
 }
 
 .left-arrow {

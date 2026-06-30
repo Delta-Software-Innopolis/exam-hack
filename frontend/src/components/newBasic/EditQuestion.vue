@@ -1,4 +1,5 @@
 <script setup lang="ts">
+  import PencilSVG from "@/assets/Pencil.svg"
   const props = defineProps<{
     index: number,
     question: string,
@@ -9,9 +10,9 @@
   <div class="question-wrapper">
     <div class="text-wrapper">
       <span class="number-wrapper">{{ props.index }}.</span>
-      <span>{{ props.question }}</span>
+      <span class="question-text">{{ props.question }}</span>
     </div>
-    <img src="@/assets/EditQuestion.svg" alt="edit question" />
+    <PencilSVG class="pencil-icon"/>
   </div>
 </template>
 
@@ -19,26 +20,47 @@
 .question-wrapper {
   display: flex;
   justify-content: space-between;
-  max-width: 341px;
-  width: 100%;
-  height: 46px;
-  background-color: var(--background-blueish);
   align-items: center;
-  overflow: hidden;
+  width: 100%;
+  gap: 12px;
+  background-color: var(--background-blueish);
   border-radius: 16px;
-  padding: 16px;
+  padding: 8px 16px;
+  cursor: pointer;
+  min-width: 0;
 }
 
-img {
-  width: 20px;
-  height: 20px;
+.question-wrapper:hover {
+  background-color: var(--background-light);
 }
 
 .text-wrapper {
   display: flex;
   flex-direction: row;
   gap: 8px;
+  align-items: center;
+  min-width: 0;
+  flex: 1 1 auto; 
+  overflow: hidden;
+}
+
+.number-wrapper {
+  flex-shrink: 0;
   color: var(--secondary-dimm);
 }
 
+.question-text {
+  color: var(--secondary-dimm);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.pencil-icon {
+  flex-shrink: 0;
+  --icon-stroke: var(--secondary);
+  --icon-width: 16px;
+  --icon-height: 16px;
+}
 </style>

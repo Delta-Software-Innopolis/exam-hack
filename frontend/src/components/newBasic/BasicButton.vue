@@ -5,16 +5,18 @@ enum ButtonVariants {
   PRIMARY = 'primary',
   SECONDARY = 'secondary',
   TERITARY = 'teritary',
+  GREEN = 'green',
+  RED = 'red',
   AI = 'ai',
 }
 
 const props = defineProps({
-  variant: {type: String, default: 'primary'},
+  variant: {type: String, default: 'secondary'},
 })
 
 const variantClass = computed(() => {
   if (!Object.values<string>(ButtonVariants).includes(props.variant)) {
-    return 'primary';
+    return 'secondary';
   }
   return props.variant;
 })
@@ -34,6 +36,7 @@ button {
   display: flex;
   justify-content: center;
   align-items: center;
+  transition: 0.2s;
   border: 0;
 
   padding: 16px;
@@ -43,6 +46,7 @@ button {
   font-size: 16px;
 
   border-radius: 16px;
+  cursor: pointer;
 }
 
 .primary {
@@ -126,6 +130,33 @@ button {
   background:
     linear-gradient(var(--white), var(--white)) padding-box,
     linear-gradient(to bottom, #68F2FF 40%, #FF61ED) border-box;
+}
+
+.ai:disabled {
+  background-color: var(--white);
+  font-weight: 700;
+  border: 2px solid transparent;
+  border-radius: 16px;
+  background:
+    linear-gradient(var(--white), var(--white)) padding-box,
+    linear-gradient(to bottom, #9ef7ff 40%, #ffacf5) border-box;
+  cursor: default;
+}
+
+.green {
+  background-color: var(--quiz-green)
+}
+
+.green:hover {
+  background-color: var(--quiz-green-dimm);
+}
+
+.red {
+  background-color: var(--quiz-red);
+}
+
+.red:hover {
+  background-color: var(--quiz-red-dimm);
 }
 
 /* in order to make .ai:disabled i think we should use svg image of the disabled button,

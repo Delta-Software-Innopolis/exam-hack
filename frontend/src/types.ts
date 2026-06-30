@@ -9,7 +9,7 @@ export interface Card {
 
 export interface Author {
     id: number,
-    name: string
+    username: string
 }
 
 export default interface QuizItem {
