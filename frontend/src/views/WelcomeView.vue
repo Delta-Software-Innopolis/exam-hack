@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import BasicButton from '@/components/basic/BasicButton.vue';
+import BasicButton from '@/components/newBasic/BasicButton.vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
@@ -10,8 +10,8 @@ const router = useRouter();
     <div class="sidebar">
       <h1>Welcome to ExamHacker</h1>
       <div class="buttons-wrapper">
-        <BasicButton variant="green" @click="router.push('/auth/signup')">Sign up</BasicButton>
-        <BasicButton @click="router.push('/auth/login')">I already have an account</BasicButton>
+        <BasicButton variant="primary" @click="router.push('/auth/signup')">Sign up</BasicButton>
+        <BasicButton variant="secondary" @click="router.push('/auth/login')">I already have an account</BasicButton>
       </div>
     </div>
     <div class="backbone">
@@ -28,6 +28,7 @@ const router = useRouter();
   height: 100vh;
   box-sizing: border-box;
   justify-content: space-evenly;
+  background-color: var(--background-blueish);
 }
 
 .sidebar {
@@ -38,7 +39,8 @@ const router = useRouter();
   justify-content: center;
   align-items: center;
   background-color: white;
-  box-shadow: 0px 0px 16px 4px rgba(0,0,0,0.25);
+  box-shadow: none;
+  /* box-shadow: 0px 0px 16px 4px rgba(0,0,0,0.25); */
   animation: bounce 1s;
 }
 

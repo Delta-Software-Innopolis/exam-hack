@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import BasicButton from '@/components/basic/BasicButton.vue';
-import BasicInput from '@/components/basic/BasicInput.vue';
+import BasicButton from '@/components/newBasic/BasicButton.vue';
+import BasicInput from '@/components/newBasic/BasicInput.vue';
 import { onMounted, onUnmounted, ref, useTemplateRef, type Ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '@/stores/user';
@@ -60,8 +60,8 @@ onUnmounted(()=>{
       </div>
       <div v-if="errorMessage" style="color: red;">{{ errorMessage }}</div>
       <div class="buttons-wrapper">
-        <BasicButton variant="green" @click="login()">Continue</BasicButton>
-        <BasicButton @click="router.push('/auth/signup')">I don't have an account yet</BasicButton>
+        <BasicButton variant="primary" @click="login()">Continue</BasicButton>
+        <BasicButton variant="secondary" @click="router.push('/auth/signup')">I don't have an account yet</BasicButton>
       </div>
     </div>
     <div class="backbone">
@@ -78,6 +78,7 @@ onUnmounted(()=>{
   height: 100vh;
   box-sizing: border-box;
   justify-content: space-evenly;
+  background-color: var(--background-blueish);
 }
 
 .sidebar {
@@ -88,7 +89,7 @@ onUnmounted(()=>{
   justify-content: center;
   align-items: center;
   background-color: white;
-  box-shadow: 0px 0px 16px 4px rgba(0,0,0,0.25);
+  box-shadow: none;
   animation: bounce 1s;
 }
 
