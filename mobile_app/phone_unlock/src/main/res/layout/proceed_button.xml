@@ -1,0 +1,23 @@
+<Button xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/btnProceed"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	android:layout_marginTop="16dp"
+	android:layout_gravity="center_horizontal"
+
+	android:background="@drawable/bg_answer"
+
+	android:textAllCaps="false"
+	android:textAlignment="viewStart"
+	android:gravity="start|center_vertical"
+
+	android:elevation="0dp"
+	android:stateListAnimator="@null"
+
+	android:textSize="18sp"
+	android:textColor="@color/secondary"
+	android:textStyle="normal"
+
+	android:minHeight="56dp"
+	android:paddingHorizontal="16dp"
+	android:paddingVertical="16dp"/>

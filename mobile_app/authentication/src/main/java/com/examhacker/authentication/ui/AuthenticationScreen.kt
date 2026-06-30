@@ -80,7 +80,7 @@ private fun AuthenticationUI(
                 horizontalArrangement = Arrangement.Center
             )
         },
-        containerColor = ColorPreset.BackgroundDefaultPrimary
+        containerColor = ColorPreset.BackgroundVariant
     ) { contentPadding ->
 
         Box(

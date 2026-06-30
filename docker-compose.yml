@@ -84,6 +84,7 @@ services:
     build: ./auth
     environment:
       - CORS_ADDRS=${CORS_ADDRS}
+      - IS_HTTPS=${AUTH_IS_HTTPS}
       - SECRET_FILE=${AUTH_PRIVATE_KEY_FILE}
       - POSTGRES_HOST=${POSTGRES_HOST}
       - POSTGRES_USER=${POSTGRES_USER}

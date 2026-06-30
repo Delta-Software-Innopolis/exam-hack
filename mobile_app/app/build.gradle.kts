@@ -61,7 +61,9 @@ dependencies {
     implementation(project(":quiz_edit"))
     implementation(project(":quiz_list"))
     implementation(project(":quiz_solve"))
+    implementation(project(":phone_unlock"))
     implementation(project(":settings"))
+    implementation(project(":common"))
     implementation(project(":resources"))
 
     // Tests
