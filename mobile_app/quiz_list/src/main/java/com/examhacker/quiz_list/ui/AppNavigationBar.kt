@@ -41,23 +41,23 @@ fun AppNavigationBar(
                 color = ColorPreset.BorderDefault
             )
             .padding(vertical = 8.dp)
-            .height(76.dp),
+            .height(88.dp),
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
     ) {
-
-        NavigationItem(
-            text = "Quizzes",
-            icon = R.drawable.book_open,
-            selected = selectedIndex == 0,
-            onClick = onQuizClick
-        )
 
         NavigationItem(
             text = "QuizHub",
             icon = R.drawable.search_magnifying_glass,
             selected = selectedIndex == 1,
             onClick = onQuizHubClick
+        )
+
+        NavigationItem(
+            text = "Quizzes",
+            icon = R.drawable.book_open,
+            selected = selectedIndex == 0,
+            onClick = onQuizClick
         )
 
         NavigationItem(
@@ -86,14 +86,14 @@ private fun NavigationItem(
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(6.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
         modifier = Modifier.clickable(onClick = onClick)
     ) {
 
         Icon(
             painter = painterResource(icon),
             contentDescription = null,
-            modifier = Modifier.size(24.dp),
+            modifier = Modifier.size(34.dp),
             tint =
                 if (selected)
                     ColorPreset.IconPositiveTertiary
@@ -103,15 +103,13 @@ private fun NavigationItem(
 
         Text(
             text = text,
-            fontSize = 12.sp,
+            fontSize = 14.sp,
             color =
                 if (selected)
                     ColorPreset.IconPositiveTertiary
                 else
                     ColorPreset.TextDefaultSecondary,
-            fontWeight =
-                if (selected) FontWeight.Medium
-                else FontWeight.Normal
+            fontWeight = FontWeight.Normal
         )
     }
 }
