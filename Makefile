@@ -15,7 +15,7 @@ dev:
 		-f docker-compose.yml \
 		-f docker-compose.dev.yml \
 		--env-file .env.dev \
-		up --build -d
+		up --build
 
 test:
 	$(DC) \

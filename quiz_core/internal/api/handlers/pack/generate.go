@@ -13,16 +13,18 @@ import (
 	"time"
 
 	sc "quiz_core/internal/api/shortcuts"
-	"quiz_core/internal/db"
 	"quiz_core/internal/models"
 
 	"code.sajari.com/docconv/v2"
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 )
 
 type GeneratePackRequest struct {
 	Name string `form:"name" binding:"required"`
+}
+
+type GenerateResponse struct {
+	Cards []CardOut `json:"cards"`
 }
 
 type CardOut struct {
@@ -32,10 +34,6 @@ type CardOut struct {
 	CorrectIndices []int    `json:"correct_indices,omitempty"`
 	CorrectAnswer  string   `json:"correct_answer,omitempty"`
 	Hint           string   `json:"hint"`
-}
-
-type GenerateResponse struct {
-	Cards []CardOut `json:"cards"`
 }
 
 func extractTextFromFiles(paths []string) (string, error) {
@@ -197,65 +195,36 @@ func GeneratePack(c *gin.Context) {
 		log.Printf("\n")
 	}
 
+	createdCards := make([]models.Card, 0, len(generateResp.Cards))
+	for _, cardReq := range generateResp.Cards {
+		card := models.Card{
+			Question: cardReq.Question,
+			Hint:     cardReq.Hint,
+		}
+
+		correct := sc.CorrectIndexSet(cardReq.CorrectIndices)
+		options := make([]models.CardOption, 0, len(cardReq.Options))
+		for i, option := range cardReq.Options {
+			options = append(options, models.CardOption{
+				Content: option,
+				IsRight: correct[i],
+				CardID:  card.ID,
+			})
+		}
+
+		card.Options = options
+		createdCards = append(createdCards, card)
+	}
+
+
 	pack := models.Pack{
 		Name: pack_name,
 		CreationDate: time.Now(),
 		AuthorID: authorID,
+		Cards: createdCards,
 	}
 
-	if err := db.DB.Create(&pack).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to create pack: " + err.Error()})
-		return
-	}
-
-	createdCards := make([]models.Card, 0, len(generateResp.Cards))
-	err = db.DB.Transaction(func(tx *gorm.DB) error {
-		var err error
-		pack, err = sc.CreatePackWithOwnerPermission(tx, pack_name, authorID)
-		if err != nil {
-			return err
-		}
-
-		for _, cardReq := range generateResp.Cards {
-			card := models.Card{
-				Question: cardReq.Question,
-				Hint:     cardReq.Hint,
-				PackID:   pack.ID,
-			}
-
-			if err := tx.Create(&card).Error; err != nil {
-				return err
-			}
-
-			correct := sc.CorrectIndexSet(cardReq.CorrectIndices)
-			options := make([]models.CardOption, 0, len(cardReq.Options))
-			for i, option := range cardReq.Options {
-				options = append(options, models.CardOption{
-					Content: option,
-					IsRight: correct[i],
-					CardID:  card.ID,
-				})
-			}
-
-			if err := tx.Create(&options).Error; err != nil {
-				return err
-			}
-
-			card.Options = options
-			createdCards = append(createdCards, card)
-		}
-
-		return nil
-	})
-
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to create cards: " + err.Error()})
-		return
-	}
-
-	c.JSON(http.StatusOK, gin.H{
-		"status": "ok",
-	})
+	c.JSON(http.StatusOK, pack)
 }
 
 func cleanupFiles(files []*os.File) {
