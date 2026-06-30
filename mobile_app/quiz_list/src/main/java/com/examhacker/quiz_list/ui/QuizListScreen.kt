@@ -9,7 +9,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.ui.res.painterResource
 import com.examhacker.resources.R
-import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -19,11 +18,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.examhacker.common.ui.AppNavigationBar
 import com.examhacker.quiz_list.component.IQuizListComponent
 import com.examhacker.resources.ColorPreset
 import com.examhacker.resources.Dimensions
 import androidx.compose.foundation.shape.CircleShape
+import com.examhacker.common.ui.AppNavigationBar
 
 @Composable
 fun QuizListScreen(
@@ -35,16 +34,14 @@ fun QuizListScreen(
     Scaffold(
 
         floatingActionButton = {
-
             FloatingActionButton(
                 onClick = component::goToQuizCreation,
                 modifier = Modifier
                     .size(64.dp)
                     .padding(bottom = 8.dp),
-                containerColor = ColorPreset.IconPositiveTertiary,
+                containerColor = ColorPreset.PositivePrimary,
                 shape = CircleShape
             ) {
-
                 Icon(
                     painter = painterResource(R.drawable.add_plus),
                     contentDescription = null,
@@ -55,7 +52,6 @@ fun QuizListScreen(
         },
 
         bottomBar = {
-
             AppNavigationBar(
                 selectedIndex = 0,
                 onQuizClick = {},
@@ -66,26 +62,20 @@ fun QuizListScreen(
         }
 
     ) { padding ->
-
         LazyColumn(
-
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding),
-
             contentPadding = PaddingValues(
                 start = Dimensions.ScreenPadding,
                 end = Dimensions.ScreenPadding,
                 top = Dimensions.ScreenPadding,
                 bottom = 100.dp
             ),
-
             verticalArrangement = Arrangement.spacedBy(16.dp)
 
         ) {
-
             item {
-
                 Text(
                     text = "Your Quizzes",
                     fontSize = Dimensions.ScreenTitleFontSize,
@@ -96,12 +86,10 @@ fun QuizListScreen(
             }
 
             items(quizzes) {
-
                 QuizCard(
                     quizName = it,
                     author = "by User"
                 )
-
             }
         }
 
@@ -121,7 +109,7 @@ private fun QuizListScreenPreview() {
                 onClick = {},
                 modifier = Modifier.padding(bottom = 8.dp),
                 shape = CircleShape,
-                containerColor = ColorPreset.IconPositiveTertiary
+                containerColor = ColorPreset.PositivePrimary
             ) {
 
                 Icon(

@@ -40,5 +40,7 @@ class ColorPreset {
             0.3f to AIGradientPink,
             tileMode = TileMode.Clamp
         )
+        val PositivePrimary = Color(0xFF00B093)
+        val Secondary = Color(0xFFAAAAAA)
     }
 }

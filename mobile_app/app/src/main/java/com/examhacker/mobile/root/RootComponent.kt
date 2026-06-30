@@ -5,6 +5,8 @@ import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.router.stack.pop
+import com.arkivanov.decompose.router.stack.pushToFront
 import com.arkivanov.decompose.router.stack.replaceCurrent
 import kotlinx.serialization.Serializable
 import com.examhacker.authentication.component.AuthenticationComponent
@@ -80,7 +82,14 @@ class RootComponent(
 
             Config.QuizList ->
                 IRootComponent.Child.QuizList(
-                    QuizListComponent(componentContext)
+                    QuizListComponent(
+                        componentContext,
+                        goToQuizCreation = {},
+                        goToQuizHub = {},
+                        goToProfile = {},
+                        goToSettings = {},
+                        goBack = ::back
+                    )
                 )
 
             Config.QuizEdit ->
@@ -98,6 +107,27 @@ class RootComponent(
                     SettingsComponent(componentContext)
                 )
         }
+
+
+    private fun navigateToQuizCreation() {
+        TODO()
+    }
+
+    private fun navigateToQuizHub() {
+        TODO()
+    }
+
+    private fun navigateToProfile() {
+        TODO()
+    }
+
+    private fun navigateToSettings() {
+        navigation.pushToFront(Config.Settings)
+    }
+
+    private fun back() {
+        navigation.pop()
+    }
 
     private fun fromIntroductionToAuth() {
         navigation.replaceCurrent(Config.Authentication)

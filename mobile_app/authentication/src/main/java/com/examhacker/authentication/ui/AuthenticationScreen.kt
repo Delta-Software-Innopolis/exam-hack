@@ -336,7 +336,7 @@ private fun AuthButton(
     modifier: Modifier = Modifier
 ) {
     val borderColor = when(type) {
-        AuthButtonType.SUBMIT      -> ColorPreset.IconPositiveTertiary
+        AuthButtonType.SUBMIT      -> ColorPreset.PositivePrimary
         AuthButtonType.SWITCH_MODE -> ColorPreset.BorderDefault
         AuthButtonType.DEMO_END    -> ColorPreset.BorderWarningTertiary
     }
