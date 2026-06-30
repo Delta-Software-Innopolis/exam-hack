@@ -21,6 +21,7 @@ import com.examhacker.resources.ColorPreset
 import com.examhacker.resources.Dimensions
 import androidx.compose.ui.res.painterResource
 import com.examhacker.resources.R
+import androidx.compose.foundation.layout.height
 
 @Composable
 fun QuizCard(
@@ -31,10 +32,11 @@ fun QuizCard(
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .height(82.dp)
             .clip(RoundedCornerShape(16.dp))
             .background(ColorPreset.BackgroundDefaultSecondary)
             .clickable(onClick = onClick)
-            .padding(horizontal = 16.dp, vertical = 18.dp),
+            .padding(horizontal = 20.dp, vertical = 24.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -43,7 +45,7 @@ fun QuizCard(
 
             Text(
                 text = quizName,
-                fontSize = Dimensions.AuthLabelFontSize,
+                fontSize = Dimensions.ScreenTitleFontSize,
                 fontWeight = FontWeight.SemiBold
             )
 
@@ -58,7 +60,7 @@ fun QuizCard(
             painter = painterResource(R.drawable.icon_button),
             contentDescription = null,
             tint = ColorPreset.TextDefaultSecondary,
-            modifier = Modifier.size(20.dp)
+            modifier = Modifier.size(34.dp)
         )
     }
 }

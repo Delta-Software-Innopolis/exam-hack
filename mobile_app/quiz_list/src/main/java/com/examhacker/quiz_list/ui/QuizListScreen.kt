@@ -7,8 +7,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
+import androidx.compose.ui.res.painterResource
+import com.examhacker.resources.R
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -23,6 +23,7 @@ import com.examhacker.common.ui.AppNavigationBar
 import com.examhacker.quiz_list.component.IQuizListComponent
 import com.examhacker.resources.ColorPreset
 import com.examhacker.resources.Dimensions
+import androidx.compose.foundation.shape.CircleShape
 
 @Composable
 fun QuizListScreen(
@@ -40,14 +41,15 @@ fun QuizListScreen(
                 modifier = Modifier
                     .size(64.dp)
                     .padding(bottom = 8.dp),
-                containerColor = ColorPreset.IconPositiveTertiary
+                containerColor = ColorPreset.IconPositiveTertiary,
+                shape = CircleShape
             ) {
 
                 Icon(
-                    imageVector = Icons.Default.Add,
+                    painter = painterResource(R.drawable.add_plus),
                     contentDescription = null,
                     tint = ColorPreset.BackgroundDefaultPrimary,
-                    modifier = Modifier.size(32.dp)
+                    modifier = Modifier.size(40.dp)
                 )
             }
         },
@@ -117,17 +119,16 @@ private fun QuizListScreenPreview() {
 
             FloatingActionButton(
                 onClick = {},
-                modifier = Modifier
-                    .size(64.dp)
-                    .padding(bottom = 8.dp),
+                modifier = Modifier.padding(bottom = 8.dp),
+                shape = CircleShape,
                 containerColor = ColorPreset.IconPositiveTertiary
             ) {
 
                 Icon(
-                    imageVector = Icons.Default.Add,
+                    painter = painterResource(R.drawable.add_plus),
                     contentDescription = null,
                     tint = ColorPreset.BackgroundDefaultPrimary,
-                    modifier = Modifier.size(32.dp)
+                    modifier = Modifier.size(40.dp)
                 )
             }
         },
@@ -146,7 +147,7 @@ private fun QuizListScreenPreview() {
                 .fillMaxSize()
                 .padding(it),
             contentPadding = PaddingValues(Dimensions.ScreenPadding),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
 
             item {
