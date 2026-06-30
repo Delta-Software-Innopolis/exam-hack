@@ -59,9 +59,10 @@ function onGlitterEnded() {
   <div class="window-wrapper">
     <div class="sidebar">
       <div class="text-wrapper">
-        <h1 v-if="userStore.isNew">Thank you for joining, {{userStore.name}}!</h1>
-        <h1 v-else>Welcome back, {{ userStore.name }}!</h1>
-        <h2>You password is {{ userStore.password }}, btw!</h2>
+        <h1 v-if="userStore.isNew">Thank you for joining, {{userStore.username}}!</h1>
+        <h1 v-else>Welcome back, {{ userStore.username }}!</h1>
+
+
         <p>end of demo 0</p>
       </div>
 

@@ -8,7 +8,7 @@
   import NavigationSidebar from '@/components/NavigationSidebar.vue';
   import { ref } from 'vue';
 
-  const quiz = ref({ name: "Quiz Name", author: "User", variant: "white" });
+  const quiz = ref({ id: 1, name: "Quiz Name", author: "User", variant: "white" });
   const option1 = ref({ option: "Option 1", isCorrect: false });
   const option2 = ref({ option: "Option 2", isCorrect: true });
   const question = ref({ index: 1, text: "what is Vue.js?" })
@@ -26,8 +26,8 @@
     <img src="@/assets/DisabledAiButton.svg" alt="disabled ai button" />
     <BasicInput placeholder="Enter something"></BasicInput>
     <BasicInput placeholder="Enter something" disabled></BasicInput>
-    <QuizComponent :name="quiz.name" :author="quiz.author"></QuizComponent>
-    <QuizComponent :name="quiz.name" :author="quiz.author" :variant="quiz.variant"></QuizComponent>
+    <QuizComponent :id="quiz.id" :name="quiz.name" :author="quiz.author"></QuizComponent>
+    <QuizComponent :id="quiz.id" :name="quiz.name" :author="quiz.author" :variant="quiz.variant"></QuizComponent>
     <QuestionOption :option="option1.option" :isCorrect="option1.isCorrect"></QuestionOption>
     <QuestionOption :option="option2.option" :isCorrect="option2.isCorrect"></QuestionOption>
     <QuizOption>Option 1: option description</QuizOption>

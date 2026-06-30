@@ -29,7 +29,7 @@ async function generateQuestions() {
       {
         method: 'POST',
         headers: {
-          Authorization: `Bearer ${userStore.access_token}`,
+          Authorization: `Bearer ${userStore.getAccessToken()}`,
         },
         body: formData,
       }
