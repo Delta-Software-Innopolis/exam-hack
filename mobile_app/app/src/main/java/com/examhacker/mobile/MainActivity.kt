@@ -12,12 +12,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.defaultComponentContext
 import com.arkivanov.decompose.extensions.compose.stack.Children
-import com.examhacker.ai_interactions.ui.AIGenerationScreen
 import com.examhacker.authentication.ui.AuthenticationScreen
 import com.examhacker.mobile.introduction_screen.IntroductionScreen
 import com.examhacker.mobile.root.IRootComponent
 import com.examhacker.mobile.root.RootComponent
-import com.examhacker.quiz_edit.ui.QuizEditScreen
+import com.examhacker.quiz_create.ui.QuizEditScreen
 import com.examhacker.quiz_list.ui.QuizListScreen
 import com.examhacker.quiz_solve.ui.QuizSolveScreen
 import com.examhacker.settings.ui.SettingsScreen
@@ -75,7 +74,6 @@ private fun RootContent(component: RootComponent, modifier: Modifier = Modifier)
         when (val child = it.instance) {
             is IRootComponent.Child.Introduction   -> IntroductionScreen(child.component)
             is IRootComponent.Child.Authentication -> AuthenticationScreen(child.component)
-            is IRootComponent.Child.AIInteractions -> AIGenerationScreen(child.component)
             is IRootComponent.Child.QuizList       -> QuizListScreen(child.component)
             is IRootComponent.Child.QuizEdit       -> QuizEditScreen(child.component)
             is IRootComponent.Child.QuizSolve      -> QuizSolveScreen(child.component)

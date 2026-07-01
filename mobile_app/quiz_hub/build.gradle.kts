@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.examhacker.quiz_edit"
+    namespace = "com.examhacker.quiz_hub"
     compileSdk {
         version = release(36)
     }
@@ -51,7 +51,6 @@ dependencies {
     implementation(project(":resources"))
     implementation(project(":common"))
     implementation(project(":data_network"))
-    implementation(project(":data_local"))
 
     // Testing
     testImplementation(libs.junit)

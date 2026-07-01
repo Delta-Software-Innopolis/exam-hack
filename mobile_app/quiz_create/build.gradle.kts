@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.examhacker.quiz_edit"
+    namespace = "com.examhacker.quiz_create"
     compileSdk {
         version = release(36)
     }

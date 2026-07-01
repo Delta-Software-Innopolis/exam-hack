@@ -57,8 +57,7 @@ dependencies {
 
     // Project
     implementation(project(":authentication"))
-    implementation(project(":ai_interactions"))
-    implementation(project(":quiz_edit"))
+    implementation(project(":quiz_create"))
     implementation(project(":quiz_list"))
     implementation(project(":quiz_solve"))
     implementation(project(":phone_unlock"))

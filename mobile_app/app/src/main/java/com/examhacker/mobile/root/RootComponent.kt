@@ -11,16 +11,14 @@ import com.arkivanov.decompose.router.stack.pushToFront
 import kotlinx.serialization.Serializable
 import com.examhacker.authentication.component.AuthenticationComponent
 import com.examhacker.authentication.component.IAuthenticationComponent
-import com.examhacker.ai_interactions.component.AIGenerationComponent
-import com.examhacker.ai_interactions.component.IAIGenerationComponent
 import com.examhacker.mobile.introduction_screen.IIntroductionComponent
 import com.examhacker.mobile.introduction_screen.IntroductionComponent
 import com.examhacker.mobile.util.IPermissionHandler
-import com.examhacker.quiz_edit.component.IQuizEditComponent
+import com.examhacker.quiz_create.component.IQuizEditComponent
 import com.examhacker.quiz_list.component.IQuizListComponent
 import com.examhacker.quiz_solve.component.IQuizSolveComponent
 import com.examhacker.settings.component.ISettingsComponent
-import com.examhacker.quiz_edit.component.QuizEditComponent
+import com.examhacker.quiz_create.component.QuizEditComponent
 import com.examhacker.quiz_list.component.QuizListComponent
 import com.examhacker.quiz_solve.component.QuizSolveComponent
 import com.examhacker.settings.component.SettingsComponent
@@ -32,7 +30,6 @@ interface IRootComponent {
     sealed class Child {
         class Introduction(val component: IIntroductionComponent) : Child()
         class Authentication(val component: IAuthenticationComponent) : Child()
-        class AIInteractions(val component: IAIGenerationComponent) : Child()
         class QuizList(val component: IQuizListComponent) : Child()
         class QuizEdit(val component: IQuizEditComponent) : Child()
         class QuizSolve(val component: IQuizSolveComponent) : Child()
@@ -76,11 +73,6 @@ class RootComponent(
                         goToQuizList = ::fromAuthToQuizList,
                         goBack = ::back
                     )
-                )
-
-            Config.AIInteractions ->
-                IRootComponent.Child.AIInteractions(
-                    AIGenerationComponent(componentContext)
                 )
 
             Config.QuizList ->
@@ -145,8 +137,6 @@ class RootComponent(
         data object Introduction : Config()
         @Serializable
         data object Authentication : Config()
-        @Serializable
-        data object AIInteractions : Config()
         @Serializable
         data object QuizList : Config()
         @Serializable
