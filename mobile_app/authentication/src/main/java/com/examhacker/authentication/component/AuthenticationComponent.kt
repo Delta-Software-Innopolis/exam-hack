@@ -84,23 +84,23 @@ class AuthenticationComponent(
 
         val emailError =
             if (model.email.isBlank())
-                "Введите email"
+                "Enter email"
             else
                 null
 
         val passwordError =
             if (model.password.isBlank())
-                "Введите пароль"
+                "Enter password"
             else
                 null
 
         val repeatedPasswordError =
             when {
                 model.repeatedPassword.isBlank() ->
-                    "Повторите пароль"
+                    "Repeat password"
 
                 model.password != model.repeatedPassword ->
-                    "Пароли не совпадают"
+                    "Passwords differ"
 
                 else ->
                     null
@@ -129,13 +129,13 @@ class AuthenticationComponent(
 
         val emailError =
             if (model.email.isBlank())
-                "Введите email"
+                "Enter email"
             else
                 null
 
         val passwordError =
             if (model.password.isBlank())
-                "Введите пароль"
+                "Enter password"
             else
                 null
 
@@ -162,6 +162,5 @@ class AuthenticationComponent(
 
 enum class ScreenMode {
     LOGIN,
-    REGISTER,
-    DEMO_END
+    REGISTER
 }

@@ -21,19 +21,20 @@ class ColorPreset {
         val BorderDefault = Color(0xFFD9D9D9)
         val BorderSecondary = Color(0xFFAAAAAA)
         val BorderFocus = Color(0xFF7EA1A9)
-        val BorderWarningTertiary = Color(0xFFBF6A02)
         val BorderPositiveTertiary = Color(0xFF14AE5C)
         val BorderDangerTertiary = Color(0xFFEC221F)
-
         val TextDefaultSecondary = Color(0xFF757575)
+
         val TextPositivePrimary = Color(0xFF02542D)
         val TextWarningTertiary = Color(0xFFBF6A02)
-
         val IconPositiveTertiary = Color(0xFF14AE5C)
+
         val ErrorPrimary = Color(0xFFFF4F4F)
+        val PositivePrimary = Color(0xFF00B093)
+        val Secondary = Color(0xFFAAAAAA)
+        val SecondaryDimm = Color(0xFF676767)
 
         val ProgressBarPositive = Color(0xFFAFF4C6)
-
         val AIGradientCyan = Color(0xFF68F2FF)
         val AIGradientPink = Color(0xFFFF61ED)
         val AIBackground = Brush.verticalGradient(
@@ -41,7 +42,5 @@ class ColorPreset {
             0.3f to AIGradientPink,
             tileMode = TileMode.Clamp
         )
-        val PositivePrimary = Color(0xFF00B093)
-        val Secondary = Color(0xFFAAAAAA)
     }
 }

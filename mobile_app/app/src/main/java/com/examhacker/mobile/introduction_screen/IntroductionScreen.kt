@@ -39,6 +39,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
+import com.examhacker.common.ui.LogoImage
 import com.examhacker.common.ui.ScreenTitle
 import com.examhacker.resources.ColorPreset
 import com.examhacker.resources.R
@@ -118,11 +119,7 @@ private fun Instruction(modifier: Modifier = Modifier) {
         verticalArrangement = Arrangement.Top
     ) {
         item {
-            Image(
-                painter = painterResource(R.drawable.examhacker_logo),
-                contentDescription = "",
-                modifier = Modifier.size(128.dp)
-            )
+            LogoImage(Modifier.size(128.dp))
             Spacer(Modifier.height(Dimensions.ScreenPadding))
         }
 
@@ -281,9 +278,9 @@ private fun PermissionIndicator(
             shape = CircleShape,
             color =
                 if (isGranted)
-                    ColorPreset.IconPositiveTertiary
+                    ColorPreset.PositivePrimary
                 else
-                    ColorPreset.IconNegative
+                    ColorPreset.ErrorPrimary
         )
     )
 }

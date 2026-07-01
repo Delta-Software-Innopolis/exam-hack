@@ -17,28 +17,28 @@ interface IQuizListComponent {
 
 class QuizListComponent(
     componentContext: ComponentContext,
-    private val goToQuizCreation: () -> Unit,
-    private val goToQuizHub: () -> Unit,
-    private val goToProfile: () -> Unit,
-    private val goToSettings: () -> Unit,
+    private val toQuizCreation: () -> Unit,
+    private val toQuizHub: () -> Unit,
+    private val toProfile: () -> Unit,
+    private val toSettings: () -> Unit,
     private val goBack: () -> Unit
 ) : IQuizListComponent,
     ComponentContext by componentContext {
 
     override fun goToQuizCreation() {
-        goToQuizCreation()
+        toQuizCreation()
     }
 
     override fun goToQuizHub() {
-        goToQuizHub()
+        toQuizHub()
     }
 
     override fun goToProfile() {
-        goToProfile()
+        toProfile()
     }
 
     override fun goToSettings() {
-        goToSettings()
+        toSettings()
     }
 
     override fun back() {
