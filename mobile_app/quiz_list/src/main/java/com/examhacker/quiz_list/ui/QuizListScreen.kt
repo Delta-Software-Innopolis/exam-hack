@@ -3,8 +3,10 @@ package com.examhacker.quiz_list.ui
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.ui.res.painterResource
@@ -36,11 +38,9 @@ fun QuizListScreen(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = component::goToQuizCreation,
-                modifier = Modifier
-                    .size(64.dp)
-                    .padding(bottom = 8.dp),
-                containerColor = ColorPreset.PositivePrimary,
-                shape = CircleShape
+                modifier = Modifier.padding(bottom = 8.dp),
+                shape = CircleShape,
+                containerColor = ColorPreset.PositivePrimary
             ) {
                 Icon(
                     painter = painterResource(R.drawable.add_plus),
@@ -57,7 +57,10 @@ fun QuizListScreen(
                 onQuizClick = {},
                 onQuizHubClick = component::goToQuizHub,
                 onProfileClick = component::goToProfile,
-                onSettingsClick = component::goToSettings
+                onSettingsClick = component::goToSettings,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .systemBarsPadding()
             )
         }
 
@@ -102,16 +105,13 @@ fun QuizListScreen(
 private fun QuizListScreenPreview() {
 
     Scaffold(
-
         floatingActionButton = {
-
             FloatingActionButton(
                 onClick = {},
                 modifier = Modifier.padding(bottom = 8.dp),
                 shape = CircleShape,
                 containerColor = ColorPreset.PositivePrimary
             ) {
-
                 Icon(
                     painter = painterResource(R.drawable.add_plus),
                     contentDescription = null,
@@ -122,39 +122,38 @@ private fun QuizListScreenPreview() {
         },
 
         bottomBar = {
-
             AppNavigationBar(
-                selectedIndex = 0
+                selectedIndex = 0,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .systemBarsPadding()
             )
 
         }
 
-    ) {
+    ) { contentPadding ->
+
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(it),
+                .padding(contentPadding),
             contentPadding = PaddingValues(Dimensions.ScreenPadding),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
 
             item {
-
                 Text(
                     text = "Your Quizzes",
                     fontSize = Dimensions.ScreenTitleFontSize,
                     fontWeight = FontWeight.Bold
                 )
-
             }
 
             items(List(8) { "Quiz Name" }) {
-
                 QuizCard(
                     quizName = it,
                     author = "by User"
                 )
-
             }
 
         }

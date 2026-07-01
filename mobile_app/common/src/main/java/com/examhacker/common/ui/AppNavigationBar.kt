@@ -31,12 +31,12 @@ fun AppNavigationBar(
     onQuizClick: () -> Unit = {},
     onQuizHubClick: () -> Unit = {},
     onProfileClick: () -> Unit = {},
-    onSettingsClick: () -> Unit = {}
+    onSettingsClick: () -> Unit = {},
+    modifier: Modifier = Modifier
 ) {
 
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
+        modifier = modifier
             .background(ColorPreset.BackgroundDefaultPrimary)
             .border(
                 width = 1.dp,

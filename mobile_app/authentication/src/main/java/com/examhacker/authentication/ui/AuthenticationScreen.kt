@@ -1,16 +1,12 @@
 package com.examhacker.authentication.ui
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ButtonDefaults
@@ -21,10 +17,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -32,9 +25,27 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.examhacker.authentication.component.IAuthenticationComponent
 import com.examhacker.authentication.component.ScreenMode
+import com.examhacker.common.ui.LogoImage
 import com.examhacker.common.ui.ScreenTitle
 import com.examhacker.resources.ColorPreset
 import com.examhacker.resources.Dimensions
@@ -51,7 +62,8 @@ fun AuthenticationScreen(component: IAuthenticationComponent) {
         onPasswordChange = component::onPasswordChange,
         onRepeatedPasswordChange = component::onRepeatedPasswordChange,
         onLogin = component::onLogin,
-        onSignUp = component::onSignUp
+        onSignUp = component::onSignUp,
+        back = component::back
     )
 }
 
@@ -63,7 +75,8 @@ private fun AuthenticationUI(
     onPasswordChange: (String) -> Unit,
     onRepeatedPasswordChange: (String) -> Unit,
     onLogin: () -> Unit,
-    onSignUp: () -> Unit
+    onSignUp: () -> Unit,
+    back: () -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -72,69 +85,65 @@ private fun AuthenticationUI(
                     when(model.screenMode) {
                         ScreenMode.REGISTER -> stringResource(R.string.register_screen_title)
                         ScreenMode.LOGIN    -> stringResource(R.string.login_screen_title)
-                        ScreenMode.DEMO_END -> stringResource(R.string.demo_end_title)
                     },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .statusBarsPadding(),
+                    .systemBarsPadding(),
                 horizontalArrangement = Arrangement.Center
             )
         },
         containerColor = ColorPreset.BackgroundVariant
     ) { contentPadding ->
 
-        Box(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(contentPadding)
                 .padding(Dimensions.ScreenPadding),
-            contentAlignment = Alignment.Center
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Bottom
         ) {
-            when (model.screenMode) {
-                ScreenMode.REGISTER, ScreenMode.LOGIN ->
-                    RegisterAndLoginUI(
-                        model = model,
-                        onSwitchMode = onSwitchScreenMode,
-                        onEmailChange = onEmailChange,
-                        onPasswordChange = onPasswordChange,
-                        onRepeatedPasswordChange = onRepeatedPasswordChange,
-                        onSignUp = onSignUp,
-                        onLogin = onLogin
-                    )
+            LogoImage(Modifier.size(242.dp).weight(1f))
+            Spacer(Modifier.height(62.dp))
 
-                ScreenMode.DEMO_END -> DemoEndUI()
-            }
+            InputFormWithButtons(
+                model = model,
+                onSwitchMode = onSwitchScreenMode,
+                onEmailChange = onEmailChange,
+                onPasswordChange = onPasswordChange,
+                onRepeatedPasswordChange = onRepeatedPasswordChange,
+                onSignUp = onSignUp,
+                onLogin = onLogin,
+                modifier = Modifier.fillMaxWidth()
+            )
         }
     }
+
+    BackHandler { back() }
 }
 
 @Composable
-private fun RegisterAndLoginUI(
+private fun InputFormWithButtons(
     model: IAuthenticationComponent.Model,
     onSwitchMode: (ScreenMode) -> Unit,
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
     onRepeatedPasswordChange: (String) -> Unit,
     onSignUp: () -> Unit,
-    onLogin: () -> Unit
+    onLogin: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(Dimensions.AuthScreenSpacing)
+        verticalArrangement = Arrangement.spacedBy(Dimensions.ScreenPadding)
     ) {
-        PlaceholderImage(
-            painter = painterResource(R.drawable.pretty_img_here_soon),
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-        )
-
         InputFields(
             mode = model.screenMode,
             email = model.email,
             password = model.password,
             repeatedPassword = model.repeatedPassword,
+            errors = model.errors,
             onEmailChange = onEmailChange,
             onPasswordChange = onPasswordChange,
             onRepeatedPasswordChange = onRepeatedPasswordChange,
@@ -162,49 +171,12 @@ private fun RegisterAndLoginUI(
 }
 
 @Composable
-private fun DemoEndUI() {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        PlaceholderImage(
-            painter = painterResource(R.drawable.amazing_things_soon),
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-        )
-
-        AuthButton(
-            type = AuthButtonType.DEMO_END,
-            label = stringResource(R.string.demo_end_button_label),
-            onClick = {},
-            modifier = Modifier.fillMaxWidth()
-        )
-    }
-}
-
-@Composable
-private fun PlaceholderImage(
-    painter: Painter,
-    modifier: Modifier = Modifier
-) {
-    Box(
-        modifier = modifier.padding(top = Dimensions.PlaceHolderImageTopPadding),
-        contentAlignment = Alignment.TopCenter
-    ) {
-        Image(
-            painter = painter,
-            contentDescription = null
-        )
-    }
-}
-
-@Composable
 private fun InputFields(
     mode: ScreenMode,
     email: String,
     password: String,
     repeatedPassword: String,
+    errors: IAuthenticationComponent.Errors,
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
     onRepeatedPasswordChange: (String) -> Unit,
@@ -219,6 +191,7 @@ private fun InputFields(
             value = email,
             onValueChange = onEmailChange,
             label = stringResource(R.string.email_input_label),
+            error = errors.email,
             modifier = Modifier.fillMaxWidth(),
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Next,
@@ -234,7 +207,9 @@ private fun InputFields(
                     stringResource(R.string.password_register_label)
                 else
                     stringResource(R.string.password_login_label),
+            error = errors.password,
             modifier = Modifier.fillMaxWidth(),
+            isPassword = true,
             keyboardOptions = KeyboardOptions(
                 imeAction =
                     if (mode == ScreenMode.REGISTER)
@@ -249,7 +224,9 @@ private fun InputFields(
                 value = repeatedPassword,
                 onValueChange = onRepeatedPasswordChange,
                 label = stringResource(R.string.repeat_password_label),
+                error = errors.repeatedPassword,
                 modifier = Modifier.fillMaxWidth(),
+                isPassword = true,
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)
             )
         }
@@ -269,19 +246,47 @@ fun SubmitAndSwitchModeButtons(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(Dimensions.InputFieldsSpacing)
     ) {
-        AuthButton(
-            type = AuthButtonType.SUBMIT,
-            label = submitLabel,
+        Button(
             onClick = onSubmitClick,
-            modifier = Modifier.fillMaxWidth()
-        )
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(Dimensions.InputFieldRadius),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = ColorPreset.PositivePrimary,
+                contentColor = ColorPreset.BackgroundDefaultPrimary
+            ),
+            contentPadding = PaddingValues(vertical = Dimensions.ScreenPadding),
+        ) {
+            Text(
+                text = submitLabel,
+                style = TextStyle(
+                    fontWeight = FontWeight.Normal,
+                    fontSize = Dimensions.AuthLabelFontSize
+                )
+            )
+        }
 
-        AuthButton(
-            type = AuthButtonType.SWITCH_MODE,
-            label = switchModeLabel,
+        OutlinedButton(
             onClick = onSwitchModeClick,
-            modifier = Modifier.fillMaxWidth()
-        )
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(Dimensions.InputFieldRadius),
+            colors = ButtonDefaults.outlinedButtonColors(
+                containerColor = ColorPreset.BackgroundVariant,
+                contentColor = ColorPreset.SecondaryDimm
+            ),
+            border = BorderStroke(
+                width = Dimensions.DefaultBorderWidth,
+                color = ColorPreset.SecondaryDimm
+            ),
+            contentPadding = PaddingValues(vertical = Dimensions.ScreenPadding),
+        ) {
+            Text(
+                text = switchModeLabel,
+                style = TextStyle(
+                    fontWeight = FontWeight.Normal,
+                    fontSize = Dimensions.AuthLabelFontSize
+                )
+            )
+        }
     }
 }
 
@@ -291,106 +296,112 @@ private fun InputTextField(
     onValueChange: (String) -> Unit,
     label: String,
     modifier: Modifier = Modifier,
+    error: String? = null,
+    isPassword: Boolean = false,
     keyboardOptions: KeyboardOptions = KeyboardOptions()
 ) {
-    val textStyle = TextStyle(
-        fontWeight = FontWeight.Normal,
-        fontSize = Dimensions.AuthLabelFontSize
-    )
-
-    OutlinedTextField(
-        value = value,
-        onValueChange = onValueChange,
-        label = {
-            Text(
-                text = label,
-                style = textStyle
-            )
-        },
-        textStyle = textStyle,
-        singleLine = true,
-        keyboardOptions = keyboardOptions,
-        modifier = modifier,
-        shape = RoundedCornerShape(Dimensions.InputFieldRadius),
-        colors = OutlinedTextFieldDefaults.colors(
-            focusedTextColor = ColorPreset.Black,
-            unfocusedTextColor = ColorPreset.Black,
-
-            focusedContainerColor = ColorPreset.Transparent,
-            unfocusedContainerColor = ColorPreset.Transparent,
-
-            focusedBorderColor = ColorPreset.BorderDefault,
-            unfocusedBorderColor = ColorPreset.BorderDefault,
-
-            focusedLabelColor = ColorPreset.TextDefaultSecondary,
-            unfocusedLabelColor = ColorPreset.TextDefaultSecondary
+    val textStyle = remember {
+        TextStyle(
+            fontWeight = FontWeight.Normal,
+            fontSize = Dimensions.AuthLabelFontSize
         )
-    )
-}
-
-@Composable
-private fun AuthButton(
-    type: AuthButtonType,
-    label: String,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    val borderColor = when(type) {
-        AuthButtonType.SUBMIT      -> ColorPreset.PositivePrimary
-        AuthButtonType.SWITCH_MODE -> ColorPreset.BorderDefault
-        AuthButtonType.DEMO_END    -> ColorPreset.BorderWarningTertiary
-    }
-    val labelColor = when(type) {
-        AuthButtonType.SUBMIT, AuthButtonType.SWITCH_MODE -> ColorPreset.TextPositivePrimary
-        AuthButtonType.DEMO_END                           -> ColorPreset.TextWarningTertiary
-    }
-    val backgroundColor = when(type) {
-        AuthButtonType.SUBMIT      -> ColorPreset.BackgroundPositiveSecondary
-        AuthButtonType.SWITCH_MODE -> ColorPreset.BackgroundDefaultSecondary
-        AuthButtonType.DEMO_END    -> ColorPreset.BackgroundWarningSecondary
     }
 
-    OutlinedButton(
-        onClick = onClick,
+    var isHidden by remember { mutableStateOf(true) }
+
+    Column(
         modifier = modifier,
-        shape = RoundedCornerShape(Dimensions.InputFieldRadius),
-        colors = ButtonDefaults.outlinedButtonColors(
-            containerColor = backgroundColor,
-            contentColor = labelColor
-        ),
-        border = BorderStroke(
-            width = Dimensions.DefaultBorderWidth,
-            color = borderColor
-        ),
-        contentPadding = PaddingValues(vertical = Dimensions.AuthButtonPadding),
+        horizontalAlignment = Alignment.Start,
+        verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
-        Text(
-            text = label,
-            style = TextStyle(
-                fontWeight = FontWeight.Normal,
-                fontSize = Dimensions.AuthLabelFontSize
+        OutlinedTextField(
+            value = value,
+            onValueChange = onValueChange,
+            label = {
+                Text(
+                    text = label,
+                    style = textStyle
+                )
+            },
+            textStyle = textStyle,
+            singleLine = true,
+            isError = error != null,
+            keyboardOptions = keyboardOptions,
+            shape = RoundedCornerShape(Dimensions.InputFieldRadius),
+            modifier = Modifier.fillMaxWidth(),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedTextColor = ColorPreset.Black,
+                unfocusedTextColor = ColorPreset.Black,
+
+                focusedContainerColor = ColorPreset.Transparent,
+                unfocusedContainerColor = ColorPreset.Transparent,
+
+                focusedBorderColor =
+                    if (error == null)
+                        ColorPreset.BorderDefault
+                    else
+                        ColorPreset.ErrorPrimary,
+                unfocusedBorderColor =
+                    if (error == null)
+                        ColorPreset.BorderDefault
+                    else
+                        ColorPreset.ErrorPrimary,
+                errorBorderColor = ColorPreset.ErrorPrimary,
+
+                errorLabelColor = ColorPreset.ErrorPrimary,
+                focusedLabelColor = ColorPreset.TextDefaultSecondary,
+                unfocusedLabelColor = ColorPreset.TextDefaultSecondary
             ),
-            modifier = Modifier.wrapContentWidth(align = Alignment.CenterHorizontally)
+            trailingIcon = {
+                if (isPassword) {
+                    IconButton(
+                        onClick = { isHidden = !isHidden }
+                    ) {
+                        Icon(
+                            painter =
+                                if (isHidden)
+                                    painterResource(R.drawable.ic_eye)
+                                else
+                                    painterResource(R.drawable.ic_eye_crossed),
+                            contentDescription = null
+                        )
+                    }
+                }
+            },
+            visualTransformation =
+                if (isHidden && isPassword)
+                    PasswordVisualTransformation(mask = '*')
+                else
+                    VisualTransformation.None
         )
+
+        if (error != null) {
+            Text(
+                text = error,
+                style = TextStyle(
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Normal,
+                    color = ColorPreset.ErrorPrimary
+                ),
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
     }
 }
 
-enum class AuthButtonType {
-    SUBMIT,
-    SWITCH_MODE,
-    DEMO_END
-}
-
-@Preview(device = Devices.PIXEL)
+@Preview(device = Devices.DEFAULT)
 @Composable
 private fun AuthenticationUIPreview() {
     AuthenticationUI(
-        model = IAuthenticationComponent.Model(),
+        model = IAuthenticationComponent.Model().copy(
+            errors = IAuthenticationComponent.Errors(email = "ghfgh")
+        ),
         onSwitchScreenMode = {},
         onEmailChange = {},
         onPasswordChange = {},
         onRepeatedPasswordChange = {},
         onLogin = {},
-        onSignUp = {}
+        onSignUp = {},
+        back = {}
     )
 }

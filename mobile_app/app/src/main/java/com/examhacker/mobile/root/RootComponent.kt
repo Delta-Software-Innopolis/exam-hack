@@ -6,8 +6,8 @@ import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.pop
-import com.arkivanov.decompose.router.stack.pushToFront
 import com.arkivanov.decompose.router.stack.replaceCurrent
+import com.arkivanov.decompose.router.stack.pushToFront
 import kotlinx.serialization.Serializable
 import com.examhacker.authentication.component.AuthenticationComponent
 import com.examhacker.authentication.component.IAuthenticationComponent
@@ -56,7 +56,6 @@ class RootComponent(
             handleBackButton = false,
             childFactory = ::createChild,
         )
-
     private fun createChild(config: Config, componentContext: ComponentContext,)
     : IRootComponent.Child =
         when (config) {
@@ -72,7 +71,11 @@ class RootComponent(
 
             Config.Authentication ->
                 IRootComponent.Child.Authentication(
-                    AuthenticationComponent(componentContext)
+                    AuthenticationComponent(
+                        componentContext = componentContext,
+                        goToQuizList = ::fromAuthToQuizList,
+                        goBack = ::back
+                    )
                 )
 
             Config.AIInteractions ->
@@ -84,10 +87,10 @@ class RootComponent(
                 IRootComponent.Child.QuizList(
                     QuizListComponent(
                         componentContext,
-                        goToQuizCreation = {},
-                        goToQuizHub = {},
-                        goToProfile = {},
-                        goToSettings = {},
+                        toQuizCreation = {},
+                        toQuizHub = {},
+                        toProfile = {},
+                        toSettings = {},
                         goBack = ::back
                     )
                 )
@@ -108,6 +111,9 @@ class RootComponent(
                 )
         }
 
+    private fun fromAuthToQuizList() {
+        navigation.replaceCurrent(Config.QuizList)
+    }
 
     private fun navigateToQuizCreation() {
         TODO()
@@ -125,12 +131,12 @@ class RootComponent(
         navigation.pushToFront(Config.Settings)
     }
 
-    private fun back() {
-        navigation.pop()
-    }
-
     private fun fromIntroductionToAuth() {
         navigation.replaceCurrent(Config.Authentication)
+    }
+
+    private fun back() {
+        navigation.pop()
     }
 
     @Serializable

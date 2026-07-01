@@ -6,13 +6,20 @@ import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
 
 interface IAuthenticationComponent {
+
+    data class Errors(
+        val email: String? = null,
+        val password: String? = null,
+        val repeatedPassword: String? = null
+    )
     val model: Value<Model>
 
     data class Model(
         val screenMode: ScreenMode = ScreenMode.REGISTER,
         val email: String = "",
         val password: String = "",
-        val repeatedPassword: String = ""
+        val repeatedPassword: String = "",
+        val errors: Errors = Errors()
     )
 
     fun switchScreenMode(mode: ScreenMode)
@@ -21,10 +28,15 @@ interface IAuthenticationComponent {
     fun onRepeatedPasswordChange(repeatedPassword: String)
     fun onSignUp()
     fun onLogin()
+
+    fun back()
 }
 
-class AuthenticationComponent(componentContext: ComponentContext)
-    : IAuthenticationComponent, ComponentContext by componentContext {
+class AuthenticationComponent(
+    componentContext: ComponentContext,
+    private val goToQuizList: () -> Unit,
+    private val goBack: () -> Unit
+)    : IAuthenticationComponent, ComponentContext by componentContext {
 
     private val _model = MutableValue(IAuthenticationComponent.Model())
     override val model: Value<IAuthenticationComponent.Model> = _model
@@ -42,37 +54,113 @@ class AuthenticationComponent(componentContext: ComponentContext)
 
     override fun onEmailChange(email: String) {
         _model.update {
-            it.copy(email = email)
+            it.copy(
+                email = email,
+                errors = it.errors.copy(email = null)
+            )
         }
     }
 
     override fun onPasswordChange(password: String) {
         _model.update {
-            it.copy(password = password)
+            it.copy(
+                password = password,
+                errors = it.errors.copy(password = null)
+            )
         }
     }
 
     override fun onRepeatedPasswordChange(repeatedPassword: String) {
         _model.update {
-            it.copy(repeatedPassword = repeatedPassword)
+            it.copy(
+                repeatedPassword = repeatedPassword,
+                errors = it.errors.copy(repeatedPassword = null)
+            )
         }
     }
 
     override fun onSignUp() {
+        val model = _model.value
+
+        val emailError =
+            if (model.email.isBlank())
+                "Enter email"
+            else
+                null
+
+        val passwordError =
+            if (model.password.isBlank())
+                "Enter password"
+            else
+                null
+
+        val repeatedPasswordError =
+            when {
+                model.repeatedPassword.isBlank() ->
+                    "Repeat password"
+
+                model.password != model.repeatedPassword ->
+                    "Passwords differ"
+
+                else ->
+                    null
+            }
+
+        val errors = IAuthenticationComponent.Errors(
+            email = emailError,
+            password = passwordError,
+            repeatedPassword = repeatedPasswordError
+        )
+
         _model.update {
-            it.copy(screenMode = ScreenMode.DEMO_END)
+            it.copy(errors = errors)
+        }
+
+        if (emailError == null &&
+            passwordError == null &&
+            repeatedPasswordError == null
+        ) {
+            goToQuizList()
         }
     }
 
     override fun onLogin() {
+        val model = _model.value
+
+        val emailError =
+            if (model.email.isBlank())
+                "Enter email"
+            else
+                null
+
+        val passwordError =
+            if (model.password.isBlank())
+                "Enter password"
+            else
+                null
+
+        val errors = IAuthenticationComponent.Errors(
+            email = emailError,
+            password = passwordError
+        )
+
         _model.update {
-            it.copy(screenMode = ScreenMode.DEMO_END)
+            it.copy(errors = errors)
         }
+
+        if (emailError == null &&
+            passwordError == null
+        ) {
+            goToQuizList()
+        }
+    }
+
+    override fun back() {
+        goBack()
     }
 }
 
 enum class ScreenMode {
     LOGIN,
-    REGISTER,
-    DEMO_END
+    REGISTER
 }
