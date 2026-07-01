@@ -52,11 +52,10 @@ describe('BasicFileUpload', () => {
 
     await input.trigger('change')
 
-    expect(wrapper.emitted('changed')).toBeTruthy()
     const emitted = wrapper.emitted('changed')
 
     expect(emitted).toBeTruthy()
-    expect(emitted![0][0]).toHaveLength(1)
+    expect(emitted?.[0]?.[0]).toHaveLength(1)
   }),
   it('removes file when remove button is clicked', async () => {
     const wrapper = mount(BasicFileUpload)
@@ -95,14 +94,11 @@ describe('BasicFileUpload', () => {
 
     await input.trigger('change')
 
-    wrapper.emitted().changed = []
-
     await wrapper.find('.remove-button').trigger('click')
 
-    expect(wrapper.emitted('changed')).toHaveLength(1)
     const emitted = wrapper.emitted('changed')
 
     expect(emitted).toBeTruthy()
-    expect(emitted![0][0]).toHaveLength(0)
+    expect(emitted?.[1]?.[0]).toHaveLength(0)
   })
 })
