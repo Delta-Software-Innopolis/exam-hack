@@ -1,4 +1,4 @@
-package com.examhacker.quiz_create.component
+package com.examhacker.quiz_edit.component
 
 import com.arkivanov.decompose.ComponentContext
 
