@@ -15,19 +15,19 @@ services:
       timeout: 5s
       retries: 10
  
-  migration:
-    build: ./quiz_hub
-    command: alembic upgrade head
-    environment:
-      - DEBUG=${DEBUG}
-      - POSTGRES_HOST=${POSTGRES_HOST}
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_DB=${POSTGRES_DB}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_PORT=${POSTGRES_PORT}
-    depends_on:
-      db:
-        condition: service_healthy
+#  migration:
+#    build: ./quiz_hub
+#    command: alembic upgrade head
+#    environment:
+#      - DEBUG=${DEBUG}
+#      - POSTGRES_HOST=${POSTGRES_HOST}
+#      - POSTGRES_USER=${POSTGRES_USER}
+#      - POSTGRES_DB=${POSTGRES_DB}
+#      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+#      - POSTGRES_PORT=${POSTGRES_PORT}
+#    depends_on:
+#      db:
+#        condition: service_healthy
 
   quizhub:
     build: 
@@ -42,9 +42,9 @@ services:
       - POSTGRES_PORT=${POSTGRES_PORT}
     ports:
       - 8000:8000
-    depends_on:
-      migration:
-        condition: service_completed_successfully
+#    depends_on:
+#      migration:
+#        condition: service_completed_successfully
 
   llm-service:
     build:
