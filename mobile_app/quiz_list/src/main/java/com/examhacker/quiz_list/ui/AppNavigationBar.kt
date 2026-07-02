@@ -103,7 +103,7 @@ private fun NavigationItem(
 
         Text(
             text = text,
-            fontSize = 14.sp,
+            fontSize = 14 .sp,
             color =
                 if (selected)
                     ColorPreset.IconPositiveTertiary
