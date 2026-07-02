@@ -12,17 +12,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.defaultComponentContext
 import com.arkivanov.decompose.extensions.compose.stack.Children
-import com.examhacker.ai_interactions.ui.AIGenerationScreen
 import com.examhacker.authentication.ui.AuthenticationScreen
 import com.examhacker.mobile.introduction_screen.IntroductionScreen
 import com.examhacker.mobile.root.IRootComponent
 import com.examhacker.mobile.root.RootComponent
-import com.examhacker.quiz_edit.ui.QuizEditScreen
 import com.examhacker.quiz_list.ui.QuizListScreen
 import com.examhacker.quiz_solve.ui.QuizSolveScreen
 import com.examhacker.settings.ui.SettingsScreen
 import com.examhacker.mobile.util.PermissionHandler
 import com.examhacker.phone_unlock.service.UnlockOverlayService
+import com.examhacker.profile.ui.ProfileScreen
+import com.examhacker.quiz_create.ui.QuizCreateScreen
+import com.examhacker.quiz_edit.ui.QuizEditScreen
+import com.examhacker.quiz_hub.ui.QuizHubScreen
+import com.examhacker.quiz_info.ui.QuizInfoScreen
 
 class MainActivity : ComponentActivity() {
     private val notificationPermissionLauncher = registerForActivityResult(
@@ -75,10 +78,13 @@ private fun RootContent(component: RootComponent, modifier: Modifier = Modifier)
         when (val child = it.instance) {
             is IRootComponent.Child.Introduction   -> IntroductionScreen(child.component)
             is IRootComponent.Child.Authentication -> AuthenticationScreen(child.component)
-            is IRootComponent.Child.AIInteractions -> AIGenerationScreen(child.component)
             is IRootComponent.Child.QuizList       -> QuizListScreen(child.component)
             is IRootComponent.Child.QuizEdit       -> QuizEditScreen(child.component)
+            is IRootComponent.Child.QuizCreate     -> QuizCreateScreen(child.component)
+            is IRootComponent.Child.QuizInfo       -> QuizInfoScreen(child.component)
+            is IRootComponent.Child.QuizHub        -> QuizHubScreen(child.component)
             is IRootComponent.Child.QuizSolve      -> QuizSolveScreen(child.component)
+            is IRootComponent.Child.Profile        -> ProfileScreen(child.component)
             is IRootComponent.Child.Settings       -> SettingsScreen(child.component)
         }
     }

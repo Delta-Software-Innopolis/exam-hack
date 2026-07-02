@@ -50,6 +50,7 @@ dependencies {
     // Project
     implementation(project(":resources"))
     implementation(project(":common"))
+    implementation(project(":data_network"))
     implementation(project(":data_local"))
 
     // Testing
