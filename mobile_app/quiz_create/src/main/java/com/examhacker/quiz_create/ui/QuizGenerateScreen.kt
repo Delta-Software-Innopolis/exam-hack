@@ -1,4 +1,4 @@
-package com.examhacker.quiz_edit.ui
+package com.examhacker.quiz_create.ui
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
@@ -24,7 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.examhacker.quiz_edit.component.IQuizGenerateComponent
+import com.examhacker.quiz_create.component.IQuizGenerateComponent
 import com.examhacker.resources.ColorPreset
 
 @Composable

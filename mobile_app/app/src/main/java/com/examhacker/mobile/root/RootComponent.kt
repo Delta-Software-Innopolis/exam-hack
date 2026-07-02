@@ -106,7 +106,11 @@ class RootComponent(
 
             Config.QuizCreate     ->
                 IRootComponent.Child.QuizCreate(
-                    QuizCreateComponent(componentContext)
+                    QuizCreateComponent(
+                        componentContext,
+                        back = ::back,
+                        onFinish = { }
+                    )
                 )
 
             Config.QuizInfo       ->
