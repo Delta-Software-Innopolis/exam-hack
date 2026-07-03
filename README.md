@@ -51,7 +51,7 @@ cp .env.dev.example .env.dev
 
 #### Run the project with Docker Compose
 ```sh
-make run
+make dev
 ```
 
 
