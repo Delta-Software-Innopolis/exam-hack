@@ -78,5 +78,41 @@ class Dimensions {
         val QuestionDescriptionFontSize = 20.sp
         val AnswerVariantFontSize = 18.sp
         val ProgressBarFontSize = 16.sp
+
+        // Quiz List
+        val QuizListFabSize = 64.dp
+        val QuizListFabBottomPadding = 8.dp
+        val QuizListFabIconSize = 40.dp
+        val QuizListContentBottomPadding = 100.dp
+        val QuizListItemsSpacing = 16.dp
+        val QuizListPreviewItemsSpacing = 8.dp
+        val QuizListTitleBottomPadding = 16.dp
+
+        // Quiz Card
+        val QuizCardHeight = 82.dp
+        val QuizCardRadius = 16.dp
+        val QuizCardHorizontalPadding = 20.dp
+        val QuizCardVerticalPadding = 24.dp
+        val QuizCardIconSize = 34.dp
+
+        //Main Navigation Bar
+        val NavigationBarVerticalPadding = 8.dp
+        val NavigationBarHeight = 88.dp
+
+        val NavigationItemSpacing = 8.dp
+        val NavigationItemIconSize = 34.dp
+        val NavigationItemFontSize = 14.sp
+
+        // Quiz Solve Bottom Bar
+        val QuizSolveBottomBarIconSize = 50.dp
+        val QuizSolveBottomBarAiButtonSize = 48.dp
+        val QuizSolveBottomBarBottomPadding = 24.dp
+        val QuizSolveBottomBarHorizontalPadding = 32.dp
+
+        // Quiz Progress Bar
+        val QuizProgressBarCornerRadius = 100.dp
+        val QuizProgressBarHorizontalPadding = 16.dp
+        val QuizProgressBarTextSpacing = 8.dp
+        val ProgressBarCornerRadius = 100.dp
     }
 }

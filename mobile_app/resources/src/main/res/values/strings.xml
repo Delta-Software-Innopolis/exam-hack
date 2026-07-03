@@ -71,4 +71,7 @@
 
 	<!-- Quiz Edit -->
 	<string name="quiz_edit_screen_title">Questions</string>
+
+	<!-- Quiz Result -->
+	<string name="quiz_result_placeholder">Quiz Result</string>
 </resources>
