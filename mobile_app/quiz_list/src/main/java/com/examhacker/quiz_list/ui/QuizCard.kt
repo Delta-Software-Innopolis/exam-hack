@@ -51,7 +51,7 @@ fun QuizCard(
             Text(
                 text = author,
                 color = ColorPreset.TextDefaultSecondary,
-                fontSize = Dimensions.AuthLabelFontSize
+                fontSize = Dimensions.InputLabelFontSize
             )
         }
 

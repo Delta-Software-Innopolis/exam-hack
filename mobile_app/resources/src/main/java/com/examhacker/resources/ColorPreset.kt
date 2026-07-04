@@ -11,6 +11,7 @@ class ColorPreset {
         val Transparent = Black.copy(alpha = 0f)
 
         val BackgroundVariant = Color(0xFFFFFFFF)
+        val BackgroundLightGrey = Color(0xFFEEEEEE)
         val BackgroundDefaultPrimary = Color(0xFFF3F6F7)
         val BackgroundDefaultSecondary = Color(0xFFF5F5F5)
         val BackgroundFocus = Color(0xFFE7FFFF)

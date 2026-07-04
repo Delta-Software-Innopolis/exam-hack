@@ -14,9 +14,9 @@ interface IQuizCreateComponent {
     val stack: Value<ChildStack<*, Child>>
 
     sealed class Child {
-        data class Name(val component: IQuizNameComponent) : Child()
-        data class Generate(val component: IQuizGenerateComponent) : Child()
-        data class Edit(val component: IQuizEditComponent) : Child()
+        internal data class Name(val component: IQuizNameComponent) : Child()
+        internal data class Generate(val component: IQuizGenerateComponent) : Child()
+        internal data class Edit(val component: IQuizReviewComponent) : Child()
     }
 
     fun goBack()
@@ -59,7 +59,7 @@ class QuizCreateComponent(
 
             is Config.Edit ->
                 IQuizCreateComponent.Child.Edit(
-                    QuizEditComponent(
+                    QuizReviewComponent(
                         componentContext
                     )
                 )
