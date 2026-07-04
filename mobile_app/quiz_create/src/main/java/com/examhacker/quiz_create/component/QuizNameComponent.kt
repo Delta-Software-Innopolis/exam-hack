@@ -3,7 +3,7 @@ package com.examhacker.quiz_create.component
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
-import com.arkivanov.decompose.value.update   // <--- ДОБАВИЛИ
+import com.arkivanov.decompose.value.update
 
 internal interface IQuizNameComponent {
     val model: Value<Model>
@@ -15,12 +15,15 @@ internal interface IQuizNameComponent {
 
     fun onNameChange(name: String)
     fun onDescriptionChange(description: String)
+    fun isNextEnabled(): Boolean
     fun onNextClick()
 }
 
 internal class QuizNameComponent(
     componentContext: ComponentContext,
-    private val onNext: () -> Unit
+    private val goToGenerate: () -> Unit,
+    private val updateName: (String) -> Unit,
+    private val updateDescription: (String) -> Unit
 ) : IQuizNameComponent, ComponentContext by componentContext {
 
     private val _model = MutableValue(IQuizNameComponent.Model())
@@ -34,9 +37,17 @@ internal class QuizNameComponent(
         _model.update { it.copy(description = description) }
     }
 
+    override fun isNextEnabled(): Boolean {
+        return model.value.name.isNotEmpty()
+            && model.value.name.isNotBlank()
+    }
+
     override fun onNextClick() {
-        if (model.value.name.isNotBlank()) {
-            onNext()
+        if (isNextEnabled()) {
+            updateName(model.value.name)
+            updateDescription(model.value.description)
+
+            goToGenerate()
         }
     }
 }

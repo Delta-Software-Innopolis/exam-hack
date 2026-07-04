@@ -28,4 +28,5 @@
 	<string name="quiz_name_title">Create new Quiz</string>
 	<string name="quiz_name_input_placeholder">Enter Quiz name</string>
 	<string name="quiz_description_input_placeholder">Enter Quiz description</string>
+	<string name="next">Next</string>
 </resources>

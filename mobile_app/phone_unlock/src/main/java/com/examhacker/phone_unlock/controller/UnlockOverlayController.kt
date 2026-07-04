@@ -1,7 +1,7 @@
 package com.examhacker.phone_unlock.controller
 
-import com.examhacker.common.utility.AnswerVariant
-import com.examhacker.common.utility.Question
+import com.examhacker.common.data.AnswerVariant
+import com.examhacker.common.data.Question
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

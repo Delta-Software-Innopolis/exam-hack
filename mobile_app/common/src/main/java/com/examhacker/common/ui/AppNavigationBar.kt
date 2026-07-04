@@ -13,13 +13,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Button
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
@@ -28,7 +26,7 @@ import com.examhacker.resources.R
 
 @Composable
 fun AppNavigationBar(
-    selectedState: AppNavigationState,
+    selectedTab: NavigationTab,
     onQuizListClick: () -> Unit = {},
     onQuizHubClick: () -> Unit = {},
     onProfileClick: () -> Unit = {},
@@ -51,7 +49,7 @@ fun AppNavigationBar(
             text = stringResource(R.string.quiz_hub_navigation_label),
             iconSelected =  painterResource(R.drawable.ic_search_magnifying_glass_colored),
             iconDefault = painterResource(R.drawable.ic_search_magnifying_glass),
-            selected = selectedState == AppNavigationState.QUIZ_HUB,
+            selected = selectedTab == NavigationTab.QUIZ_HUB,
             onClick = onQuizHubClick,
             modifier = Modifier.weight(1f)
         )
@@ -60,7 +58,7 @@ fun AppNavigationBar(
             text = stringResource(R.string.quiz_list_navigation_label),
             iconSelected = painterResource(R.drawable.ic_book_open_colored),
             iconDefault = painterResource(R.drawable.ic_book_open),
-            selected = selectedState == AppNavigationState.QUIZ_LIST,
+            selected = selectedTab == NavigationTab.QUIZ_LIST,
             onClick = onQuizListClick,
             modifier = Modifier.weight(1f)
         )
@@ -69,7 +67,7 @@ fun AppNavigationBar(
             text = stringResource(R.string.profile_navigation_label),
             iconSelected = painterResource(R.drawable.ic_profile_colored),
             iconDefault = painterResource(R.drawable.ic_profile),
-            selected = selectedState == AppNavigationState.PROFILE,
+            selected = selectedTab == NavigationTab.PROFILE,
             onClick = onProfileClick,
             modifier = Modifier.weight(1f)
         )
@@ -78,7 +76,7 @@ fun AppNavigationBar(
             text = stringResource(R.string.settings_navigation_label),
             iconSelected = painterResource(R.drawable.ic_settings_gear_colored),
             iconDefault = painterResource(R.drawable.ic_settings_gear),
-            selected = selectedState == AppNavigationState.SETTINGS,
+            selected = selectedTab == NavigationTab.SETTINGS,
             onClick = onSettingsClick,
             modifier = Modifier.weight(1f)
         )
@@ -122,7 +120,7 @@ private fun AppNavigationButton(
     }
 }
 
-enum class AppNavigationState {
+enum class NavigationTab {
     QUIZ_HUB,
     QUIZ_LIST,
     PROFILE,
@@ -132,10 +130,10 @@ enum class AppNavigationState {
 @Preview
 @Composable
 fun AppNavigationBarPreview(
-    @PreviewParameter(AppNavigationStateProvider::class) selectedState: AppNavigationState
+    @PreviewParameter(AppNavigationStateProvider::class) selectedState: NavigationTab
 ) {
     AppNavigationBar(
-        selectedState = selectedState,
+        selectedTab = selectedState,
         onQuizListClick = {},
         onQuizHubClick = {},
         onProfileClick = {},
@@ -144,12 +142,12 @@ fun AppNavigationBarPreview(
     )
 }
 
-class AppNavigationStateProvider: PreviewParameterProvider<AppNavigationState> {
+class AppNavigationStateProvider: PreviewParameterProvider<NavigationTab> {
     override val values =
         sequenceOf(
-            AppNavigationState.QUIZ_HUB,
-            AppNavigationState.QUIZ_LIST,
-            AppNavigationState.PROFILE,
-            AppNavigationState.SETTINGS
+            NavigationTab.QUIZ_HUB,
+            NavigationTab.QUIZ_LIST,
+            NavigationTab.PROFILE,
+            NavigationTab.SETTINGS
         )
 }

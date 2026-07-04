@@ -28,6 +28,12 @@ class Dimensions {
 
         // Quiz Create
         val InputFieldButtonSpacing = 10.dp
+        val DescriptionFieldMaxHeight = 183.dp
+        val NextButtonIconSize = 18.dp
+        val NextButtonLabelFontSize = 16.sp
+
+        // Quiz List
+        val QuizItemTitleFontSize = 24.sp
 
         // Quiz Solve
         val AnswerVariantCardRadius = 16.dp

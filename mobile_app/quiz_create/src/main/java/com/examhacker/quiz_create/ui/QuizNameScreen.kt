@@ -1,19 +1,21 @@
 package com.examhacker.quiz_create.ui
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -21,17 +23,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import com.examhacker.common.ui.AppNavigationBar
-import com.examhacker.common.ui.AppNavigationState
+import com.examhacker.common.ui.NavigationTab
 import com.examhacker.common.ui.ScreenTitle
 import com.examhacker.resources.ColorPreset
 import com.examhacker.quiz_create.component.IQuizNameComponent
@@ -48,8 +50,9 @@ internal fun QuizNameScreen(
 
     QuizNameUI(
         model = model,
-        onTitleChange = component::onNameChange,
+        onNameChange = component::onNameChange,
         onDescriptionChange = component::onDescriptionChange,
+        isNextEnabled = component::isNextEnabled,
         onNextClick = component::onNextClick
     )
 }
@@ -57,8 +60,9 @@ internal fun QuizNameScreen(
 @Composable
 private fun QuizNameUI(
     model: IQuizNameComponent.Model,
-    onTitleChange: (String) -> Unit,
+    onNameChange: (String) -> Unit,
     onDescriptionChange: (String) -> Unit,
+    isNextEnabled: () -> Boolean,
     onNextClick: () -> Unit
 ) {
     Scaffold(
@@ -75,7 +79,7 @@ private fun QuizNameUI(
         },
         bottomBar = {
             AppNavigationBar(
-                selectedState = AppNavigationState.QUIZ_LIST,
+                selectedTab = NavigationTab.QUIZ_LIST,
                 onQuizListClick = {},
                 onQuizHubClick = {},
                 onProfileClick = {},
@@ -89,6 +93,8 @@ private fun QuizNameUI(
     ) { contentPadding ->
 
         Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(contentPadding)
@@ -101,83 +107,15 @@ private fun QuizNameUI(
                 modifier = Modifier.fillMaxWidth()
             )
 
-            Spacer(modifier = Modifier.height(32.dp))
-
-            OutlinedTextField(
-                value = model.name,
-                onValueChange = onTitleChange,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(107.dp),
-                shape = RoundedCornerShape(16.dp),
-                placeholder = {
-                    Text(
-                        text = "Quiz title",
-                        color = ColorPreset.Gray
-                    )
-                },
-                singleLine = true,
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = ColorPreset.Background,
-                    unfocusedContainerColor = ColorPreset.Background,
-                    focusedBorderColor = ColorPreset.LightGray,
-                    unfocusedBorderColor = ColorPreset.LightGray,
-                    focusedTextColor = ColorPreset.Black,
-                    unfocusedTextColor = ColorPreset.Black
-                )
+            InputWithSubmitButton(
+                name = model.name,
+                description = model.description,
+                onNameChange = onNameChange,
+                onDescriptionChange = onDescriptionChange,
+                onNextClick = onNextClick,
+                isNextEnabled = isNextEnabled,
+                modifier = Modifier.fillMaxWidth()
             )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            OutlinedTextField(
-                value = model.description,
-                onValueChange = onDescriptionChange,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(107.dp),
-                shape = RoundedCornerShape(16.dp),
-                placeholder = {
-                    Text(
-                        text = "Quiz description",
-                        color = ColorPreset.Gray
-                    )
-                },
-                singleLine = false,
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = ColorPreset.Background,
-                    unfocusedContainerColor = ColorPreset.Background,
-                    focusedBorderColor = ColorPreset.LightGray,
-                    unfocusedBorderColor = ColorPreset.LightGray,
-                    focusedTextColor = ColorPreset.Black,
-                    unfocusedTextColor = ColorPreset.Black
-                )
-            )
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            OutlinedButton(
-                onClick = onNextClick,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(48.dp),
-                shape = RoundedCornerShape(16.dp),
-                border = BorderStroke(
-                    width = 1.dp,
-                    color = ColorPreset.Green
-                ),
-                colors = ButtonDefaults.outlinedButtonColors(
-                    containerColor = ColorPreset.LightGreen,
-                    contentColor = ColorPreset.Black
-                ),
-                contentPadding = PaddingValues(16.dp)
-            ) {
-                Text(
-                    text = "Next",
-                    fontSize = 16.sp
-                )
-            }
-
-            Spacer(modifier = Modifier.height(12.dp))
         }
     }
 }
@@ -188,6 +126,8 @@ private fun InputWithSubmitButton(
     description: String,
     onNameChange: (String) -> Unit,
     onDescriptionChange: (String) -> Unit,
+    onNextClick: () -> Unit,
+    isNextEnabled: () -> Boolean,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -208,11 +148,17 @@ private fun InputWithSubmitButton(
             onValueChange = onDescriptionChange,
             placeholderText = stringResource(R.string.quiz_description_input_placeholder),
             isSingleLine = false,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(Dimensions.DescriptionFieldMaxHeight)
         )
         Spacer(Modifier.height(Dimensions.InputFieldButtonSpacing))
 
-
+        SubmitButton(
+            onNextClick = onNextClick,
+            isNextEnabled = isNextEnabled,
+            modifier = Modifier.fillMaxWidth()
+        )
     }
 }
 
@@ -253,6 +199,47 @@ private fun InputField(
     )
 }
 
+@Composable
+private fun SubmitButton(
+    onNextClick: () -> Unit,
+    isNextEnabled: () -> Boolean,
+    modifier: Modifier = Modifier
+) {
+    Button(
+        onClick = onNextClick,
+        enabled = isNextEnabled(),
+        shape = RoundedCornerShape(Dimensions.NavigationButtonRadius),
+        modifier = modifier,
+        contentPadding = PaddingValues(Dimensions.ScreenPadding),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = ColorPreset.PositivePrimary,
+            disabledContentColor = ColorPreset.PositivePrimary,
+
+            contentColor = ColorPreset.BackgroundDefaultPrimary,
+            disabledContainerColor = ColorPreset.BackgroundDefaultPrimary
+        )
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(Dimensions.NavigationButtonPadding)
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.ic_play),
+                contentDescription = "",
+                modifier = Modifier.size(Dimensions.NextButtonIconSize)
+            )
+
+            Text(
+                text = stringResource(R.string.next),
+                style = TextStyle(
+                    fontSize = Dimensions.NextButtonLabelFontSize,
+                    fontWeight = FontWeight.Normal
+                )
+            )
+        }
+    }
+}
+
 @Preview(
     device = Devices.DEFAULT,
     showBackground = true
@@ -261,8 +248,9 @@ private fun InputField(
 private fun QuizNameScreenPreview() {
     QuizNameUI(
         model = IQuizNameComponent.Model(),
-        onTitleChange = {},
+        onNameChange = {},
         onDescriptionChange = {},
+        isNextEnabled = { true },
         onNextClick = {}
     )
 }
