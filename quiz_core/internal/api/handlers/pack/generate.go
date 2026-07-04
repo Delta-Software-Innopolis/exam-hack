@@ -133,7 +133,13 @@ func GeneratePack(c *gin.Context) {
 
 	log.Println("sending request to llm service...")
 
-	reqBody := LLMGenerateRequest{Text: text, Type: pack_req.Type, Count: pack_req.Count}
+	question_count, err := strconv.Atoi(pack_req.Count)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "couldnt parse count into integer: " + pack_req.Count})
+		return
+	}
+
+	reqBody := LLMGenerateRequest{Text: text, Type: pack_req.Type, Count: question_count}
 
 	jsonData, err := json.Marshal(reqBody)
 	if err != nil {
