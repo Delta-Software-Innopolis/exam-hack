@@ -13,6 +13,7 @@ import type { Card } from '@/types';
 import { fetchCreateQuiz } from '@/core';
 import { useRouter } from 'vue-router';
 import { generateCards } from '@/generation';
+import SettingsDialog from '@/components/SettingsDialog.vue';
 
 
 const router = useRouter()
@@ -25,11 +26,15 @@ const questions: Ref<Card[]> = ref([])
 const overlayClass = ref({'hidden-overlay': true})
 const showOverlay = ref(false)
 const allowGenerate = ref(false)
+const onGenerationSettings = ref(false)
+
+const allowMultipleCorrects = ref(true)
+const generateQuestionsNumber = ref(10)
 
 const currentStep = ref(1)
 
 
-async function onGenerate() {
+async function onGenerateConfirm() {
     if (uploadedFiles.value.length == 0) {
         alert('upload at list one file')
         return
@@ -40,8 +45,14 @@ async function onGenerate() {
             alert('first file undefined')
         } else {
             try {
+                onGenerationSettings.value = false
                 openLoadingOverlay()
-                const result = await generateCards(file, quizTitle.value, "multiple_choice", 10);
+                const result = await generateCards(
+                    uploadedFiles.value,
+                    quizTitle.value,
+                    allowMultipleCorrects.value ? "multiple_choice" : "single_answer",
+                    generateQuestionsNumber.value
+                );
                 console.log("GOT RESULT", result)
                 questions.value = questions.value.concat(result.cards)
             } catch (err) {
@@ -51,6 +62,11 @@ async function onGenerate() {
         if (currentStep.value < 3) { nextStep() }
     }
     closeLoadingOverlay()
+}
+
+async function onGenerate() {
+    onGenerationSettings.value = true
+    openOverlay()
 }
 
 
@@ -221,6 +237,12 @@ async function onFinishCreation() {
 
     <div ref="overlay" class="overlay" v-if="showOverlay" :class="overlayClass">
 
+        <SettingsDialog v-if="onGenerationSettings"
+            v-model:allow-multiple-corrects="allowMultipleCorrects"
+            v-model:number-of-questions="generateQuestionsNumber"
+            @click-close="closeOverlay"
+            @click-generate="onGenerateConfirm"
+        />
         <div class="question-edit-window" v-if="activeQuestionId != -1">
             <div class="top-line">
                 <h3 v-if="newQuestion">Add {{ activeQuestionId }}th Question</h3>

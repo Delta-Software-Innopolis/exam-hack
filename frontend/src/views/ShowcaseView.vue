@@ -7,6 +7,7 @@
   import EditQuestion from '@/components/newBasic/EditQuestion.vue';
   import NavigationSidebar from '@/components/NavigationSidebar.vue';
   import { ref } from 'vue';
+import SettingsDialog from '@/components/SettingsDialog.vue';
 
   const quiz = ref({ id: 1, name: "Quiz Name", author: "User", variant: "white" });
   const option1 = ref({ option: "Option 1", isCorrect: false });
@@ -35,6 +36,7 @@
     <QuizOption variant="green">Option 2: option description</QuizOption>
     <QuizOption variant="red">Option 3: option description</QuizOption>
     <EditQuestion :index="question.index" :question="question.text"></EditQuestion>
+    <SettingsDialog></SettingsDialog>
   </div>
 </template>
 

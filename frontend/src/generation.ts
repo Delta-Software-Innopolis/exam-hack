@@ -8,7 +8,7 @@ interface GenerateCardsResponse {
 }
 
 export async function generateCards(
-  document: File,
+  documents: File[],
   name: string,
   cardType: CardType,
   count = 5
@@ -17,7 +17,9 @@ export async function generateCards(
 
   const formData = new FormData();
   formData.append("name", name);
-  formData.append("files", document);
+  documents.forEach((doc)=>{
+    formData.append("files", doc);
+  })
   formData.append("card_type", cardType);
   formData.append("count", count.toString());
 
