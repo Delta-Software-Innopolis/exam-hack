@@ -1,21 +1,16 @@
 package com.examhacker.quiz_create.ui
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedButton
@@ -25,32 +20,35 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.tooling.preview.Preview
-import com.arkivanov.decompose.value.MutableValue
-import com.arkivanov.decompose.value.Value
-import com.examhacker.resources.ColorPreset
 import androidx.compose.ui.Alignment
-import androidx.compose.material3.Surface
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.Icon
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Devices
+import androidx.compose.ui.tooling.preview.Preview
+import com.examhacker.common.ui.AppNavigationBar
+import com.examhacker.common.ui.AppNavigationState
+import com.examhacker.common.ui.ScreenTitle
+import com.examhacker.resources.ColorPreset
 import com.examhacker.quiz_create.component.IQuizNameComponent
+import com.examhacker.quiz_create.ui.common.CreationStage
+import com.examhacker.quiz_create.ui.common.QuizCreationTopBar
+import com.examhacker.resources.Dimensions
+import com.examhacker.resources.R
 
 @Composable
-fun QuizNameScreen(
+internal fun QuizNameScreen(
     component: IQuizNameComponent
 ) {
     val model by component.model.subscribeAsState()
 
     QuizNameUI(
         model = model,
-        onTitleChange = component::onTitleChange,
+        onTitleChange = component::onNameChange,
         onDescriptionChange = component::onDescriptionChange,
         onNextClick = component::onNextClick
     )
@@ -64,39 +62,49 @@ private fun QuizNameUI(
     onNextClick: () -> Unit
 ) {
     Scaffold(
+        topBar = {
+            QuizCreationTopBar(
+                creationStage = CreationStage.NAME,
+                onBackClick = {},
+                onForthClick = {},
+                isForthEnabled = false,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .statusBarsPadding()
+            )
+        },
+        bottomBar = {
+            AppNavigationBar(
+                selectedState = AppNavigationState.QUIZ_LIST,
+                onQuizListClick = {},
+                onQuizHubClick = {},
+                onProfileClick = {},
+                onSettingsClick = {},
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .navigationBarsPadding()
+            )
+        },
         containerColor = ColorPreset.Background
-    ) { padding ->
+    ) { contentPadding ->
 
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
+                .padding(contentPadding)
                 .padding(16.dp)
                 .statusBarsPadding()
         ) {
-
-            QuizProgressHeader(1)
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            Text(
-                text = "Name your new quiz",
-                fontSize = 28.sp,
-                fontWeight = FontWeight.Bold
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text(
-                text = "Everything starts with a name, right?",
-                color = ColorPreset.Gray,
-                fontSize = 16.sp
+            ScreenTitle(
+                text = stringResource(R.string.quiz_name_title),
+                horizontalArrangement = Arrangement.Start,
+                modifier = Modifier.fillMaxWidth()
             )
 
             Spacer(modifier = Modifier.height(32.dp))
 
             OutlinedTextField(
-                value = model.title,
+                value = model.name,
                 onValueChange = onTitleChange,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -175,152 +183,86 @@ private fun QuizNameUI(
 }
 
 @Composable
-private fun ProgressDot(
-    active: Boolean
+private fun InputWithSubmitButton(
+    name: String,
+    description: String,
+    onNameChange: (String) -> Unit,
+    onDescriptionChange: (String) -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    Box(
-        modifier = Modifier
-            .size(16.dp)
-            .clip(CircleShape)
-            .background(
-                if (active)
-                    ColorPreset.Turquoise
-                else
-                    ColorPreset.LightGray
-            )
-    )
-}
-
-@Composable
-private fun ProgressLine(
-    active: Boolean
-) {
-    Box(
-        modifier = Modifier
-            .width(32.dp)
-            .height(4.dp)
-            .clip(RoundedCornerShape(4.dp))
-            .background(
-                if (active)
-                    ColorPreset.Turquoise
-                else
-                    ColorPreset.LightGray
-            )
-    )
-}
-@Composable
-fun QuizProgressHeader(
-    currentStep: Int
-) {
-
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(48.dp)
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        InputField(
+            value = name,
+            onValueChange = onNameChange,
+            placeholderText = stringResource(R.string.quiz_name_input_placeholder),
+            isSingleLine = true,
+            modifier = Modifier.fillMaxWidth()
+        )
+        Spacer(Modifier.height(Dimensions.ScreenPadding))
 
-        Surface(
-            modifier = Modifier
-                .size(48.dp)
-                .align(Alignment.CenterStart),
-            shape = RoundedCornerShape(16.dp),
-            color = ColorPreset.BackgroundDefaultPrimary,
-            shadowElevation = 4.dp
-        ) {
+        InputField(
+            value = description,
+            onValueChange = onDescriptionChange,
+            placeholderText = stringResource(R.string.quiz_description_input_placeholder),
+            isSingleLine = false,
+            modifier = Modifier.fillMaxWidth()
+        )
+        Spacer(Modifier.height(Dimensions.InputFieldButtonSpacing))
 
-            Box(
-                contentAlignment = Alignment.Center
-            ) {
 
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = null,
-                    tint = ColorPreset.LightGray,
-                    modifier = Modifier.size(32.dp)
-                )
-            }
-        }
-
-        Surface(
-            modifier = Modifier
-                .width(208.dp)
-                .height(48.dp)
-                .align(Alignment.Center),
-            shape = RoundedCornerShape(16.dp),
-            color = ColorPreset.BackgroundDefaultPrimary,
-            shadowElevation = 4.dp
-        ) {
-
-            Row(
-                modifier = Modifier.fillMaxSize(),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-
-                ProgressDot(
-                    active = currentStep >= 1
-                )
-
-                Spacer(
-                    modifier = Modifier.width(8.dp)
-                )
-
-                ProgressLine(
-                    active = currentStep >= 2
-                )
-
-                Spacer(
-                    modifier = Modifier.width(8.dp)
-                )
-
-                ProgressDot(
-                    active = currentStep >= 2
-                )
-
-                Spacer(
-                    modifier = Modifier.width(8.dp)
-                )
-
-                ProgressLine(
-                    active = currentStep >= 3
-                )
-
-                Spacer(
-                    modifier = Modifier.width(8.dp)
-                )
-
-                ProgressDot(
-                    active = currentStep >= 3
-                )
-            }
-        }
     }
 }
 
+@Composable
+private fun InputField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    placeholderText: String,
+    isSingleLine: Boolean,
+    modifier: Modifier = Modifier
+) {
+    OutlinedTextField(
+        value = value,
+        onValueChange = onValueChange,
+        modifier = modifier,
+        shape = RoundedCornerShape(Dimensions.InputFieldRadius),
+        singleLine = isSingleLine,
+        placeholder = {
+            Text(
+                text = placeholderText,
+                style = TextStyle(
+                    fontSize = Dimensions.InputLabelFontSize,
+                    fontWeight = FontWeight.Normal,
+                    color = ColorPreset.Secondary
+                )
+            )
+        },
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedContainerColor = ColorPreset.BackgroundDefaultPrimary,
+            unfocusedContainerColor = ColorPreset.BackgroundDefaultPrimary,
+
+            focusedBorderColor = ColorPreset.Secondary,
+            unfocusedBorderColor = ColorPreset.Secondary,
+
+            focusedTextColor = ColorPreset.Black,
+            unfocusedTextColor = ColorPreset.Black
+        )
+    )
+}
+
 @Preview(
-    widthDp = 393,
-    heightDp = 836,
+    device = Devices.DEFAULT,
     showBackground = true
 )
 @Composable
 private fun QuizNameScreenPreview() {
-
-    QuizNameScreen(
-        component = object : IQuizNameComponent {
-
-            override val model: Value<IQuizNameComponent.Model> =
-                MutableValue(
-                    IQuizNameComponent.Model(
-                        title = "",
-                        description = ""
-                    )
-                )
-
-            override fun onTitleChange(title: String) {}
-
-            override fun onDescriptionChange(description: String) {}
-
-            override fun onNextClick() {}
-        }
+    QuizNameUI(
+        model = IQuizNameComponent.Model(),
+        onTitleChange = {},
+        onDescriptionChange = {},
+        onNextClick = {}
     )
 }

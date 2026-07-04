@@ -5,20 +5,20 @@ import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update   // <--- ДОБАВИЛИ
 
-interface IQuizNameComponent {
+internal interface IQuizNameComponent {
     val model: Value<Model>
 
     data class Model(
-        val title: String = "",
+        val name: String = "",
         val description: String = ""
     )
 
-    fun onTitleChange(title: String)
+    fun onNameChange(name: String)
     fun onDescriptionChange(description: String)
     fun onNextClick()
 }
 
-class QuizNameComponent(
+internal class QuizNameComponent(
     componentContext: ComponentContext,
     private val onNext: () -> Unit
 ) : IQuizNameComponent, ComponentContext by componentContext {
@@ -26,8 +26,8 @@ class QuizNameComponent(
     private val _model = MutableValue(IQuizNameComponent.Model())
     override val model: Value<IQuizNameComponent.Model> = _model
 
-    override fun onTitleChange(title: String) {
-        _model.update { it.copy(title = title) }
+    override fun onNameChange(name: String) {
+        _model.update { it.copy(name = name) }
     }
 
     override fun onDescriptionChange(description: String) {
@@ -35,8 +35,8 @@ class QuizNameComponent(
     }
 
     override fun onNextClick() {
-        if (model.value.title.isNotBlank()) {
-            onNext.invoke()
+        if (model.value.name.isNotBlank()) {
+            onNext()
         }
     }
 }

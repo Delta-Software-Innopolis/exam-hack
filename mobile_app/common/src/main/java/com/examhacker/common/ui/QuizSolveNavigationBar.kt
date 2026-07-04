@@ -3,7 +3,6 @@ package com.examhacker.common.ui
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,13 +33,13 @@ fun QuizSolveNavigationBar(
         onLeftClick?.let {
             QuizSolveNavigationButton(
                 onClick = it,
-                icon = painterResource(R.drawable.ic_arrow_left)
+                icon = painterResource(R.drawable.ic_chevron_arrow_left)
             )
         }
 
         QuizSolveNavigationButton(
             onClick = onHintClick,
-            icon = painterResource(R.drawable.ic_bulb),
+            icon = painterResource(R.drawable.ic_gradient_star),
             borderStroke = BorderStroke(
                 width = Dimensions.ThickBorderWidth,
                 brush = ColorPreset.AIBackground
@@ -62,7 +61,7 @@ fun QuizSolveNavigationBar(
         onRightClick?.let {
             QuizSolveNavigationButton(
                 onClick = onRightClick,
-                icon = painterResource(R.drawable.ic_arrow_right)
+                icon = painterResource(R.drawable.ic_chevron_arrow_right)
             )
         }
     }

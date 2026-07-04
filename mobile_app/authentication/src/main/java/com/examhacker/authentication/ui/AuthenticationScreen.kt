@@ -260,7 +260,7 @@ fun SubmitAndSwitchModeButtons(
                 text = submitLabel,
                 style = TextStyle(
                     fontWeight = FontWeight.Normal,
-                    fontSize = Dimensions.AuthLabelFontSize
+                    fontSize = Dimensions.InputLabelFontSize
                 )
             )
         }
@@ -283,7 +283,7 @@ fun SubmitAndSwitchModeButtons(
                 text = switchModeLabel,
                 style = TextStyle(
                     fontWeight = FontWeight.Normal,
-                    fontSize = Dimensions.AuthLabelFontSize
+                    fontSize = Dimensions.InputLabelFontSize
                 )
             )
         }
@@ -303,7 +303,7 @@ private fun InputTextField(
     val textStyle = remember {
         TextStyle(
             fontWeight = FontWeight.Normal,
-            fontSize = Dimensions.AuthLabelFontSize
+            fontSize = Dimensions.InputLabelFontSize
         )
     }
 

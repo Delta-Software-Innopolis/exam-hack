@@ -28,7 +28,7 @@ import com.examhacker.quiz_create.component.IQuizGenerateComponent
 import com.examhacker.resources.ColorPreset
 
 @Composable
-fun QuizGenerateScreen(
+internal fun QuizGenerateScreen(
     component: IQuizGenerateComponent
 ) {
     QuizGenerateUI()
@@ -47,13 +47,6 @@ private fun QuizGenerateUI() {
                 .padding(16.dp)
                 .statusBarsPadding()
         ) {
-
-            QuizProgressHeader(
-                currentStep = 2
-            )
-
-            Spacer(modifier = Modifier.height(32.dp))
-
             Text(
                 text = "Use AI to generate questions",
                 fontSize = 28.sp,

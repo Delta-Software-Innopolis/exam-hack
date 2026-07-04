@@ -53,8 +53,8 @@ fun QuizListScreen(
 
         bottomBar = {
             AppNavigationBar(
-                selectedIndex = 0,
-                onQuizClick = {},
+                selectedState = 0,
+                onQuizListClick = {},
                 onQuizHubClick = component::goToQuizHub,
                 onProfileClick = component::goToProfile,
                 onSettingsClick = component::goToSettings,
@@ -123,7 +123,7 @@ private fun QuizListScreenPreview() {
 
         bottomBar = {
             AppNavigationBar(
-                selectedIndex = 0,
+                selectedState = 0,
                 modifier = Modifier
                     .fillMaxWidth()
                     .systemBarsPadding()

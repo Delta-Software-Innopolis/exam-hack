@@ -1,34 +1,35 @@
 package com.examhacker.common.ui
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.examhacker.resources.ColorPreset
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Icon
-import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.Button
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import com.examhacker.resources.Dimensions
 import com.examhacker.resources.R
 
 @Composable
 fun AppNavigationBar(
-    selectedIndex: Int,
-    onQuizClick: () -> Unit = {},
+    selectedState: AppNavigationState,
+    onQuizListClick: () -> Unit = {},
     onQuizHubClick: () -> Unit = {},
     onProfileClick: () -> Unit = {},
     onSettingsClick: () -> Unit = {},
@@ -38,79 +39,117 @@ fun AppNavigationBar(
     Row(
         modifier = modifier
             .background(ColorPreset.BackgroundDefaultPrimary)
-            .border(
-                width = 1.dp,
-                color = ColorPreset.BorderDefault
-            )
-            .padding(vertical = 8.dp)
-            .height(88.dp),
-        horizontalArrangement = Arrangement.SpaceEvenly,
+            .padding(
+                vertical = Dimensions.AppNavigationPaddingVertical,
+                horizontal = Dimensions.AppNavigationPaddingHorizontal
+            ),
+        horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
 
-        NavigationItem(
-            text = "QuizHub",
-            icon = painterResource(R.drawable.search_magnifying_glass),
-            selected = selectedIndex == 1,
-            onClick = onQuizHubClick
+        AppNavigationButton(
+            text = stringResource(R.string.quiz_hub_navigation_label),
+            iconSelected =  painterResource(R.drawable.ic_search_magnifying_glass_colored),
+            iconDefault = painterResource(R.drawable.ic_search_magnifying_glass),
+            selected = selectedState == AppNavigationState.QUIZ_HUB,
+            onClick = onQuizHubClick,
+            modifier = Modifier.weight(1f)
         )
 
-        NavigationItem(
-            text = "Quizzes",
-            icon =
-            if (selectedIndex == 0)
-                painterResource(R.drawable.ic_book_open_colored)
-            else
-                painterResource(R.drawable.ic_book_open),
-            selected = selectedIndex == 0,
-            onClick = onQuizClick
+        AppNavigationButton(
+            text = stringResource(R.string.quiz_list_navigation_label),
+            iconSelected = painterResource(R.drawable.ic_book_open_colored),
+            iconDefault = painterResource(R.drawable.ic_book_open),
+            selected = selectedState == AppNavigationState.QUIZ_LIST,
+            onClick = onQuizListClick,
+            modifier = Modifier.weight(1f)
         )
 
-        NavigationItem(
-            text = "Profile",
-            icon = painterResource(R.drawable.user_02),
-            selected = selectedIndex == 2,
-            onClick = onProfileClick
+        AppNavigationButton(
+            text = stringResource(R.string.profile_navigation_label),
+            iconSelected = painterResource(R.drawable.ic_profile_colored),
+            iconDefault = painterResource(R.drawable.ic_profile),
+            selected = selectedState == AppNavigationState.PROFILE,
+            onClick = onProfileClick,
+            modifier = Modifier.weight(1f)
         )
 
-        NavigationItem(
-            text = "Settings",
-            icon = painterResource(R.drawable.settings_future),
-            selected = selectedIndex == 3,
-            onClick = onSettingsClick
+        AppNavigationButton(
+            text = stringResource(R.string.settings_navigation_label),
+            iconSelected = painterResource(R.drawable.ic_settings_gear_colored),
+            iconDefault = painterResource(R.drawable.ic_settings_gear),
+            selected = selectedState == AppNavigationState.SETTINGS,
+            onClick = onSettingsClick,
+            modifier = Modifier.weight(1f)
         )
     }
 }
 
 @Composable
-private fun NavigationItem(
+private fun AppNavigationButton(
     text: String,
-    icon: Painter,
+    iconSelected: Painter,
+    iconDefault: Painter,
     selected: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
-
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        modifier = Modifier.clickable(onClick = onClick)
+        verticalArrangement = Arrangement.spacedBy(Dimensions.NavigationButtonPadding),
+        modifier = modifier.clickable(onClick = onClick)
     ) {
-
         Image(
-            painter = icon,
-            contentDescription = null,
-            modifier = Modifier.size(34.dp)
+            painter =
+                if (selected)
+                    iconSelected
+                else
+                    iconDefault,
+            contentDescription = "",
+            modifier = Modifier.size(Dimensions.NavigationIconSize)
         )
 
         Text(
             text = text,
-            fontSize = 14.sp,
+            fontSize = Dimensions.AppNavigationLabelFontSize,
+            fontWeight = FontWeight.Normal,
             color =
                 if (selected)
                     ColorPreset.PositivePrimary
                 else
-                    ColorPreset.Secondary,
-            fontWeight = FontWeight.Normal
+                    ColorPreset.Secondary
         )
     }
+}
+
+enum class AppNavigationState {
+    QUIZ_HUB,
+    QUIZ_LIST,
+    PROFILE,
+    SETTINGS
+}
+
+@Preview
+@Composable
+fun AppNavigationBarPreview(
+    @PreviewParameter(AppNavigationStateProvider::class) selectedState: AppNavigationState
+) {
+    AppNavigationBar(
+        selectedState = selectedState,
+        onQuizListClick = {},
+        onQuizHubClick = {},
+        onProfileClick = {},
+        onSettingsClick = {},
+        modifier = Modifier.fillMaxWidth()
+    )
+}
+
+class AppNavigationStateProvider: PreviewParameterProvider<AppNavigationState> {
+    override val values =
+        sequenceOf(
+            AppNavigationState.QUIZ_HUB,
+            AppNavigationState.QUIZ_LIST,
+            AppNavigationState.PROFILE,
+            AppNavigationState.SETTINGS
+        )
 }

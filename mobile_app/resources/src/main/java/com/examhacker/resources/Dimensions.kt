@@ -9,18 +9,25 @@ class Dimensions {
         val ScreenPadding = 16.dp
         val DefaultBorderWidth = 1.dp
         val ThickBorderWidth = 2.dp
+        val InputFieldRadius = 16.dp
         val NavigationButtonRadius = 16.dp
-        val NavigationButtonSize = 36.dp
+        val NavigationIconSize = 34.dp
         val NavigationButtonPadding = 8.dp
-        val ScreenTitleFontSize = 24.sp
+        val ScreenTitleFontSize = 32.sp
+        val InputLabelFontSize = 16.sp
+
+        // AppNavigationBar
+        val AppNavigationPaddingVertical = 8.dp
+        val AppNavigationPaddingHorizontal = 24.dp
+        val AppNavigationLabelFontSize = 14.sp
 
         // Authentication
         val InputFieldsSpacing = 16.dp
         val AuthScreenSpacing = 32.dp
-        val PlaceHolderImageTopPadding = 90.dp
-        val InputFieldRadius = 16.dp
         val AuthButtonPadding = 14.dp
-        val AuthLabelFontSize = 16.sp
+
+        // Quiz Create
+        val InputFieldButtonSpacing = 10.dp
 
         // Quiz Solve
         val AnswerVariantCardRadius = 16.dp

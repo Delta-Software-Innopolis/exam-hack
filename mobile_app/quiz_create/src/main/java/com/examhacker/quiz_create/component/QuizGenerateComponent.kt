@@ -2,12 +2,12 @@ package com.examhacker.quiz_create.component
 
 import com.arkivanov.decompose.ComponentContext
 
-interface IQuizGenerateComponent {
+internal interface IQuizGenerateComponent {
     val hasFiles: Boolean
     fun addFile()
 }
 
-class QuizGenerateComponent(
+internal class QuizGenerateComponent(
     componentContext: ComponentContext
 ) : IQuizGenerateComponent, ComponentContext by componentContext {
 

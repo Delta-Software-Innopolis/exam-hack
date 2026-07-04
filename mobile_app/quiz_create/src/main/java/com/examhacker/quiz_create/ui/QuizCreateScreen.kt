@@ -15,7 +15,7 @@ fun QuizCreateScreen(component: IQuizCreateComponent) {
         when(val child = it.instance) {
             is IQuizCreateComponent.Child.Name     -> QuizNameScreen(child.component)
             is IQuizCreateComponent.Child.Generate -> QuizGenerateScreen(child.component)
-            is IQuizCreateComponent.Child.Edit     -> QuizEditScreen(child.component)
+            is IQuizCreateComponent.Child.Edit     -> QuizReviewScreen(child.component)
         }
     }
 }
