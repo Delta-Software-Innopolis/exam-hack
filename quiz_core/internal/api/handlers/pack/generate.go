@@ -20,10 +20,18 @@ import (
 )
 
 type GeneratePackRequest struct {
-	Name string `form:"name" binding:"required"`
+	Name  string `form:"name"      binding:"required"`
+	Type  string `form:"card_type" binding:"required"`
+	Count string `form:"count"     binding:"required"`
 }
 
-type GenerateResponse struct {
+type LLMGenerateRequest struct {
+	Text  string `json:"name"      binding:"required"`
+	Type  string `json:"card_type" binding:"required"`
+	Count int    `json:"count"     binding:"required"`
+}
+
+type LLMGenerateResponse struct {
 	Cards []CardOut `json:"cards"`
 }
 
@@ -124,10 +132,8 @@ func GeneratePack(c *gin.Context) {
 	}
 
 	log.Println("sending request to llm service...")
-	NO_OF_QUESTIONS := 10
-	CARD_TYPE := "multiple_choice"
 
-	reqBody := map[string]string{"text": text, "card_type": CARD_TYPE, "count": strconv.Itoa(NO_OF_QUESTIONS)}
+	reqBody := LLMGenerateRequest{Text: text, Type: pack_req.Type, Count: pack_req.Count}
 
 	jsonData, err := json.Marshal(reqBody)
 	if err != nil {
@@ -171,7 +177,7 @@ func GeneratePack(c *gin.Context) {
 		return
 	}
 
-	var generateResp GenerateResponse
+	var generateResp LLMGenerateResponse
 	if err := json.Unmarshal(body, &generateResp); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
