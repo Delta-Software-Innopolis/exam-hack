@@ -7,20 +7,25 @@ import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.items
 import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.pushNew
+import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
+import com.arkivanov.decompose.value.update
+import com.examhacker.common.data.Quiz
 import kotlinx.serialization.Serializable
 
 interface IQuizCreateComponent {
     val stack: Value<ChildStack<*, Child>>
+    val model: Value<Model>
+
+    data class Model(
+        val quiz: Quiz = Quiz("", "", emptyList())
+    )
 
     sealed class Child {
         internal data class Name(val component: IQuizNameComponent) : Child()
         internal data class Generate(val component: IQuizGenerateComponent) : Child()
         internal data class Edit(val component: IQuizReviewComponent) : Child()
     }
-
-    fun goBack()
-    fun navigateToEdit()
 }
 
 class QuizCreateComponent(
@@ -29,8 +34,10 @@ class QuizCreateComponent(
     private val onFinish: () -> Unit
 ) : IQuizCreateComponent, ComponentContext by componentContext {
 
-    private val navigation = StackNavigation<Config>()
+    private val _model = MutableValue(IQuizCreateComponent.Model())
+    override val model = _model
 
+    private val navigation = StackNavigation<Config>()
     override val stack: Value<ChildStack<*, IQuizCreateComponent.Child>> =
         childStack(
             source = navigation,
@@ -46,7 +53,9 @@ class QuizCreateComponent(
                 IQuizCreateComponent.Child.Name(
                     QuizNameComponent(
                         componentContext = componentContext,
-                        onNext = ::navigateToGenerate
+                        goToGenerate = ::navigateToGenerate,
+                        updateName = ::updateQuizName,
+                        updateDescription = ::updateQuizDescription
                     )
                 )
 
@@ -57,7 +66,7 @@ class QuizCreateComponent(
                     )
                 )
 
-            is Config.Edit ->
+            is Config.Review ->
                 IQuizCreateComponent.Child.Edit(
                     QuizReviewComponent(
                         componentContext
@@ -65,15 +74,31 @@ class QuizCreateComponent(
                 )
         }
 
+    private fun updateQuizName(name: String) {
+        _model.update {
+            it.copy(
+                quiz = it.quiz.copy(name = name)
+            )
+        }
+    }
+
+    private fun updateQuizDescription(description: String) {
+        _model.update {
+            it.copy(
+                quiz = it.quiz.copy(description = description)
+            )
+        }
+    }
+
     private fun navigateToGenerate() {
         navigation.pushNew(Config.Generate)
     }
 
-    override fun navigateToEdit() {
-        navigation.pushNew(Config.Edit)
+    private fun navigateToReview() {
+        navigation.pushNew(Config.Review)
     }
 
-    override fun goBack() {
+    private fun goBack() {
         if (stack.items.size > 1) {
             navigation.pop()
         } else {
@@ -88,6 +113,6 @@ class QuizCreateComponent(
         @Serializable
         data object Generate: Config()
         @Serializable
-        data object Edit: Config()
+        data object Review: Config()
     }
 }

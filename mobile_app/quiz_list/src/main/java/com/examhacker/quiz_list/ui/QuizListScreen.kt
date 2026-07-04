@@ -25,6 +25,7 @@ import com.examhacker.resources.ColorPreset
 import com.examhacker.resources.Dimensions
 import androidx.compose.foundation.shape.CircleShape
 import com.examhacker.common.ui.AppNavigationBar
+import com.examhacker.common.ui.NavigationTab
 
 @Composable
 fun QuizListScreen(
@@ -53,7 +54,7 @@ fun QuizListScreen(
 
         bottomBar = {
             AppNavigationBar(
-                selectedState = 0,
+                selectedTab = NavigationTab.QUIZ_LIST,
                 onQuizListClick = {},
                 onQuizHubClick = component::goToQuizHub,
                 onProfileClick = component::goToProfile,
@@ -123,7 +124,7 @@ private fun QuizListScreenPreview() {
 
         bottomBar = {
             AppNavigationBar(
-                selectedState = 0,
+                selectedTab = NavigationTab.QUIZ_LIST,
                 modifier = Modifier
                     .fillMaxWidth()
                     .systemBarsPadding()

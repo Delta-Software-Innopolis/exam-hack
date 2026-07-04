@@ -44,7 +44,7 @@ fun QuizCard(
         ) {
             Text(
                 text = quizName,
-                fontSize = Dimensions.ScreenTitleFontSize,
+                fontSize = Dimensions.QuizItemTitleFontSize,
                 fontWeight = FontWeight.SemiBold
             )
 
@@ -56,7 +56,7 @@ fun QuizCard(
         }
 
         Icon(
-            painter = painterResource(R.drawable.icon_button),
+            painter = painterResource(R.drawable.ic_play),
             contentDescription = null,
             tint = ColorPreset.TextDefaultSecondary,
             modifier = Modifier.size(34.dp)

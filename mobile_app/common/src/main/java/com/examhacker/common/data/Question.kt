@@ -1,4 +1,4 @@
-package com.examhacker.common.utility
+package com.examhacker.common.data
 
 data class Question(
     val description: String,
