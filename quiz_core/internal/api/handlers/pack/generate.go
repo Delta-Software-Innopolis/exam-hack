@@ -26,7 +26,7 @@ type GeneratePackRequest struct {
 }
 
 type LLMGenerateRequest struct {
-	Text  string `json:"name"      binding:"required"`
+	Text  string `json:"text"      binding:"required"`
 	Type  string `json:"card_type" binding:"required"`
 	Count int    `json:"count"     binding:"required"`
 }
@@ -135,9 +135,14 @@ func GeneratePack(c *gin.Context) {
 
 	question_count, err := strconv.Atoi(pack_req.Count)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "couldnt parse count into integer: " + pack_req.Count})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "couldnt parse count into integer: " + pack_req.Count + "error: " + err.Error()})
 		return
 	}
+
+	log.Println("REQUEST BODY:")
+	log.Println("text length:", len(text))
+	log.Println("type:", pack_req.Type)
+	log.Println("count:", question_count)
 
 	reqBody := LLMGenerateRequest{Text: text, Type: pack_req.Type, Count: question_count}
 
@@ -179,7 +184,7 @@ func GeneratePack(c *gin.Context) {
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "error: LLM service returned non 200 status code"})
 		return
 	}
 
