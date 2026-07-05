@@ -14,6 +14,7 @@ class PublishedQuiz(BaseModel):
     id: PositiveInt
     author: Author
     rating: PositiveFloat|None
+    name: str
     subject: str
     university: str
     professor: str
@@ -30,3 +31,4 @@ class PublishedPackNew(BaseModel):
     university: str
     professor: str
     course_book: str
+

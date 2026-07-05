@@ -1,7 +1,8 @@
 from typing import TYPE_CHECKING
 
-from sqlalchemy import String, Text, DateTime, ForeignKey
+from sqlalchemy import String, Text, DateTime, ForeignKey, Computed, Index
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.dialects.postgresql import TSVECTOR
 from database import Base
 from datetime import datetime, timezone
 from .forks import forks
@@ -20,6 +21,20 @@ class Pack(Base):
     updating_date: Mapped[datetime|None] = mapped_column(DateTime(timezone=True), default=None)
     author_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
 
+    tsv_name: Mapped[TSVECTOR] = mapped_column(
+        TSVECTOR,
+        Computed(
+            """
+            setweight(to_tsvector('english', coalesce(name, '')), 'A')
+            """,
+            persisted=True
+        ),
+        nullable=False
+    )
     published: Mapped["Published_pack | None"] = relationship("Published_pack", back_populates="source", uselist=False, lazy="noload")
     cards: Mapped[list["Card"]] = relationship("Card", back_populates="pack")
     comments: Mapped[list["Comment"]] = relationship("Comment", back_populates="pack")
+
+    __table_args__ = (
+        Index("ix_name_tsv_gin", "tsv_name", postgresql_using="gin"),
+    )

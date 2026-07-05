@@ -1,7 +1,8 @@
 from typing import TYPE_CHECKING
 
-from sqlalchemy import String, Text, DateTime, ForeignKey, Float
+from sqlalchemy import String, Text, DateTime, ForeignKey, Float, Computed, Index
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.dialects.postgresql import TSVECTOR
 from database import Base
 from datetime import datetime, timezone
 from .forks import forks
@@ -20,10 +21,31 @@ class Published_pack(Base):
     university: Mapped[str] = mapped_column(String(100), index=True, nullable=False)
     professor: Mapped[str] = mapped_column(String(60), index=True, nullable=False)
     course_book: Mapped[str] = mapped_column(String(120), index=True)
+    description: Mapped[str|None] = mapped_column(Text, default=None, nullable=True)
     @property
     def name(self):
         return self.source.name
     
+    tsv_desc: Mapped[TSVECTOR] = mapped_column(
+        TSVECTOR,
+        Computed(
+            """
+            setweight(to_tsvector('english', coalesce(description, '')), 'D')
+            """,
+            persisted=True
+        ),
+        nullable=False
+    )
+    tsv_course_book: Mapped[TSVECTOR] = mapped_column(
+        TSVECTOR,
+        Computed(
+            """
+            setweight(to_tsvector('english', coalesce(course_book, '')), 'B')
+            """,
+            persisted=True
+        ),
+        nullable=False
+    )
 
     author: Mapped["User"] = relationship("User", back_populates="packs", uselist=False)
     source: Mapped["Pack"] = relationship("Pack", back_populates="published", uselist=False, lazy="noload")
@@ -39,5 +61,11 @@ class Published_pack(Base):
         secondary=forks, 
         primaryjoin="Published_pack.id == forks.c.original_id",
         secondaryjoin="Published_pack.id == forks.c.fork_id",
-        lazy="noload"
+        lazy="noload",
+        order_by="Published_pack.rating.desc().nulls_last()"
+    )
+
+    __table_args__ = (
+        Index("ix_desc_tsv_gin", "tsv_desc", postgresql_using="gin"),
+        Index("ix_course_book_tsv_gin", "tsv_course_book", postgresql_using="gin"),
     )
