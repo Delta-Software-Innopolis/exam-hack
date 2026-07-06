@@ -28,5 +28,16 @@
 	<string name="quiz_name_title">Create new Quiz</string>
 	<string name="quiz_name_input_placeholder">Enter Quiz name</string>
 	<string name="quiz_description_input_placeholder">Enter Quiz description</string>
-	<string name="next">Next</string>
+	<string name="next_button_label">Next</string>
+	<string name="use">Use</string>
+	<string name="ai">AI</string>
+	<string name="quiz_generate_title_lower_part">to generate questions</string>
+	<string name="quiz_generate_instruction_first">1. Upload files (presentations, books, notes)</string>
+	<string name="quiz_generate_instruction_second">2. AI will generate questions</string>
+	<string name="quiz_generate_instruction_third">3. Edit them as you want (on the next screen)</string>
+	<string name="file_input_label">Uploaded files</string>
+	<string name="file_input_placeholder">Nothing here yet</string>
+	<string name="add_file_button_label">Add files</string>
+	<string name="manual_creation_button_label">Skip</string>
+	<string name="ai_generation_button_label">Generate Questions</string>
 </resources>

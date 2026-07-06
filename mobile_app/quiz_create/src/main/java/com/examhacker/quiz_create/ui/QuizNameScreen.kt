@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -150,9 +151,9 @@ private fun InputWithSubmitButton(
             isSingleLine = false,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(Dimensions.DescriptionFieldMaxHeight)
+                .heightIn(min = Dimensions.DescriptionFieldMinHeight)
         )
-        Spacer(Modifier.height(Dimensions.InputFieldButtonSpacing))
+        Spacer(Modifier.height(Dimensions.InputButtonSpacing))
 
         SubmitButton(
             onNextClick = onNextClick,
@@ -208,7 +209,7 @@ private fun SubmitButton(
     Button(
         onClick = onNextClick,
         enabled = isNextEnabled(),
-        shape = RoundedCornerShape(Dimensions.NavigationButtonRadius),
+        shape = RoundedCornerShape(Dimensions.ButtonRadius),
         modifier = modifier,
         contentPadding = PaddingValues(Dimensions.ScreenPadding),
         colors = ButtonDefaults.buttonColors(
@@ -230,9 +231,9 @@ private fun SubmitButton(
             )
 
             Text(
-                text = stringResource(R.string.next),
+                text = stringResource(R.string.next_button_label),
                 style = TextStyle(
-                    fontSize = Dimensions.NextButtonLabelFontSize,
+                    fontSize = Dimensions.ButtonLabelFontSize,
                     fontWeight = FontWeight.Normal
                 )
             )
