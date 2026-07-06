@@ -40,4 +40,9 @@
 	<string name="add_file_button_label">Add files</string>
 	<string name="manual_creation_button_label">Skip</string>
 	<string name="ai_generation_button_label">Generate Questions</string>
+	<string name="generation_progress_dialog_title">Generating Questions</string>
+	<string name="generation_progress_dialog_subtitle_1">Analyzing sources…</string>
+	<string name="generation_progress_dialog_subtitle_2">Identifying core topics…</string>
+	<string name="generation_progress_dialog_subtitle_3">Laying preparation strategy…</string>
+	<string name="generation_progress_dialog_subtitle_4">Finishing up…</string>
 </resources>
