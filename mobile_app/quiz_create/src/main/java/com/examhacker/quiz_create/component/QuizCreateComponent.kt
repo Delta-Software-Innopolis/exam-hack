@@ -11,6 +11,7 @@ import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
 import com.examhacker.common.data.Quiz
+import com.examhacker.common.utility.FilePicker
 import kotlinx.serialization.Serializable
 
 interface IQuizCreateComponent {
@@ -30,6 +31,7 @@ interface IQuizCreateComponent {
 
 class QuizCreateComponent(
     componentContext: ComponentContext,
+    private val filePicker: FilePicker,
     private val back: () -> Unit,
     private val onFinish: () -> Unit
 ) : IQuizCreateComponent, ComponentContext by componentContext {
@@ -63,6 +65,8 @@ class QuizCreateComponent(
                 IQuizCreateComponent.Child.Generate(
                     QuizGenerateComponent(
                         componentContext = componentContext,
+                        filePicker = filePicker,
+                        toReview = ::navigateToReview,
                         back = ::goBack
                     )
                 )

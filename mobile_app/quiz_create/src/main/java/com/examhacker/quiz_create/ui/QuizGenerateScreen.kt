@@ -1,24 +1,25 @@
 package com.examhacker.quiz_create.ui
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedCard
@@ -38,13 +39,13 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.examhacker.resources.R
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
+import com.examhacker.common.data.PickedFile
 import com.examhacker.common.ui.AppNavigationBar
 import com.examhacker.common.ui.NavigationTab
 import com.examhacker.quiz_create.component.IQuizGenerateComponent
@@ -60,6 +61,7 @@ internal fun QuizGenerateScreen(component: IQuizGenerateComponent) {
     QuizGenerateUI(
         model = model,
         onAddFileClick = component::onAddFileClick,
+        onRemoveFileClick = component::onRemoveFileClick,
         onSkipClick = component::onSkipClick,
         onGenerateClick = component::onGenerateClick,
         goBack = component::goBack
@@ -70,6 +72,7 @@ internal fun QuizGenerateScreen(component: IQuizGenerateComponent) {
 private fun QuizGenerateUI(
     model: IQuizGenerateComponent.Model,
     onAddFileClick: () -> Unit,
+    onRemoveFileClick: (PickedFile) -> Unit,
     onSkipClick: () -> Unit,
     onGenerateClick: () -> Unit,
     goBack: () -> Unit
@@ -112,13 +115,21 @@ private fun QuizGenerateUI(
             ScreenTitleWithInstruction(Modifier.fillMaxWidth())
 
             FileInputWithButtons(
+                files = model.files,
                 onAddFileClick = onAddFileClick,
+                onRemoveFileClick = onRemoveFileClick,
                 onSkipClick = onSkipClick,
                 onGenerateClick = onGenerateClick,
                 modifier = Modifier.fillMaxWidth()
             )
         }
     }
+
+    if (model.isGenerationInProgress) {
+        GenerateProgressDialog()
+    }
+
+    BackHandler { goBack() }
 }
 
 @Composable
@@ -138,8 +149,9 @@ private fun ScreenTitleWithInstruction(
 
 @Composable
 private fun FileInputWithButtons(
-//    files: List<File>,
+    files: List<PickedFile>,
     onAddFileClick: () -> Unit,
+    onRemoveFileClick: (PickedFile) -> Unit,
     onSkipClick: () -> Unit,
     onGenerateClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -150,7 +162,9 @@ private fun FileInputWithButtons(
         modifier = modifier
     ) {
         FileInput(
+            files = files,
             onAddFileClick = onAddFileClick,
+            onRemoveFileClick = onRemoveFileClick,
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -181,8 +195,9 @@ private fun FileInputWithButtons(
 
 @Composable
 private fun FileInput(
-    //    files: List<File>,
+    files: List<PickedFile>,
     onAddFileClick: () -> Unit,
+    onRemoveFileClick: (PickedFile) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -198,26 +213,61 @@ private fun FileInput(
             textAlign = TextAlign.Start
         )
 
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(min = Dimensions.FileInputFieldMinHeight)
-                .background(
-                    color = ColorPreset.BackgroundVariant,
-                    shape = RoundedCornerShape(Dimensions.InputFieldRadius)
-                ).border(
-                    width = Dimensions.DefaultBorderWidth,
-                    color = ColorPreset.BorderDefault,
-                    shape = RoundedCornerShape(Dimensions.InputFieldRadius)
-                )
-        ) {
-            Text(
-                text = stringResource(R.string.file_input_placeholder),
-                fontSize = Dimensions.InputLabelFontSize,
-                fontWeight = FontWeight.Normal,
-                color = ColorPreset.TextDefaultSecondary
+        OutlinedCard(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(Dimensions.InputFieldRadius),
+            border = BorderStroke(
+                width = Dimensions.DefaultBorderWidth,
+                color = ColorPreset.BorderDefault
+            ),
+            colors = CardDefaults.outlinedCardColors(
+                containerColor = ColorPreset.BackgroundVariant,
+                disabledContainerColor = ColorPreset.BackgroundVariant
             )
+        ) {
+            if (files.isEmpty()) {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = Dimensions.FileInputFieldMinHeight)
+                ) {
+                    Text(
+                        text = stringResource(R.string.file_input_placeholder),
+                        fontSize = Dimensions.InputLabelFontSize,
+                        fontWeight = FontWeight.Normal,
+                        color = ColorPreset.TextDefaultSecondary
+                    )
+                }
+            } else {
+                LazyColumn(
+                    horizontalAlignment = Alignment.Start,
+                    verticalArrangement = Arrangement.spacedBy(Dimensions.FileListSpacing),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = Dimensions.FileInputFieldMinHeight)
+                        .padding(Dimensions.ScreenPadding)
+                ) {
+                    items(files) {
+                        Text(
+                            text = buildAnnotatedString {
+                                withStyle(SpanStyle(color = ColorPreset.BorderDangerTertiary)) {
+                                    append("X")
+                                }
+                                append("  ")
+                                withStyle(SpanStyle(color = ColorPreset.TextDefaultSecondary)) {
+                                    append(it.name)
+                                }
+                            },
+                            fontSize = Dimensions.InputLabelFontSize,
+                            fontWeight = FontWeight.Normal,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.clickable { onRemoveFileClick(it) }
+                        )
+                    }
+                }
+            }
         }
 
         DefaultOutlinedButton(
@@ -390,6 +440,7 @@ private fun QuizGenerateScreenPreview() {
     QuizGenerateUI(
         model = IQuizGenerateComponent.Model(),
         onAddFileClick = {},
+        onRemoveFileClick = {},
         onSkipClick = {},
         onGenerateClick = {},
         goBack = {}

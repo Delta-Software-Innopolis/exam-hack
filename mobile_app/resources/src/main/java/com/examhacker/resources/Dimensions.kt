@@ -35,8 +35,11 @@ class Dimensions {
         val FileInputElementSpacing = 8.dp
         val FileInputFieldMinHeight = 107.dp
         val GenerationButtonSpacing = 12.dp
+        val FileListSpacing = 10.dp
         val AIGenerateTitleLowerFontSize = 24.sp
         val GenerateInstructionFontSize = 16.sp
+        val GenerateDialogHorizontalPadding = 32.dp
+        val GenerateDialogRaius = 16.dp
 
         // Quiz List
         val QuizItemTitleFontSize = 24.sp

@@ -12,15 +12,15 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.examhacker.resources.R
 import com.examhacker.resources.ColorPreset
 
 @Deprecated("Not used in new design")
@@ -47,7 +47,7 @@ fun QuizCreationProgressBar(currentStep: Int) {
             ) {
 
                 Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    painter = painterResource(R.drawable.ic_arrow_left),
                     contentDescription = null,
                     tint = ColorPreset.LightGray,
                     modifier = Modifier.size(32.dp)
