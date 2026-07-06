@@ -82,3 +82,74 @@ async function __createCards(quiz_id: number, questions: Card[]): Promise<void> 
         throw new Error('something wrong with __createCards')
     }
 }
+
+export async function updateCards(cards: Card[]): Promise<boolean> {
+    const userStore = useUserStore()
+
+    try {
+        const response = await fetch(`${CORE_URL}/core/cards`, {
+            method: "PATCH",
+            headers: {
+                Authorization: `Bearer ${userStore.getAccessToken()}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                cards
+            })
+        })
+
+        return response.ok
+    } catch (err) {
+        console.error(err)
+        return false
+    }
+}
+
+export async function createCards(packId: number, cards: Card[]): Promise<boolean> {
+    const userStore = useUserStore()
+
+    try {
+        const response = await fetch(`${CORE_URL}/core/cards/${packId}`, {
+            method: "POST",
+            headers: {
+                Authorization: `Bearer ${userStore.getAccessToken()}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                cards: cards.map(card => ({
+                    question: card.question,
+                    hint: card.hint,
+                    options: card.options,
+                    correct: card.correct
+                }))
+            })
+        })
+
+        return response.ok
+    } catch (err) {
+        console.error(err)
+        return false
+    }
+}
+
+export async function deleteCards(cardIds: number[]): Promise<boolean> {
+    const userStore = useUserStore()
+
+    try {
+        const response = await fetch(`${CORE_URL}/core/cards`, {
+            method: "DELETE",
+            headers: {
+                Authorization: `Bearer ${userStore.getAccessToken()}`
+            },
+            body: JSON.stringify({
+                cards: cardIds
+            })
+        })
+
+        return response.ok
+    } catch (err) {
+        console.error(err)
+        return false
+    }
+}
+

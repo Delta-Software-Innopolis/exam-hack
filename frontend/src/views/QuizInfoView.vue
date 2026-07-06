@@ -9,11 +9,16 @@ import type { Card } from '@/types';
 import BasicInput from '@/components/newBasic/BasicInput.vue';
 import CrossSVG from '@/assets/Cross.svg'
 import CheckSVG from '@/assets/Check.svg'
+import { updateCards, createCards, deleteCards } from '@/core'
 
 const route = useRoute()
 const router = useRouter()
 const quizzesStore = useQuizzesStore()
 const quiz = quizzesStore.getQuizById(Number(route.params.quizId) as number)
+
+const hasUnsavedChanges = ref(false)
+const deletedCards = ref<number[]>([])
+const isSaving = ref(false)
 
 
 function notImplemented() {
@@ -77,12 +82,15 @@ function onStartEditQuestion(q_id: number) {
         newQuestion.value = false
         activeQuestion.value = q 
         activeQuestionId.value = q_id
+        
+
         openOverlay()
     }
 }
 
 function chooseCorrectOption(i: number) {
     activeQuestion.value.correct = [i]
+    hasUnsavedChanges.value = true
 }
 
 
@@ -97,14 +105,62 @@ onUnmounted(()=>{
 function onAddQuestion() {
     quiz.value.cards.push(activeQuestion.value)
     activeQuestion.value = structuredClone(NEW_QUESTION)
+    hasUnsavedChanges.value = true
     closeOverlay()
 }
 
 function onDeleteQuestion() {
+    const card = quiz.value.cards[activeQuestionId.value]
+
+    if (card.id > 0) {
+        deletedCards.value.push(card.id)
+    }
+
     quiz.value.cards.splice(activeQuestionId.value, 1)
     // for (const [i, card] of quiz.value.cards.entries()) { card.id = i+1 }  // fix the ids
     activeQuestion.value = structuredClone(NEW_QUESTION)
+    hasUnsavedChanges.value = true
     closeOverlay()
+}
+
+watch(
+    () => quiz.value,
+    () => {
+        if (!isSaving.value) {
+            hasUnsavedChanges.value = true
+        }
+    },
+    { deep: true }
+)
+
+async function submitChanges() {
+    isSaving.value = true
+
+    const updatedCards = quiz.value.cards.filter(card => card.id > 0)
+    const newCards = quiz.value.cards.filter(card => card.id < 0)
+
+    let ok = true
+
+    if (updatedCards.length > 0)
+        ok &&= await updateCards(updatedCards)
+
+    if (newCards.length > 0)
+        ok &&= await createCards(quiz.value.id, newCards)
+
+    if (deletedCards.value.length > 0)
+        ok &&= await deleteCards(deletedCards.value)
+
+    if (!ok) {
+        isSaving.value = false
+        alert("Couldn't save changes")
+        return
+    }
+
+    deletedCards.value = []
+    hasUnsavedChanges.value = false
+
+    await quizzesStore.fetchQuizzes()
+    isSaving.value = false
 }
 
 
@@ -176,7 +232,10 @@ function onDeleteQuestion() {
         <div class="right-side">
             <div class="top-action-bar">
                 <h2>Questions</h2>
-                <BasicButton variant="secondary" @click="onStartAddNewQuestion()">Add</BasicButton>
+                <div class="edit-quiz-buttons">
+                    <BasicButton variant="secondary" @click="onStartAddNewQuestion()">Add</BasicButton>
+                    <BasicButton v-if="hasUnsavedChanges" variant="primary" @click="submitChanges">Submit changes</BasicButton>
+                </div>
             </div>
             <div class="questions-wrapper">
                 <EditQuestion @click="onStartEditQuestion(i)" :index="i+1" :question="q.question" v-for="[i, q] in quiz.cards.entries()"/>
@@ -432,6 +491,12 @@ button a {
     border-radius: 16px;
     height: 100%;
     overflow-y: auto;
+}
+
+.edit-quiz-buttons {
+    display: flex;
+    gap: 12px;
+    align-items: center;
 }
 
 </style>
