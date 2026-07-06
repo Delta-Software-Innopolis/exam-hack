@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import { acceptHMRUpdate, defineStore } from 'pinia'
+import { defineStore } from 'pinia'
 
 import * as Auth from "@/auth"
 
