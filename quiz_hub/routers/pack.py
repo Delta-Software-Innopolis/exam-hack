@@ -10,8 +10,8 @@ from pydantic_models.published_quiz import PublishedQuizesResponse, PublishedPac
 from typing import Any
 from dependencies import validate_token
 router = APIRouter(
-    prefix="/posts",
-    tags=["posts"]
+    prefix="/packs",
+    tags=["packs"]
 )
 
 class FTSMember:
