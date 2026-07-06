@@ -76,7 +76,7 @@ func Setup() *gin.Engine {
 
 		core.POST("/cards/:pack_id", cards.CreateCards)
 		core.PATCH("/cards", cards.UpdateCards)
-		core.DELETE("/cards/:card_id", cards.DeleteCard)
+		core.DELETE("/cards", cards.DeleteCard)
 		core.GET("/cards/:pack_id", cards.GetCards)
 	}
 
