@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Depends, Query, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import joinedload, load_only, selectinload, DeclarativeBase
 from database import get_async_db
 from models.published_pack import Published_pack as PublishedPackModel
@@ -8,7 +7,7 @@ from models.user import User as UserModel
 from models.pack import Pack as PackModel
 from sqlalchemy import select, text, func, or_, desc
 from pydantic_models.published_quiz import PublishedQuizesResponse, PublishedPackNew
-from typing import cast, Any
+from typing import Any
 from dependencies import validate_token
 router = APIRouter(
     prefix="/posts",
@@ -100,7 +99,10 @@ async def get_packs(
     rank_col = params["ranks"]
     
     if rank_col:
-        stmt = select(PublishedPackModel, *map(lambda x: x.label(f"rank{x}"), rank_col)).order_by(*[desc(column) for column in rank_col], desc(PublishedPackModel.rating).nulls_last())
+        stmt = select(
+            PublishedPackModel, 
+            *map(lambda x: x.label(f"rank{x}"), rank_col)
+        ).order_by(*[desc(column) for column in rank_col], desc(PublishedPackModel.rating).nulls_last())
     else:
         stmt = select(PublishedPackModel).order_by(desc(PublishedPackModel.rating).nulls_last())
     print("FILTERS" + ("-")* 20, filters)       
