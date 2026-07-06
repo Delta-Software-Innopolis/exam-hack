@@ -10,11 +10,13 @@ class Dimensions {
         val DefaultBorderWidth = 1.dp
         val ThickBorderWidth = 2.dp
         val InputFieldRadius = 16.dp
-        val NavigationButtonRadius = 16.dp
+        val ButtonRadius = 16.dp
+        val ButtonContentSpacing = 8.dp
         val NavigationIconSize = 34.dp
         val NavigationButtonPadding = 8.dp
         val ScreenTitleFontSize = 32.sp
         val InputLabelFontSize = 16.sp
+        val ButtonLabelFontSize = 16.sp
 
         // AppNavigationBar
         val AppNavigationPaddingVertical = 8.dp
@@ -27,10 +29,14 @@ class Dimensions {
         val AuthButtonPadding = 14.dp
 
         // Quiz Create
-        val InputFieldButtonSpacing = 10.dp
-        val DescriptionFieldMaxHeight = 183.dp
+        val InputButtonSpacing = 10.dp
+        val DescriptionFieldMinHeight = 183.dp
         val NextButtonIconSize = 18.dp
-        val NextButtonLabelFontSize = 16.sp
+        val FileInputElementSpacing = 8.dp
+        val FileInputFieldMinHeight = 107.dp
+        val GenerationButtonSpacing = 12.dp
+        val AIGenerateTitleLowerFontSize = 24.sp
+        val GenerateInstructionFontSize = 16.sp
 
         // Quiz List
         val QuizItemTitleFontSize = 24.sp

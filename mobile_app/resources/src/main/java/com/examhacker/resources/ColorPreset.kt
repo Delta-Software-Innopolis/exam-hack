@@ -39,8 +39,8 @@ class ColorPreset {
         val AIGradientCyan = Color(0xFF68F2FF)
         val AIGradientPink = Color(0xFFFF61ED)
         val AIBackground = Brush.verticalGradient(
-            0.7f to AIGradientCyan,
-            0.3f to AIGradientPink,
+            0.5f to AIGradientCyan,
+            0.88f to AIGradientPink,
             tileMode = TileMode.Clamp
         )
 

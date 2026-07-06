@@ -62,7 +62,8 @@ class QuizCreateComponent(
             is Config.Generate ->
                 IQuizCreateComponent.Child.Generate(
                     QuizGenerateComponent(
-                        componentContext
+                        componentContext = componentContext,
+                        back = ::goBack
                     )
                 )
 
