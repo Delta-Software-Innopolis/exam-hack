@@ -43,6 +43,11 @@ dependencies {
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
 
+    // Navigation
+    implementation(libs.decompose.core)
+    implementation(libs.decompose.compose)
+    implementation(libs.decompose.experimental)
+
     // Project
     implementation(project(":resources"))
 

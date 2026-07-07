@@ -12,7 +12,10 @@ import com.arkivanov.decompose.router.stack.pushToFront
 import kotlinx.serialization.Serializable
 import com.examhacker.authentication.component.AuthenticationComponent
 import com.examhacker.authentication.component.IAuthenticationComponent
+import com.examhacker.common.data.AnswerVariant
+import com.examhacker.common.data.Question
 import com.examhacker.common.data.Quiz
+import com.examhacker.common.ui.AnswerVariantCard
 import com.examhacker.common.utility.FilePicker
 import com.examhacker.mobile.introduction_screen.IIntroductionComponent
 import com.examhacker.mobile.introduction_screen.IntroductionComponent
@@ -97,6 +100,25 @@ class RootComponent(
                     QuizListComponent(
                         componentContext,
                         toQuizCreation = ::navigateToQuizCreate,
+                        toQuizInfo = {
+                            navigateToQuizInfo(
+                                Quiz(
+                                    id = 1,
+                                    authorName = "User",
+                                    name = "Quiz name",
+                                    description = "Nice description",
+                                    questions = listOf(
+                                        Question(
+                                            description = "How much?",
+                                            variants = listOf(
+                                                AnswerVariant("One", false),
+                                                AnswerVariant("Two", true)
+                                            )
+                                        )
+                                    )
+                                )
+                            )
+                        },
                         toQuizHub = {},
                         toProfile = {},
                         toSettings = {},
@@ -106,7 +128,12 @@ class RootComponent(
 
             is Config.QuizEdit       ->
                 IRootComponent.Child.QuizEdit(
-                    QuizEditComponent(componentContext)
+                    QuizEditComponent(
+                        componentContext = componentContext,
+                        questions = config.quiz.questions,
+                        saveQuiz = { },
+                        back = ::back,
+                    )
                 )
 
             is Config.QuizCreate     ->
@@ -181,6 +208,10 @@ class RootComponent(
 
     private fun fromIntroductionToAuth() {
         navigation.replaceCurrent(Config.Authentication)
+    }
+
+    private fun navigateToQuizInfo(quiz: Quiz) {
+        navigation.pushNew(Config.QuizInfo(quiz))
     }
 
     private fun back() {

@@ -81,7 +81,8 @@ fun QuizListScreen(
             items(quizzes) {
                 QuizCard(
                     quizName = it,
-                    author = "by User"
+                    author = "by User",
+                    onClick = component::onQuizClick
                 )
             }
         }

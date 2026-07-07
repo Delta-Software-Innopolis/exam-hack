@@ -1,5 +1,6 @@
 package com.examhacker.quiz_info.ui
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -49,6 +50,7 @@ import com.examhacker.common.data.QuizStatistics
 import com.examhacker.common.ui.AppNavigationBar
 import com.examhacker.common.ui.DeleteButton
 import com.examhacker.common.ui.NavigationTab
+import com.examhacker.common.ui.SingleBackButtonTopBar
 import com.examhacker.resources.R
 import com.examhacker.quiz_info.component.IQuizInfoComponent
 import com.examhacker.resources.ColorPreset
@@ -77,7 +79,7 @@ private fun QuizInfoUI(
 ) {
     Scaffold(
         topBar = {
-            QuizInfoTopBar(
+            SingleBackButtonTopBar(
                 onBackClick = onBackClick,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -150,31 +152,8 @@ private fun QuizInfoUI(
             )
         }
     }
-}
 
-@Composable
-private fun QuizInfoTopBar(
-    onBackClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        IconButton(
-            onClick = onBackClick,
-            modifier = Modifier.padding(Dimensions.NavigationButtonPadding)
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.ic_arrow_left),
-                contentDescription = "",
-                tint = ColorPreset.SecondaryDimm
-            )
-        }
-
-        Spacer(Modifier.weight(1f))
-    }
+    BackHandler { onBackClick() }
 }
 
 @Composable

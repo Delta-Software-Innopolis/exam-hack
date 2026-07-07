@@ -5,6 +5,7 @@ import com.arkivanov.decompose.ComponentContext
 interface IQuizListComponent {
 
     fun goToQuizCreation()
+    fun onQuizClick()
 
     fun goToQuizHub()
 
@@ -17,6 +18,7 @@ interface IQuizListComponent {
 
 class QuizListComponent(
     componentContext: ComponentContext,
+    private val toQuizInfo: () -> Unit,
     private val toQuizCreation: () -> Unit,
     private val toQuizHub: () -> Unit,
     private val toProfile: () -> Unit,
@@ -27,6 +29,10 @@ class QuizListComponent(
 
     override fun goToQuizCreation() {
         toQuizCreation()
+    }
+
+    override fun onQuizClick() {
+        toQuizInfo()
     }
 
     override fun goToQuizHub() {

@@ -1,4 +1,4 @@
-package com.examhacker.quiz_create.component
+package com.examhacker.common.utility.dialogs
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
@@ -6,51 +6,45 @@ import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
 import com.examhacker.common.data.AnswerVariant
 import com.examhacker.common.data.Question
+import kotlin.collections.plus
 
-interface IEditQuestionDialogComponent {
+interface IAddQuestionDialogComponent {
     val model: Value<Model>
 
     data class Model(
         val questionNumber: Int = 0,
         val questionDescription: String = "",
-        val variants: List<AnswerVariant> = emptyList(),
-        val isVariantsShown: Boolean = false
+        val variants: List<AnswerVariant> = emptyList()
     )
 
-    fun onDeleteQuestionClick()
     fun onQuestionDescriptionChange(newDescription: String)
     fun onVariantDescriptionChange(variantIndex: Int, newDescription: String)
     fun onVariantStatusChange(variantIndex: Int)
     fun onAddVariant()
+    fun onAddQuestion()
     fun onCloseDialog()
-    fun onShowVariantsClick()
 }
 
-class EditQuestionDialogComponent(
+class AddQuestionDialogComponent(
     componentContext: ComponentContext,
     index: Int,
-    question: Question,
-    private val saveChanges: (Int, Question) -> Unit,
-    private val deleteQuestion: () -> Unit,
+    private val addQuestion: (Question) -> Unit,
     private val back: () -> Unit
-): IEditQuestionDialogComponent, ComponentContext by componentContext {
+) : IAddQuestionDialogComponent, ComponentContext by componentContext {
 
-    private val _model = MutableValue(IEditQuestionDialogComponent.Model())
+    private val _model = MutableValue(IAddQuestionDialogComponent.Model())
     override val model = _model
 
     init {
         _model.update {
             it.copy(
-                questionNumber = index + 1,
-                questionDescription = question.description,
-                variants = question.variants
+                questionNumber =
+                    if (index < 0)
+                        1
+                    else
+                        index + 1
             )
         }
-    }
-
-    override fun onDeleteQuestionClick() {
-        deleteQuestion()
-        back()
     }
 
     override fun onQuestionDescriptionChange(newDescription: String) {
@@ -87,21 +81,18 @@ class EditQuestionDialogComponent(
         }
     }
 
-    override fun onCloseDialog() {
-        saveChanges(
-            model.value.questionNumber - 1,
+    override fun onAddQuestion() {
+        addQuestion(
             Question(
                 model.value.questionDescription,
                 model.value.variants
             )
         )
-        
+
         back()
     }
 
-    override fun onShowVariantsClick() {
-        _model.update {
-            it.copy(isVariantsShown = true)
-        }
+    override fun onCloseDialog() {
+        back()
     }
 }

@@ -68,4 +68,7 @@
 	<string name="quiz_statistics_title">Statistics</string>
 	<string name="quiz_statistics_attempts_number">Attempts:</string>
 	<string name="quiz_statistics_rw_ratio">R/W ratio:</string>
+
+	<!-- Quiz Edit -->
+	<string name="quiz_edit_screen_title">Questions</string>
 </resources>
