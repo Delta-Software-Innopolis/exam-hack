@@ -95,6 +95,8 @@ services:
       - POSTGRES_PORT=${POSTGRES_PORT}
     ports:
       - 8081:8081
+    volumes:
+    - ./auth/secrets:/app/secrets:ro
     depends_on:
       db:
         condition: service_healthy
