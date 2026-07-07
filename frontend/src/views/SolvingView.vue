@@ -14,11 +14,11 @@ const route = useRoute();
 const quizzesStore = useNewQuizzesStore()
 const quiz = ref(quizzesStore.getQuizInfo(route.params.quizId))
 const questionNum = ref(0)
-const card = computed(() => quiz.value.cards[questionNum.value]) as ComputedRef<Card>
+const card = computed(() => quiz.value ? quiz.value.cards[questionNum.value] : undefined) as ComputedRef<Card>
 const lastClicked = ref<number|null>(null)
 
 const progressWidth = computed(()=> {
-    const total = quiz.value.cards.length || 1
+    const total = (quiz.value ? quiz.value.cards.length : 1) || 1
     const current = questionNum.value + 1
     return `${current/total * 100}%` 
 })
@@ -29,7 +29,7 @@ const styles = ref<string[]>(new Array(4).fill('default'))
 
 function nextCard(){
     lastClicked.value = null
-    if (questionNum.value < quiz.value.cards.length - 1) {
+    if (questionNum.value < (quiz.value ? quiz.value.cards.length : 1) - 1) {
         questionNum.value++;
         styles.value = new Array(4).fill('default')
         return
@@ -64,7 +64,7 @@ function checkAnswer(index:number) {
 }
 </script>
 <template>
-    <div class="container">
+    <div class="container" v-if="quiz">
         <div class="main-container">
             <div class="progress-bar">
                 <div class="card-num">{{ questionNum + 1}} / {{ quiz.cards.length }}</div>

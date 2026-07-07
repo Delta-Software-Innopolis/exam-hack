@@ -1,6 +1,4 @@
-import { ref } from "vue"
-
-import type QuizItem from '@/types'
+import type { QuizItem } from '@/types'
 
 export const MOCK_PREFIX = 'mock_'
 

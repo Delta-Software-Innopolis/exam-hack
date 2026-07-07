@@ -71,18 +71,17 @@ function onStartAddNewQuestion() {
         newQuestion.value = true
         activeQuestion.value = structuredClone(NEW_QUESTION)
     }
-    activeQuestionId.value = quiz.value.cards.length + 1
+    activeQuestionId.value = quiz.value ? quiz.value.cards.length + 1 : -1
     openOverlay()
 }
 
 function onStartEditQuestion(q_id: number) {
-    let q = quiz.value.cards[q_id]
+    let q = quiz.value ? quiz.value.cards[q_id] : undefined
     if (q) {
         newQuestion.value = false
         activeQuestion.value = q 
         activeQuestionId.value = q_id
         
-
         openOverlay()
     }
 }
@@ -102,14 +101,17 @@ onUnmounted(()=>{
 })
 
 function onAddQuestion() {
-    quiz.value.cards.push(activeQuestion.value)
+    if (quiz.value)
+        quiz.value.cards.push(activeQuestion.value)
     activeQuestion.value = structuredClone(NEW_QUESTION)
     hasUnsavedChanges.value = true
     closeOverlay()
 }
 
 function onDeleteQuestion() {
+    if (quiz.value === undefined) { return }
     const card = quiz.value.cards[activeQuestionId.value]
+    if (card === undefined) { return }
 
     if (card.id > 0) {
         deletedCards.value.push(card.id)
@@ -133,6 +135,7 @@ watch(
 )
 
 async function submitChanges() {
+    if (quiz.value === undefined) { return }
     isSaving.value = true
 
     const updatedCards = quiz.value.cards.filter((card: Card) => card.id > 0)
@@ -166,7 +169,7 @@ async function submitChanges() {
 </script>
 
 <template>
-    <div class="main-container">
+    <div class="main-container" v-if="quiz">
         <div ref="overlay" class="overlay" v-if="showOverlay" :class="overlayClass">
 
             <div class="question-edit-window" v-if="activeQuestion">
@@ -191,7 +194,7 @@ async function submitChanges() {
         </div>
         <div class="left-side">
             <div class="title">
-                <h1>{{ quiz.name }}</h1>
+                <h1>{{ quiz.name || 'Unknown Quiz' }}</h1>
                 <span class="author">
                     by <a href="#">{{ quiz.author.username || 'You'}}</a>
                 </span>
