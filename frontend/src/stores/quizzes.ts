@@ -2,7 +2,7 @@ import { computed, ref, type ComputedRef } from 'vue'
 import { defineStore } from 'pinia'
 import type QuizItem from '@/types'
 import { useUserStore } from './user'
-import MOCK_QUIZZES from './mock-quizzes'
+import { MOCK_QUIZZES } from './mock-quizzes'
 
 
 export const UNKNOWN_QUIZ: QuizItem = {
@@ -50,7 +50,7 @@ export const useQuizzesStore = defineStore('quizzes', () => {
   }
 
 
-  function getQuizById(id: number): ComputedRef<QuizItem> {
+  function getQuizById(id: string): ComputedRef<QuizItem> {
     return computed(() => {
       const result = quizzes.value.find((quiz) => quiz.id === id)
       return result ? result : UNKNOWN_QUIZ
@@ -93,7 +93,7 @@ export const useQuizzesStore = defineStore('quizzes', () => {
     fetchQuizzes
   }
 },
-  // {
-  //   persist: true,
-  // }
+    {
+        persist: true,
+    }
 )

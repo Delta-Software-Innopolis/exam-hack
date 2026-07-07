@@ -3,9 +3,10 @@ import BasicButton from '@/components/newBasic/BasicButton.vue';
 import BasicInput from '@/components/newBasic/BasicInput.vue';
 import { useRouter } from 'vue-router';
 import { onMounted, onUnmounted, ref, useTemplateRef, type Ref } from 'vue';
-import { useUserStore } from '@/stores/user';
 import * as Auth from '@/auth';
 import { errorToString } from '@/utils';
+import { useTokenStore } from '@/stores/token';
+import { useUserStore } from '@/stores/user';
 
 const router = useRouter();
 const username = ref("")
@@ -18,6 +19,7 @@ const errorMessage: Ref<string | null> = ref(null);
 
 async function register(): Promise<void> {
     const userStore = useUserStore()
+    const tokenStore = useTokenStore()
 
     if (password.value !== second_password.value) {
         console.log("Passwords don't match")
@@ -27,8 +29,9 @@ async function register(): Promise<void> {
 
     try {
         const response = await Auth.register(username.value, password.value)
-        userStore.saveAccessToken(response.access_token)
-        userStore.saveRefreshToken(response.refresh_token)
+        userStore.username = username.value
+        userStore.isNew = false
+        tokenStore.accessToken = response.access_token
         router.push({name: "quizzes"})
     } catch (err) {
         errorMessage.value = errorToString(err)
