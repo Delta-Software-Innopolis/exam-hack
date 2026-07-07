@@ -25,6 +25,8 @@ import com.examhacker.resources.ColorPreset
 import com.examhacker.resources.Dimensions
 import androidx.compose.foundation.shape.CircleShape
 import com.examhacker.common.ui.AppNavigationBar
+import com.examhacker.common.ui.FloatingAddButton
+import com.examhacker.common.ui.NavigationTab
 
 @Composable
 fun QuizListScreen(
@@ -36,25 +38,13 @@ fun QuizListScreen(
     Scaffold(
 
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = component::goToQuizCreation,
-                modifier = Modifier.padding(bottom = 8.dp),
-                shape = CircleShape,
-                containerColor = ColorPreset.PositivePrimary
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.add_plus),
-                    contentDescription = null,
-                    tint = ColorPreset.BackgroundDefaultPrimary,
-                    modifier = Modifier.size(40.dp)
-                )
-            }
+            FloatingAddButton(component::goToQuizCreation)
         },
 
         bottomBar = {
             AppNavigationBar(
-                selectedIndex = 0,
-                onQuizClick = {},
+                selectedTab = NavigationTab.QUIZ_LIST,
+                onQuizListClick = {},
                 onQuizHubClick = component::goToQuizHub,
                 onProfileClick = component::goToProfile,
                 onSettingsClick = component::goToSettings,
@@ -113,7 +103,7 @@ private fun QuizListScreenPreview() {
                 containerColor = ColorPreset.PositivePrimary
             ) {
                 Icon(
-                    painter = painterResource(R.drawable.add_plus),
+                    painter = painterResource(R.drawable.ic_add_plus),
                     contentDescription = null,
                     tint = ColorPreset.BackgroundDefaultPrimary,
                     modifier = Modifier.size(40.dp)
@@ -123,7 +113,7 @@ private fun QuizListScreenPreview() {
 
         bottomBar = {
             AppNavigationBar(
-                selectedIndex = 0,
+                selectedTab = NavigationTab.QUIZ_LIST,
                 modifier = Modifier
                     .fillMaxWidth()
                     .systemBarsPadding()

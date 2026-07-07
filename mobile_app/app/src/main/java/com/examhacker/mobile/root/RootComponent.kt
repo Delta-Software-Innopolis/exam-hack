@@ -6,11 +6,13 @@ import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.pop
+import com.arkivanov.decompose.router.stack.pushNew
 import com.arkivanov.decompose.router.stack.replaceCurrent
 import com.arkivanov.decompose.router.stack.pushToFront
 import kotlinx.serialization.Serializable
 import com.examhacker.authentication.component.AuthenticationComponent
 import com.examhacker.authentication.component.IAuthenticationComponent
+import com.examhacker.common.utility.FilePicker
 import com.examhacker.mobile.introduction_screen.IIntroductionComponent
 import com.examhacker.mobile.introduction_screen.IntroductionComponent
 import com.examhacker.mobile.util.IPermissionHandler
@@ -52,6 +54,7 @@ interface IRootComponent {
 class RootComponent(
     private val componentContext: ComponentContext,
     private val permissionHandler: IPermissionHandler,
+    private val filePicker: FilePicker,
     private val startOverlayService: () -> Unit
 ) : ComponentContext by componentContext, IRootComponent {
 
@@ -91,7 +94,7 @@ class RootComponent(
                 IRootComponent.Child.QuizList(
                     QuizListComponent(
                         componentContext,
-                        toQuizCreation = {},
+                        toQuizCreation = ::navigateToQuizCreation,
                         toQuizHub = {},
                         toProfile = {},
                         toSettings = {},
@@ -106,7 +109,11 @@ class RootComponent(
 
             Config.QuizCreate     ->
                 IRootComponent.Child.QuizCreate(
-                    QuizCreateComponent(componentContext)
+                    QuizCreateComponent(
+                        componentContext,
+                        filePicker = filePicker,
+                        back = ::back
+                    )
                 )
 
             Config.QuizInfo       ->
@@ -140,7 +147,7 @@ class RootComponent(
     }
 
     private fun navigateToQuizCreation() {
-        TODO()
+        navigation.pushNew(Config.QuizCreate)
     }
 
     private fun navigateToQuizHub() {
@@ -186,5 +193,4 @@ class RootComponent(
         @Serializable
         data object Settings : Config()
     }
-
 }

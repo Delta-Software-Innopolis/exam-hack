@@ -21,7 +21,7 @@ fun QuizSolveNavigationButton(
 ) {
     Button(
         onClick = onClick,
-        shape = RoundedCornerShape(Dimensions.NavigationButtonRadius),
+        shape = RoundedCornerShape(Dimensions.ButtonRadius),
         colors = ButtonDefaults.buttonColors(
             containerColor = ColorPreset.BackgroundDefaultPrimary
         ),
