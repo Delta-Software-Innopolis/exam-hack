@@ -20,4 +20,4 @@ class User(Base):
         "Published_pack",
         back_populates="author",
     )
-    comments: Mapped[list["Comment"]] = relationship("Comment", back_populates="author")
+    comments: Mapped[list["Comment"]] = relationship("Comment", back_populates="author", lazy="noload")
