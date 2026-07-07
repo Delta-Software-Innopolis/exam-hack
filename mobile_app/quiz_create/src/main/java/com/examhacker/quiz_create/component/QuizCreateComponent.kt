@@ -21,7 +21,7 @@ interface IQuizCreateComponent {
     val model: Value<Model>
 
     data class Model(
-        val quiz: Quiz = Quiz("", "", emptyList())
+        val quiz: Quiz = Quiz(0, "", "", "", emptyList())
     )
 
     sealed class Child {

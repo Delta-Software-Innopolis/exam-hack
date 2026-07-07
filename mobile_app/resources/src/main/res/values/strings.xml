@@ -59,4 +59,13 @@
 	<string name="save_changed_question_button_label">Save</string>
 	<string name="add_dialog_title">Add Question</string>
 	<string name="add_question_button_label">Add Question</string>
+
+	<!-- Quiz Info -->
+	<string name="by">by</string>
+	<string name="solve_quiz_button_label">Attempt</string>
+	<string name="view_questions_button_label">Questions</string>
+	<string name="quiz_progress_title">Completion</string>
+	<string name="quiz_statistics_title">Statistics</string>
+	<string name="quiz_statistics_attempts_number">Attempts:</string>
+	<string name="quiz_statistics_rw_ratio">R/W ratio:</string>
 </resources>

@@ -25,6 +25,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.examhacker.common.data.AnswerVariant
+import com.examhacker.common.ui.DeleteButton
 import com.examhacker.common.ui.dialogs.QuestionDescriptionInputField
 import com.examhacker.common.ui.dialogs.TopDialogBar
 import com.examhacker.common.ui.dialogs.VariantsSection
@@ -104,42 +105,9 @@ private fun EditQuestionDialogUI(
                 modifier = Modifier.fillMaxWidth()
             )
 
-            DeleteQuestionButton(
-                onDeleteQuestionClick = onDeleteQuestionClick,
+            DeleteButton(
+                onDeleteClick = onDeleteQuestionClick,
                 modifier = Modifier.fillMaxWidth()
-            )
-        }
-    }
-}
-
-@Composable
-private fun DeleteQuestionButton(
-    onDeleteQuestionClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Button(
-        onClick = onDeleteQuestionClick,
-        modifier = modifier,
-        shape = RoundedCornerShape(Dimensions.ButtonRadius),
-        contentPadding = PaddingValues(Dimensions.ScreenPadding),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = ColorPreset.ErrorPrimary,
-            contentColor = ColorPreset.BackgroundVariant
-        )
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(Dimensions.ButtonContentSpacing)
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.ic_trash_can),
-                contentDescription = ""
-            )
-
-            Text(
-                text = stringResource(R.string.delete_question_button_label),
-                fontSize = Dimensions.ButtonLabelFontSize,
-                fontWeight = FontWeight.Normal
             )
         }
     }

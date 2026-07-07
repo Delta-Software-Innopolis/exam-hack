@@ -19,6 +19,7 @@ class Dimensions {
         val NavigationIconSize = 34.dp
         val NavigationButtonPadding = 8.dp
         val ScreenTitleFontSize = 32.sp
+        val SubtitleFontSize = 28.sp
         val InputLabelFontSize = 16.sp
         val ButtonLabelFontSize = 16.sp
         val QuestionCardFontSize = 16.sp
@@ -60,6 +61,10 @@ class Dimensions {
         val CheckBoxIconSize = 20.dp
         val DialogTitleFontSize = 18.sp
         val DescriptionInputFontSize = 16.sp
+
+        // Quiz List
+        val QuizNameSpacing = 8.dp
+        val AuthorNameFontSize = 16.sp
 
         // Quiz List
         val QuizItemTitleFontSize = 24.sp
