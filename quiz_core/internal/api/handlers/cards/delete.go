@@ -13,7 +13,6 @@ import (
 	"gorm.io/gorm"
 )
 
-
 func DeleteCard(c *gin.Context) {
 	var req structs.DeleteCardsRequest
 
@@ -26,7 +25,6 @@ func DeleteCard(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "cards are required"})
 		return
 	}
-
 
 	authorID, ok := sc.CurrentUserID(c)
 
@@ -47,7 +45,7 @@ func DeleteCard(c *gin.Context) {
 			}
 
 			if err := tx.Delete(&card).Error; err != nil {
-				return err;
+				return err
 			}
 		}
 
