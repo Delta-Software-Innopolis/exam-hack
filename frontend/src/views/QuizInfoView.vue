@@ -1,20 +1,19 @@
 <script setup lang="ts">
-import type QuizItem from '@/types';
-import { ref, onBeforeMount, watch, onUnmounted, useTemplateRef, type Ref, onMounted } from 'vue';
+import { ref, watch, onUnmounted, useTemplateRef, type Ref, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
-import { useQuizzesStore } from '@/stores/quizzes';
 import BasicButton from '@/components/newBasic/BasicButton.vue';
 import EditQuestion from '@/components/newBasic/EditQuestion.vue';
-import type { Card } from '@/types';
+import type { Card, CardType } from '@/types';
 import BasicInput from '@/components/newBasic/BasicInput.vue';
 import CrossSVG from '@/assets/Cross.svg'
 import CheckSVG from '@/assets/Check.svg'
 import { updateCards, createCards, deleteCards } from '@/core'
+import { useNewQuizzesStore } from '@/stores/new-quizzes';
 
 const route = useRoute()
 const router = useRouter()
-const quizzesStore = useQuizzesStore()
-const quiz = quizzesStore.getQuizById(Number(route.params.quizId) as number)
+const quizzesStore = useNewQuizzesStore()
+const quiz = ref(quizzesStore.getQuizInfo(route.params.quizId))
 
 const hasUnsavedChanges = ref(false)
 const deletedCards = ref<number[]>([])
@@ -136,8 +135,8 @@ watch(
 async function submitChanges() {
     isSaving.value = true
 
-    const updatedCards = quiz.value.cards.filter(card => card.id > 0)
-    const newCards = quiz.value.cards.filter(card => card.id < 0)
+    const updatedCards = quiz.value.cards.filter((card: Card) => card.id > 0)
+    const newCards = quiz.value.cards.filter((card: Card) => card.id < 0)
 
     let ok = true
 
