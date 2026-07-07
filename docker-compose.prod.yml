@@ -1,0 +1,20 @@
+services:
+  quizhub: !override
+    image: ghcr.io/delta-software-innopolis/exam-hack/quizhub:latest
+    build: null
+
+  llm-service: !override
+    image: ghcr.io/delta-software-innopolis/exam-hack/llm-service:latest
+    build: null
+
+  quizcore: !override
+    image: ghcr.io/delta-software-innopolis/exam-hack/quizcore:latest
+    build: null
+
+  auth: !override
+    image: ghcr.io/delta-software-innopolis/exam-hack/auth:latest
+    build: null
+
+  frontend: !override
+    image: ghcr.io/delta-software-innopolis/exam-hack/frontend:latest
+    build: null
