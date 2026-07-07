@@ -1,4 +1,4 @@
-.PHONY: prod dev test down db-shell generate-secrets logs ps restart clean help
+.PHONY: prod dev test down pull db-shell generate-secrets logs ps restart clean help
 
 DC = docker compose
 ENV ?= dev
