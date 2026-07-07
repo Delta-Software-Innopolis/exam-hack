@@ -25,11 +25,11 @@ jobs:
             dockerfile: ./auth/Dockerfile
 
           - image: quizcore
-            context: ./quizcore
+            context: ./quiz_core
             dockerfile: ./quizcore/Dockerfile
 
           - image: quizhub
-            context: ./quizhub
+            context: ./quiz_hub
             dockerfile: ./quizhub/Dockerfile
 
           - image: llm-service
