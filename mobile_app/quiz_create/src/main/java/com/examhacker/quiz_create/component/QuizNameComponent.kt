@@ -1,5 +1,6 @@
 package com.examhacker.quiz_create.component
 
+import android.util.Log
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
@@ -10,7 +11,8 @@ internal interface IQuizNameComponent {
 
     data class Model(
         val name: String = "",
-        val description: String = ""
+        val description: String = "",
+        val nextEnabled: Boolean = false
     )
 
     fun onNameChange(name: String)
@@ -30,7 +32,12 @@ internal class QuizNameComponent(
     override val model: Value<IQuizNameComponent.Model> = _model
 
     override fun onNameChange(name: String) {
-        _model.update { it.copy(name = name) }
+        val enabled = model.value.name.isNotEmpty()
+            && model.value.name.isNotBlank()
+
+        _model.update {
+            it.copy(name = name, nextEnabled = enabled)
+        }
     }
 
     override fun onDescriptionChange(description: String) {
@@ -38,12 +45,17 @@ internal class QuizNameComponent(
     }
 
     override fun isNextEnabled(): Boolean {
-        return model.value.name.isNotEmpty()
+        Log.d("QuizName", "isNextEnabled launched")
+        val enabled = model.value.name.isNotEmpty()
             && model.value.name.isNotBlank()
+        Log.d("QuizName", "Enabled: $enabled")
+
+        return enabled
     }
 
     override fun onNextClick() {
-        if (isNextEnabled()) {
+        Log.d("QuizName", "Next click registered")
+        if (model.value.nextEnabled) {
             updateName(model.value.name)
             updateDescription(model.value.description)
 

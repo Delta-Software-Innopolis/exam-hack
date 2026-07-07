@@ -8,6 +8,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.TextUnit
 import com.examhacker.resources.ColorPreset
 import com.examhacker.resources.Dimensions
 
@@ -15,11 +16,12 @@ import com.examhacker.resources.Dimensions
 fun ScreenTitle(
     text: String,
     modifier: Modifier = Modifier,
+    fontSize: TextUnit = Dimensions.ScreenTitleFontSize,
     horizontalArrangement: Arrangement.Horizontal = Arrangement.Start
 ) {
     val titleStyle = TextStyle(
         color = ColorPreset.Black,
-        fontSize = Dimensions.ScreenTitleFontSize,
+        fontSize = fontSize,
         fontWeight = FontWeight.Bold
     )
 

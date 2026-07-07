@@ -53,7 +53,7 @@ internal fun QuizNameScreen(
         model = model,
         onNameChange = component::onNameChange,
         onDescriptionChange = component::onDescriptionChange,
-        isNextEnabled = component::isNextEnabled,
+        isNextEnabled = model.nextEnabled,
         onNextClick = component::onNextClick
     )
 }
@@ -63,7 +63,7 @@ private fun QuizNameUI(
     model: IQuizNameComponent.Model,
     onNameChange: (String) -> Unit,
     onDescriptionChange: (String) -> Unit,
-    isNextEnabled: () -> Boolean,
+    isNextEnabled: Boolean,
     onNextClick: () -> Unit
 ) {
     Scaffold(
@@ -128,7 +128,7 @@ private fun InputWithSubmitButton(
     onNameChange: (String) -> Unit,
     onDescriptionChange: (String) -> Unit,
     onNextClick: () -> Unit,
-    isNextEnabled: () -> Boolean,
+    isNextEnabled: Boolean,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -203,21 +203,21 @@ private fun InputField(
 @Composable
 private fun SubmitButton(
     onNextClick: () -> Unit,
-    isNextEnabled: () -> Boolean,
+    isNextEnabled: Boolean,
     modifier: Modifier = Modifier
 ) {
     Button(
         onClick = onNextClick,
-        enabled = isNextEnabled(),
+        enabled = isNextEnabled,
         shape = RoundedCornerShape(Dimensions.ButtonRadius),
         modifier = modifier,
         contentPadding = PaddingValues(Dimensions.ScreenPadding),
         colors = ButtonDefaults.buttonColors(
             containerColor = ColorPreset.PositivePrimary,
-            disabledContentColor = ColorPreset.PositivePrimary,
+            disabledContainerColor = ColorPreset.PositivePrimary,
 
             contentColor = ColorPreset.BackgroundDefaultPrimary,
-            disabledContainerColor = ColorPreset.BackgroundDefaultPrimary
+            disabledContentColor = ColorPreset.BackgroundDefaultPrimary
         )
     ) {
         Row(
@@ -251,7 +251,7 @@ private fun QuizNameScreenPreview() {
         model = IQuizNameComponent.Model(),
         onNameChange = {},
         onDescriptionChange = {},
-        isNextEnabled = { true },
+        isNextEnabled = false,
         onNextClick = {}
     )
 }

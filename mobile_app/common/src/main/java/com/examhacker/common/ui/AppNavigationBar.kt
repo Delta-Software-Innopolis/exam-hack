@@ -36,7 +36,7 @@ fun AppNavigationBar(
 
     Row(
         modifier = modifier
-            .background(ColorPreset.BackgroundDefaultPrimary)
+            .background(ColorPreset.BackgroundVariant)
             .padding(
                 vertical = Dimensions.AppNavigationPaddingVertical,
                 horizontal = Dimensions.AppNavigationPaddingHorizontal

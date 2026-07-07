@@ -23,7 +23,7 @@
 	<string name="profile_navigation_label">Profile</string>
 	<string name="settings_navigation_label">Settings</string>
 
-	<!-- Quiz Creation -->
+	<!-- Quiz Create -->
 	<string name="step">Step</string>
 	<string name="quiz_name_title">Create new Quiz</string>
 	<string name="quiz_name_input_placeholder">Enter Quiz name</string>
@@ -45,4 +45,18 @@
 	<string name="generation_progress_dialog_subtitle_2">Identifying core topics…</string>
 	<string name="generation_progress_dialog_subtitle_3">Laying preparation strategy…</string>
 	<string name="generation_progress_dialog_subtitle_4">Finishing up…</string>
+	<string name="quiz_review_title">Review generated questions</string>
+	<string name="quiz_save_button_label">Save Quiz</string>
+
+	<!-- Question Edit and Add Dialogs -->
+	<string name="edit_dialog_title">Edit Question</string>
+	<string name="description_field_placeholder">Enter question description</string>
+	<string name="variants_section_title">Options</string>
+	<string name="show_variants_button_label">Show Options</string>
+	<string name="variant_description_field_placeholder">Enter option description</string>
+	<string name="add_variant_button_label">Add option</string>
+	<string name="delete_question_button_label">Delete</string>
+	<string name="save_changed_question_button_label">Save</string>
+	<string name="add_dialog_title">Add Question</string>
+	<string name="add_question_button_label">Add Question</string>
 </resources>

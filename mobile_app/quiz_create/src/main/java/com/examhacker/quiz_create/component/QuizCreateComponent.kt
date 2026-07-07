@@ -10,6 +10,8 @@ import com.arkivanov.decompose.router.stack.pushNew
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
+import com.examhacker.common.data.AnswerVariant
+import com.examhacker.common.data.Question
 import com.examhacker.common.data.Quiz
 import com.examhacker.common.utility.FilePicker
 import kotlinx.serialization.Serializable
@@ -32,8 +34,7 @@ interface IQuizCreateComponent {
 class QuizCreateComponent(
     componentContext: ComponentContext,
     private val filePicker: FilePicker,
-    private val back: () -> Unit,
-    private val onFinish: () -> Unit
+    private val back: () -> Unit
 ) : IQuizCreateComponent, ComponentContext by componentContext {
 
     private val _model = MutableValue(IQuizCreateComponent.Model())
@@ -66,6 +67,7 @@ class QuizCreateComponent(
                     QuizGenerateComponent(
                         componentContext = componentContext,
                         filePicker = filePicker,
+                        saveQuestions = ::updateQuestions,
                         toReview = ::navigateToReview,
                         back = ::goBack
                     )
@@ -74,7 +76,10 @@ class QuizCreateComponent(
             is Config.Review ->
                 IQuizCreateComponent.Child.Edit(
                     QuizReviewComponent(
-                        componentContext
+                        componentContext = componentContext,
+                        questions = createMockQuestions(),
+                        saveQuiz = ::saveQuiz,
+                        back = ::goBack
                     )
                 )
         }
@@ -110,6 +115,50 @@ class QuizCreateComponent(
             back()
         }
     }
+
+    private fun updateQuestions(questions: List<Question>) {
+        _model.update {
+            it.copy(
+                quiz = it.quiz.copy(questions = questions)
+            )
+        }
+    }
+
+    private fun saveQuiz(questions: List<Question>) {
+        updateQuestions(questions)
+        back()
+    }
+
+    private fun createMockQuestions(): List<Question> =
+        listOf(
+            Question(
+                description = "Why do dogs think their tails are so clingy, they always want to grab it?",
+                variants = listOf(
+                    AnswerVariant("Option 1", false),
+                    AnswerVariant("Option 2", true),
+                    AnswerVariant("Option 3", false),
+                    AnswerVariant("Option 4", false)
+                )
+            ),
+            Question(
+                description = "Why something is this thing?",
+                variants = listOf(
+                    AnswerVariant("Option 1", false),
+                    AnswerVariant("Option 2", true),
+                    AnswerVariant("Option 3", false),
+                    AnswerVariant("Option 4", false)
+                )
+            ),
+            Question(
+                description = "Why do dogs think their tails are so clingy, they always want to grab it?",
+                variants = listOf(
+                    AnswerVariant("Option 1", false),
+                    AnswerVariant("Option 2", true),
+                    AnswerVariant("Option 3", false),
+                    AnswerVariant("Option 4", false)
+                )
+            )
+        )
 
     @Serializable
     sealed class Config {
