@@ -22,3 +22,17 @@ export  function parseJwt(token: string): JwtToken {
 
     return JSON.parse(jsonPayload);
 }
+
+export function debounce<Args extends any[]>(callable: CallableFunction, timeout: number) {
+    let prevCall: number
+    let lastCall: number
+    let timer: any
+    return function resulting(...args: Args) {
+        prevCall = lastCall
+        lastCall = Date.now()
+        if (prevCall && lastCall - prevCall < timeout) {
+            clearTimeout(timer)
+        }
+        timer = setTimeout(() => callable(...args), timeout)
+    }
+}

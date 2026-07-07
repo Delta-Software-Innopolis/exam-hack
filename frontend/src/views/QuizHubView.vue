@@ -1,13 +1,9 @@
 <script setup lang="ts">
-import type QuizItem from "@/types"
-import type { ComputedRef } from "vue";
-import { ref, onBeforeMount, onUnmounted, computed} from "vue";
+import { ref, onBeforeMount } from "vue";
 import QuizComponent from "@/components/newBasic/QuizComponent.vue";
-import { useRouter } from "vue-router";
-import { useQuizzesStore } from "@/stores/quizzes";
-import BasicButton from "@/components/newBasic/BasicButton.vue";
 import Search from "@/components/newBasic/Search.vue";
 import SearchSVG from "@/assets/Search.svg"
+import type { QuizItem } from "@/types";
 
 const quizzes = ref<QuizItem[]>([]);
 const isLoading = ref(false)
@@ -88,7 +84,7 @@ onBeforeMount(async ()=> {
         </div>
     </div>
     <div class="Quiz-Container">
-      <QuizComponent v-if="quizzes.length() > 1"  v-for="quiz in quizzes" 
+      <QuizComponent v-if="quizzes.length > 0"  v-for="quiz in quizzes" 
         :key="quiz.id" 
         :id="quiz.id"
         :name="quiz.name"
