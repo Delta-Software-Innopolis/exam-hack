@@ -47,6 +47,7 @@ services:
       migration:
         condition: service_completed_successfully
 
+
   llm-service:
     build:
       context: .
