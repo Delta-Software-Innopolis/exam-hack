@@ -41,7 +41,7 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_PORT=${POSTGRES_PORT}
     ports:
-      - 8000:8000
+      - 8067:8067
 #    depends_on:
 #      migration:
 #        condition: service_completed_successfully
