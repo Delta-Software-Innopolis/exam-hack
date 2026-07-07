@@ -93,7 +93,7 @@ onBeforeMount(async ()=> {
       <div v-else>Sorry, we can't find such quizzes</div>
     </div>
   </div>
-  <div v-else>Loading</div>
+  <div v-else>Loading...</div>
 </template>
 
 <style scoped>
@@ -158,5 +158,16 @@ onBeforeMount(async ()=> {
   justify-content: center;
   align-items: center;
 }
+
+.loading-icon {
+    -webkit-animation:spin 2s linear infinite;
+    -moz-animation:spin 2s linear infinite;
+    animation:spin 2s linear infinite;
+}
+
+@-moz-keyframes spin { 100% { -moz-transform: rotate(360deg); } }
+@-webkit-keyframes spin { 100% { -webkit-transform: rotate(360deg); } }
+@keyframes spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
+
 
 </style>
