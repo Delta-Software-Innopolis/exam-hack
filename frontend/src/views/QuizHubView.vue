@@ -7,6 +7,7 @@ import { useRouter } from "vue-router";
 import { useQuizzesStore } from "@/stores/quizzes";
 import BasicButton from "@/components/newBasic/BasicButton.vue";
 import Search from "@/components/newBasic/Search.vue";
+import SearchSVG from "@/assets/Search.svg"
 
 const quizzes = ref(QuizComponent);
 const isLoading = ref(false)
@@ -17,21 +18,25 @@ const university = ref('')
 const subject = ref('')
 const main = ref('')
 
-const params = new URLSearchParams()
-const addParam = (key: string, value: string) => {
+const addParam = (params: URLSearchParams, key: string, value: string) => {
     const trimmed = value.trim()
     if (trimmed !== "") {
         params.append(key, trimmed)
     }
 }
 
+function unfocusInput() {
+  const input = document.activeElement as HTMLInputElement | null
+  input?.blur()
+}
 async function fetchInfo() {
 try {
-    addParam("subject", subject.value)
-    addParam("professor", professor.value)
-    addParam("course_book", book.value)
-    addParam("university", university.value)
-    addParam("search_main", main.value)
+  const params = new URLSearchParams()
+  addParam(params, "subject", subject.value)
+  addParam(params, "professor", professor.value)
+  addParam(params, "course_book", book.value)
+  addParam(params, "university", university.value)
+  addParam(params, "search_main", main.value)
 
     params.append("offset", "1")
     params.append("limit", "16")
@@ -71,10 +76,12 @@ onBeforeMount(async ()=> {
 <template>
   <div class="main-container" v-if="!isLoading">
     <div class="top-container">
-        <Search :sug_type="'name'" v-model="main" class="main-tag"></Search>
-        <BasicButton @click="fetchInfo()">Search</BasicButton>
+        <div class="search-wrapper">
+          <Search :sug_type="'name'" v-model="main" class="main-tag" @search="fetchInfo"></Search>
+          <span class="search-icon" @click="fetchInfo"><SearchSVG/></span>
+        </div>
         <div class="tag-container">
-            <Search :sug_type="'subject'" v-model="subject" class="tag"></Search>
+            <Search :sug_type="'subject'" v-model="subject" class="tag" @search="unfocusInput"></Search>
             <Search :sug_type="'university'" v-model="university" class="tag"></Search>
             <Search :sug_type="'professor'" v-model="professor" class="tag"></Search>
             <Search :sug_type="'course_book'" v-model="book" class="tag"></Search>
@@ -86,8 +93,7 @@ onBeforeMount(async ()=> {
         :id="quiz.id"
         :name="quiz.name"
         :author="quiz.author.username"
-        :description="quiz.description"
-      </QuizComponent>
+        :description="quiz.description"/>
     </div>
   </div>
   <div v-else>Loading</div>
@@ -101,14 +107,32 @@ onBeforeMount(async ()=> {
   padding: 64px;
 }
 
+.search-wrapper {
+    align-self: stretch;
+    position: relative; 
+}
+
+.search-icon {
+    position: absolute;
+    right: 16px;   
+    top: 50%;      
+    transform: translateY(-50%);
+    width: 16px;
+    z-index: 2;
+    cursor: pointer;
+    --icon-stroke: var(--secondary);
+}
+
+
 .top-container { 
   display: flex;
   flex-direction: column;
+  gap: 8px;
   justify-content: space-between;
-  align-items: center;
 }
 
-.main-tag {
+
+.main-tag > *{
     width: 100%;
 }
 
@@ -116,11 +140,14 @@ onBeforeMount(async ()=> {
     display: flex;
     flex-direction: row;
     width: 100%;
+    gap: 8px
 }
 
 .tag {
-    flex: 1;
+  flex: 1;
 }
+
+
 
 .Quiz-Container {
   display: flex;

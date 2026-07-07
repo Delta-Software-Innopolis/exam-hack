@@ -7,6 +7,9 @@ import { useRouter } from "vue-router";
 import { useQuizzesStore } from "@/stores/quizzes";
 import BasicButton from "@/components/newBasic/BasicButton.vue";
 import BasicInput from "./BasicInput.vue";
+const emit = defineEmits<{
+    (event: 'search'): void
+}>()
 const model = defineModel<string>({ default: "" })
 const timer = ref<number | null>(null)
 watch(model, (value) => {
@@ -48,8 +51,17 @@ try {
 
 
 <template>
-    <div class="main-container">
-        <BasicInput :placeholder="`Any ${sug_type.replace('_', ' ')}`" v-model="model"></BasicInput>
+    <div>
+        <BasicInput :placeholder="`Any ${sug_type.replace('_', ' ')}`" v-model="model" @keydown.enter="emit('search')" class="input-search"></BasicInput>
         <div v-for="suggestion, index in suggestions" :key="index" @click="model = suggestion">{{ suggestion }}</div>
     </div>
 </template>
+
+<style scoped>
+:deep(.input-search) {
+    color: var(--color-text) !important;
+    width: 100%;
+    height: 35px;
+    border-radius: 12px;
+}
+</style>

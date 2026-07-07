@@ -12,7 +12,7 @@ import { useAttrs } from 'vue'
 import { useUserStore } from '@/stores/user'
 import UnknownView from '@/views/UnknownView.vue'
 import QuizCreationView from '@/views/QuizCreationView.vue'
-
+import QuizHubView from '@/views/QuizHubView.vue'
 
 
 const router = createRouter({
@@ -81,7 +81,7 @@ const router = createRouter({
     {
       path: '/quizhub',
       name: 'quizhub',
-      component: UnknownView,
+      component: QuizHubView,
       meta: { showSidebar: true}
     },
     {
