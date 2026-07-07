@@ -2,9 +2,11 @@ import { ref } from "vue"
 
 import type QuizItem from '@/types'
 
+export const MOCK_PREFIX = 'mock_'
 
-const MOCK_QUIZZES: QuizItem[] = [
+export const MOCK_QUIZZES: QuizItem[] = [
   { id: 1,
+    mock: true,
     name: "JavaScript Fundamentals",
     description: "Man, that's just a wonderful quiz to learn the fundamentals of JS. I cannot emphasize more of how I love it, it's just enermously splendid.",
     creation_date: new Date("2025-01-10"),
@@ -47,6 +49,7 @@ const MOCK_QUIZZES: QuizItem[] = [
   },
   {
     id: 2,
+    mock: true,
     name: "Vue 3 Essentials",
     creation_date: new Date("2025-02-14"),
     updation_date: new Date("2025-06-01"),
@@ -89,6 +92,7 @@ const MOCK_QUIZZES: QuizItem[] = [
   },
   {
     id: 3,
+    mock: true,
     name: "Docker Basics",
     creation_date: new Date("2025-03-01"),
     updation_date: new Date("2025-06-15"),
@@ -149,6 +153,7 @@ const MOCK_QUIZZES: QuizItem[] = [
   },
   {
     id: 4,
+    mock: true,
     name: "REST APIs",
     creation_date: new Date("2025-03-15"),
     updation_date: new Date("2025-06-20"),
@@ -191,6 +196,7 @@ const MOCK_QUIZZES: QuizItem[] = [
   },
   {
     id: 5,
+    mock: true,
     name: "PostgreSQL Essentials",
     creation_date: new Date("2025-04-01"),
     updation_date: new Date("2025-06-18"),
@@ -231,5 +237,3 @@ const MOCK_QUIZZES: QuizItem[] = [
     ]
   }
 ]
-
-export default MOCK_QUIZZES

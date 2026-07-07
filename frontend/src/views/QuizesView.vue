@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import type QuizItem from "@/types"
-import type { ComputedRef } from "vue";
-import { ref, onBeforeMount, onUnmounted, computed} from "vue";
+import type { QuizItem } from "@/types"
+import type { ComputedRef, Ref } from "vue";
+import { ref, onBeforeMount, onUnmounted, computed, onMounted, onBeforeUpdate} from "vue";
 import QuizComponent from "@/components/newBasic/QuizComponent.vue";
 import { useRouter } from "vue-router";
-import { useQuizzesStore } from "@/stores/quizzes";
+import { useNewQuizzesStore } from "@/stores/new-quizzes";
 import BasicButton from "@/components/newBasic/BasicButton.vue";
 
 const router = useRouter();
-const quizzesStore = useQuizzesStore()
-const quizes = computed(() => quizzesStore.quizzes) as ComputedRef<QuizItem[]>;
+const quizzesStore = useNewQuizzesStore()
+const quizzes = ref(quizzesStore.getAllQuizzesInfo()) as Ref<QuizItem[]>;
 const isLoading = ref(true);
 
-onBeforeMount(async ()=> {
+onMounted(async ()=> {
   try {
     await quizzesStore.fetchQuizzes();
   } catch (error) {
@@ -20,6 +20,9 @@ onBeforeMount(async ()=> {
   } finally {
     isLoading.value = false;
   }
+})
+onBeforeUpdate(()=>{
+    quizzes.value = quizzesStore.getAllQuizzesInfo()
 })
 </script>
 
@@ -32,8 +35,9 @@ onBeforeMount(async ()=> {
       </div>
     </div>
     <div class="Quiz-Container">
-      <QuizComponent v-for="quiz in quizes" 
+      <QuizComponent v-for="quiz in quizzes" 
         :key="quiz.id" 
+        :mock="quiz.mock"
         :id="quiz.id"
         :name="quiz.name"
         :author="quiz.author.username"

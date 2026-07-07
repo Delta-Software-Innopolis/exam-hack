@@ -1,31 +1,25 @@
 import type { Card } from "@/types";
-
-import * as Auth from '@/auth'
-import { useUserStore } from "./stores/user";
-import { useRouter } from "vue-router";
+import { useTokenStore } from "./stores/token";
+import useNetworkManager from "./network";
 
 
-const CORE_URL = import.meta.env.DEV ? "http://localhost:8001": import.meta.env.VITE_CORE_URL_DEV 
 
+
+// TODO: REWRITE THIS WITH ATOMIC FETCH TO POST /core/pack
 
 export async function fetchCreateQuiz(
     title: string,
     description: string,
     questions: Card[]
 ): Promise<boolean> {
-    const userStore = useUserStore()
-
+    const nm = useNetworkManager()
     try {
-        userStore.getAccessToken()
         let quiz_id = await __createPack(title, description)
         await __createCards(quiz_id, questions)
         return true
     } catch (err) {
         try {
-            let response = await Auth.refresh(userStore.getRefreshToken())
-            userStore.saveAccessToken(response.access_token)
-            userStore.saveRefreshToken(response.refresh_token)
-            userStore.getAccessToken()
+            let response = await nm.validate_token()  // this refreshes token
             let quiz_id = await __createPack(title, description)
             await __createCards(quiz_id, questions)
             return true
@@ -42,19 +36,17 @@ async function __createPack(
     title: string,
     description: string,
 ): Promise<number> {
-    const userStore = useUserStore()
+    const nm = useNetworkManager()
+    const tokenStore = useTokenStore()
     try {
-        const response = await fetch(`${CORE_URL}/core/pack`, {
+        const response = await nm.fetch_core('/core/pack', {
             method: 'POST',
-            headers: { 'Authorization': `Bearer ${userStore.getAccessToken()}` },
-            body: JSON.stringify({ name: title })
+            body: JSON.stringify({ name: title }),
         })
-
         if (!response.ok) {
             console.error(response)
             throw new Error('something wrong with __createPack')
         }
-
         let body = await response.json()
         return body.id
     } catch (err) {
@@ -65,14 +57,13 @@ async function __createPack(
 
 
 async function __createCards(quiz_id: number, questions: Card[]): Promise<void> {
-    const userStore = useUserStore()
+    const nm = useNetworkManager()
+    const tokenStore = useTokenStore()
     try {
-        const response = await fetch(`${CORE_URL}/core/cards/${quiz_id}`, {
+        const response = await nm.fetch_core(`/core/cards/${quiz_id}`, {
             method: 'POST',
-            headers: { 'Authorization': `Bearer ${userStore.getAccessToken()}` },
             body: JSON.stringify({ 'cards': questions })
         })
-
         if (!response.ok) {
             console.error(response)
             throw new Error('something wrong with __createCards')

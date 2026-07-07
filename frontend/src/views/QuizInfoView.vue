@@ -1,19 +1,18 @@
 <script setup lang="ts">
-import type QuizItem from '@/types';
-import { ref, onBeforeMount, watch, onUnmounted, useTemplateRef, type Ref, onMounted } from 'vue';
+import { ref, onUnmounted, useTemplateRef, type Ref, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
-import { useQuizzesStore } from '@/stores/quizzes';
 import BasicButton from '@/components/newBasic/BasicButton.vue';
 import EditQuestion from '@/components/newBasic/EditQuestion.vue';
 import type { Card } from '@/types';
 import BasicInput from '@/components/newBasic/BasicInput.vue';
 import CrossSVG from '@/assets/Cross.svg'
 import CheckSVG from '@/assets/Check.svg'
+import { useNewQuizzesStore } from '@/stores/new-quizzes';
 
 const route = useRoute()
 const router = useRouter()
-const quizzesStore = useQuizzesStore()
-const quiz = quizzesStore.getQuizById(Number(route.params.quizId) as number)
+const quizzesStore = useNewQuizzesStore()
+const quiz = ref(quizzesStore.getQuizInfo(route.params.quizId))
 
 
 function notImplemented() {
