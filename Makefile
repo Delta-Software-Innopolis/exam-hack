@@ -9,7 +9,7 @@ prod:
 		-f docker-compose.yml \
 		-f docker-compose.prod.yml \
 		--env-file .env.prod \
-		up --build -d
+		up -d
 
 dev:
 	$(DC) \
