@@ -18,7 +18,7 @@ const quizItemRef = useTemplateRef('quiz-item')
 const quizIconRef = useTemplateRef('quiz-icon')
 
 
-const quizId = props.mock ? `mock_${props.id}` : String(props.id)
+const quizId = props.mock ? `mock_${props.id}` : props.id
 
 
 enum ButtonVariants {
