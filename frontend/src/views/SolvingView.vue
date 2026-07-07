@@ -12,7 +12,7 @@ import RightArrowSVG from '@/assets/RightArrow.svg'
 
 const route = useRoute();
 const quizzesStore = useNewQuizzesStore()
-const quiz = ref(quizzesStore.getQuizInfo(route.params.quizId))
+const quiz = ref(quizzesStore.getMyQuizInfo(route.params.quizId))
 const questionNum = ref(0)
 const card = computed(() => quiz.value ? quiz.value.cards[questionNum.value] : undefined) as ComputedRef<Card>
 const lastClicked = ref<number|null>(null)

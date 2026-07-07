@@ -11,6 +11,7 @@ import { useUserStore } from '@/stores/user'
 import UnknownView from '@/views/UnknownView.vue'
 import QuizCreationView from '@/views/QuizCreationView.vue'
 import QuizHubView from '@/views/QuizHubView.vue'
+import QuizHubItemView from '@/views/QuizHubItemView.vue'
 
 
 const router = createRouter({
@@ -81,6 +82,12 @@ const router = createRouter({
       name: 'quizhub',
       component: QuizHubView,
       meta: { showSidebar: true}
+    },
+    {
+        path: '/quizhub/:quizId',
+        name: 'quizhubItem',
+        component: QuizHubItemView,
+        meta: { showSidebar: true},
     },
     {
       path: '/profile',

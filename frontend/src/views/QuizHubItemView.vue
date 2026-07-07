@@ -13,7 +13,7 @@ import { useNewQuizzesStore } from '@/stores/new-quizzes';
 const route = useRoute()
 const router = useRouter()
 const quizzesStore = useNewQuizzesStore()
-const quiz = ref(quizzesStore.getMyQuizInfo(route.params.quizId))
+const quiz = ref(quizzesStore.getHubQuizInfo(route.params.quizId))
 
 const hasUnsavedChanges = ref(false)
 const deletedCards = ref<number[]>([])
@@ -196,7 +196,7 @@ async function submitChanges() {
             <div class="title">
                 <h1>{{ quiz.name || 'Unknown Quiz' }}</h1>
                 <span class="author">
-                    by <a href="#">{{ quiz.author.username || 'You'}}</a>
+                    by <a href="#">{{ quiz.author.username || 'Someone'}}</a>
                 </span>
             </div>
             <div class="description">
@@ -211,37 +211,29 @@ async function submitChanges() {
                             <div class="bar"></div>
                         </div>
                     </div>
-                    <div class="statistics">
+                    <!-- <div class="statistics">
                         <h4>Statistics</h4>
                         <ul>
                             <li>Attempts: 0</li>
                             <li>R/W ratio: 0.5</li>
                             <li>Time practicing: 10m 32s</li>
                         </ul>
-                    </div>
+                    </div> -->
                 </div>
                 <div class="actions">
                     <div class="top-buttons">
-                        <BasicButton variant="primary" @click="router.push(`/quizzes/${quiz.id}/solving`)">Attempt</BasicButton>
-                        <BasicButton variant="secondary" @click="notImplemented">To favourites</BasicButton>
+                        <BasicButton variant="primary" @click="notImplemented">Add to collection</BasicButton>
                     </div>
-                    <div class="bottom-buttons">
+                    <!-- <div class="bottom-buttons">
                         <BasicButton variant="primary" class="red-button" @click="notImplemented">Delete</BasicButton>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>
         <div class="right-side">
-            <div class="top-action-bar">
-                <h2>Questions</h2>
-                <div class="edit-quiz-buttons">
-                    <BasicButton variant="secondary" @click="onStartAddNewQuestion()">Add</BasicButton>
-                    <BasicButton v-if="hasUnsavedChanges" variant="primary" @click="submitChanges">Submit changes</BasicButton>
-                </div>
-            </div>
-            <div class="questions-wrapper">
-                <EditQuestion @click="onStartEditQuestion(i)" :index="i+1" :question="q.question" v-for="[i, q] in quiz.cards.entries()"/>
-            </div>
+            <p>There should be information about rating</p>
+            <p>Also ability to add the quiz to your own collection</p>
+            <p>Also we should show forks of this quiz here</p>
         </div>
     </div>
 </template>

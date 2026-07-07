@@ -5,6 +5,7 @@ import type { QuizItem } from '@/types'
 
 import { MOCK_QUIZZES, MOCK_PREFIX } from './mock-quizzes'
 import useNetworkManager from '@/network'
+import type { Q } from 'vue-router/dist/index-BQLwgiyK.js'
 
 
 export const UNKNOWN_QUIZ: QuizItem = {
@@ -22,8 +23,42 @@ export const UNKNOWN_QUIZ: QuizItem = {
 export const useNewQuizzesStore = defineStore('newQuizzes', () =>
 {
     const quizzes: Ref<QuizItem[]> = ref([])
+    const hubQuizzes: Ref<QuizItem[]> = ref([])
 
-    function getQuizInfo(quizId: string | string[] | undefined) {
+    function getHubQuizInfo(quizId: string | string[] | undefined) {
+        console.log(quizId)
+        let quiz = undefined
+        if (typeof quizId === 'number') {
+            console.log(quizId)
+            for (let q of hubQuizzes.value) {
+                if (q.id == quizId) {
+                    quiz = q
+                    break
+                }
+            }
+            return quiz
+        }
+        else if (typeof quizId !== 'string') {
+            console.log('not string')
+            return undefined
+        } else if (quizId.startsWith(MOCK_PREFIX)) {
+            console.log('mock prefix')
+            return undefined
+        } else {
+            let pureQuizId = Number(quizId)
+            console.log(pureQuizId)
+            for (let q of hubQuizzes.value) {
+                if (q.id == pureQuizId) {
+                    quiz = q
+                    break
+                }
+            }
+        }
+        if (quiz === undefined) { quiz = UNKNOWN_QUIZ }
+        return quiz
+    }
+
+    function getMyQuizInfo(quizId: string | string[] | undefined) {
         let quiz = undefined
         if (typeof quizId !== 'string') {
             return undefined
@@ -43,7 +78,7 @@ export const useNewQuizzesStore = defineStore('newQuizzes', () =>
         return quiz
     }
 
-    async function fetchQuizzes(): Promise<void> {
+    async function fetchMyQuizzes(): Promise<void> {
         const nm = useNetworkManager()
         try {
             const response = await nm.fetch_core('/core/packs', { method: 'GET' })
@@ -59,7 +94,7 @@ export const useNewQuizzesStore = defineStore('newQuizzes', () =>
         }
     }
 
-    function getAllQuizzesInfo(): QuizItem[] {
+    function getAllMyQuizzesInfo(): QuizItem[] {
         if (quizzes.value.length == 0) {
             return MOCK_QUIZZES
         }
@@ -68,9 +103,11 @@ export const useNewQuizzesStore = defineStore('newQuizzes', () =>
 
     return {
         quizzes,
-        fetchQuizzes,
-        getQuizInfo,
-        getAllQuizzesInfo
+        fetchMyQuizzes,
+        getMyQuizInfo,
+        getAllMyQuizzesInfo,
+        hubQuizzes,
+        getHubQuizInfo,
     }
 },
 {

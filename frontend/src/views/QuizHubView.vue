@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { ref, onBeforeMount } from "vue";
-import QuizComponent from "@/components/newBasic/QuizComponent.vue";
+import QuizHubItemComponent from "@/components/newBasic/QuizHubItemComponent.vue";
 import Search from "@/components/newBasic/Search.vue";
 import SearchSVG from "@/assets/Search.svg"
 import type { QuizItem } from "@/types";
+import { useNewQuizzesStore } from "@/stores/new-quizzes";
 
+const quizzesStore = useNewQuizzesStore();
 const quizzes = ref<QuizItem[]>([]);
 const isLoading = ref(false)
 
@@ -50,6 +52,7 @@ try {
         return
     } 
     quizzes.value = data.packs
+    quizzesStore.hubQuizzes = data.packs
     console.log(quizzes.value)
 } catch (error) {
     console.error('Не удалось загрузить квизы:', error) 
@@ -84,7 +87,7 @@ onBeforeMount(async ()=> {
         </div>
     </div>
     <div class="Quiz-Container">
-      <QuizComponent v-if="quizzes.length > 0"  v-for="quiz in quizzes" 
+      <QuizHubItemComponent v-if="quizzes.length > 0"  v-for="quiz in quizzes" 
         :key="quiz.id" 
         :id="quiz.id"
         :name="quiz.name"

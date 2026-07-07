@@ -9,12 +9,12 @@ import BasicButton from "@/components/newBasic/BasicButton.vue";
 
 const router = useRouter();
 const quizzesStore = useNewQuizzesStore()
-const quizzes = ref(quizzesStore.getAllQuizzesInfo()) as Ref<QuizItem[]>;
+const quizzes = ref(quizzesStore.getAllMyQuizzesInfo()) as Ref<QuizItem[]>;
 const isLoading = ref(true);
 
 onMounted(async ()=> {
   try {
-    await quizzesStore.fetchQuizzes();
+    await quizzesStore.fetchMyQuizzes();
   } catch (error) {
     console.error("Error", error);
   } finally {
@@ -22,7 +22,7 @@ onMounted(async ()=> {
   }
 })
 onBeforeUpdate(()=>{
-    quizzes.value = quizzesStore.getAllQuizzesInfo()
+    quizzes.value = quizzesStore.getAllMyQuizzesInfo()
 })
 </script>
 

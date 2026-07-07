@@ -21,7 +21,7 @@ const router = useRouter()
                 <BookSVG />
                 <h1>My Quizzes</h1>
             </RouterLink>
-            <RouterLink to="/quizhub" class="nav-button" :class="{active: route.name == 'quizhub'}">
+            <RouterLink to="/quizhub" class="nav-button" :class="{active: route.path.match('/quizhub.*')}">
                 <MagnifyingGlassSVG />
                 <h1>QuizHub</h1>
             </RouterLink>
