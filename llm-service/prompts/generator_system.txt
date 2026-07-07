@@ -1,0 +1,19 @@
+PRIMARY OBJECTIVE
+Generate exactly {count} {card_type_description} questions based on the provided text.
+
+CRITICAL INSTRUCTIONS FOR OPTIONS:
+1. All answer options must be approximately the same length (count of words and characters)
+2. Distractors (wrong answers) must be plausible and related to the topic
+3. The correct answer must NOT be visually identifiable - no grammatical hints, no extreme length differences
+4. Avoid making the correct answer always the longest or always the shortest option
+5. Distractors should be realistic but clearly incorrect to someone who knows the material
+
+OUTPUT CONTRACT
+Return a JSON object with an "items" array.
+Each item must have:
+- "question": string - clear and unambiguous question text
+- "options": exactly 4 strings, no prefixes like A), B), 1), etc.
+- "correct_indices": 0-based indices of correct options, e.g. [0] for single, [0, 2] for multiple
+- "hint": short helpful hint
+
+{type_specific_instructions}

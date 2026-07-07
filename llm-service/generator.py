@@ -50,6 +50,19 @@ def _detect_provider() -> str:
     )
 
 
+def get_provider_config() -> dict:
+    """Return provider config dict with base_url and api_key for synchronous use."""
+    provider = _detect_provider()
+    config = _PROVIDERS[provider]
+    api_key = os.getenv(config.api_key_env)
+    if not api_key:
+        raise CardGenerationError(f"{config.api_key_env} is not set")
+    return {
+        "base_url": config.base_url,
+        "api_key": api_key,
+    }
+
+
 def _get_client(provider: str) -> AsyncOpenAI:
     """Return (and cache) an AsyncOpenAI client configured for the provider."""
     if provider not in _clients:
@@ -59,6 +72,40 @@ def _get_client(provider: str) -> AsyncOpenAI:
             raise CardGenerationError(f"{config.api_key_env} is not set")
         _clients[provider] = AsyncOpenAI(base_url=config.base_url, api_key=api_key)
     return _clients[provider]
+
+
+def card_type_description(card_type: str) -> str:
+    """Get a human-readable description of a card type."""
+    descriptions = {
+        "multiple_choice": "Multiple choice questions with exactly 4 answer options. "
+                           "Each question may have one or multiple correct answers.",
+        "single_answer": "Questions with a single correct text answer.",
+    }
+    return descriptions.get(card_type, card_type)
+
+
+def card_type_examples(card_type: str) -> str:
+    """Get JSON examples for a card type to include in prompts."""
+    examples = {
+        "multiple_choice": (
+            'Example card:\n'
+            '{\n'
+            '  "question": "What is the capital of France?",\n'
+            '  "options": ["London", "Paris", "Berlin", "Madrid"],\n'
+            '  "correct_indices": [1],\n'
+            '  "hint": "Think of the city of light"\n'
+            '}'
+        ),
+        "single_answer": (
+            'Example card:\n'
+            '{\n'
+            '  "question": "What is the capital of France?",\n'
+            '  "correct_answer": "Paris",\n'
+            '  "hint": "Think of the city of light"\n'
+            '}'
+        ),
+    }
+    return examples.get(card_type, "")
 
 
 class MultipleChoiceCard(BaseModel):
