@@ -88,12 +88,13 @@ onBeforeMount(async ()=> {
         </div>
     </div>
     <div class="Quiz-Container">
-      <QuizComponent v-for="quiz in quizzes" 
+      <QuizComponent v-if="quizzes"  v-for="quiz in quizzes" 
         :key="quiz.id" 
         :id="quiz.id"
         :name="quiz.name"
         :author="quiz.author.username"
         :description="quiz.description"/>
+      <div v-else>Sorry, we can't find such quizzes</div>
     </div>
   </div>
   <div v-else>Loading</div>

@@ -135,8 +135,8 @@ async def get_packs(
 
     result = (await session.execute(stmt)).all()
     packs = [row[0] for row in result]
-    if not result:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+    # if not result:
+    #     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
     return {"packs": packs}
     
 
