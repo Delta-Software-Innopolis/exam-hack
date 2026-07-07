@@ -6,7 +6,8 @@ from routers.suggestion import router as suggestion_router
 app = FastAPI(root_path="/hub")
 
 origins = [
-    "http://localhost:5173"
+    "http://localhost:5173",
+    "http://examhacker.ru"
 ]
 
 app.include_router(pack_router)
