@@ -70,13 +70,13 @@ function openSuggestions() {
         <BasicInput
             v-model="model"
             class="input-search"
-            :class="{'opend': isOpen}"
+            :class="{'opend': isOpen && props.sug_type !=='name'}"
             :placeholder="`Any ${sug_type.replace('_', ' ')}`"
             @keydown.enter="emit('search')"
             @focus="openSuggestions"
         />
 
-        <Transition name="search-drop">
+        <Transition name="search-drop" v-if="props.sug_type !== 'name'">
             <div v-if="isOpen && suggestions.length" class="search-shell__overlay">
                 <div class="search-shell__suggestions">
                     <button
