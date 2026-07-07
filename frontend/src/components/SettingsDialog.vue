@@ -24,10 +24,10 @@ const emit = defineEmits<{
             <p>Number of questions</p>
             <input type="number" max="20" min="1" v-model="numberOfQuestions">
         </div>
-        <div class="setting">
+        <!-- <div class="setting">
             <p>Allow multiple correct answers</p>
             <input type="checkbox" v-model="allowMultipleCorrects">
-        </div>
+        </div> -->
     </div>
     <BasicButton variant="ai" @click="emit('clickGenerate')">Generate Questions</BasicButton>
 </div>
