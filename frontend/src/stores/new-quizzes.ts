@@ -52,9 +52,6 @@ export const useNewQuizzesStore = defineStore('newQuizzes', () =>
                 throw response.status
             }
             const payload = await response.json()
-            if (payload.packs.length < 1) {
-                return
-            } 
             quizzes.value = payload.packs as QuizItem[]
         } 
         catch (error) {
