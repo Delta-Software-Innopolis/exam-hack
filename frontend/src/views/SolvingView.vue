@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useRoute } from 'vue-router';
-import { useQuizzesStore } from '@/stores/quizzes';
+import { useNewQuizzesStore } from '@/stores/new-quizzes';
 import { onBeforeMount, onUnmounted, type ComputedRef } from 'vue';
 import BasicButton from '@/components/newBasic/BasicButton.vue';
 import type { Card } from '@/types'
@@ -11,8 +11,8 @@ import LeftArrowSVG from '@/assets/LeftArrow.svg'
 import RightArrowSVG from '@/assets/RightArrow.svg'
 
 const route = useRoute();
-const quizzesStore = useQuizzesStore()
-const quiz = quizzesStore.getQuizById(Number(route.params.quizId))
+const quizzesStore = useNewQuizzesStore()
+const quiz = ref(quizzesStore.getQuizInfo(route.params.quizId))
 const questionNum = ref(0)
 const card = computed(() => quiz.value.cards[questionNum.value]) as ComputedRef<Card>
 const lastClicked = ref<number|null>(null)
@@ -26,13 +26,6 @@ const progressWidth = computed(()=> {
 const isDisabled = ref(false)
 const styles = ref<string[]>(new Array(4).fill('default'))
 
-onBeforeMount(() => {
-    console.log(quiz)
-    quizzesStore.headerInfo = quiz.value ? quiz.value.name : ""
-})
-onUnmounted(() => {
-    quizzesStore.headerInfo = quizzesStore.headerInfo == quiz.value.name ? "" : quizzesStore.headerInfo
-})
 
 function nextCard(){
     lastClicked.value = null

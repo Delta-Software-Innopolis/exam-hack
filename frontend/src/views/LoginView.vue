@@ -7,6 +7,7 @@ import { useUserStore } from '@/stores/user';
 
 import * as Auth from "@/auth"
 import { errorToString } from '@/utils';
+import { useTokenStore } from '@/stores/token';
 
 
 const router = useRouter()
@@ -21,12 +22,12 @@ const inputs = useTemplateRef("inputs")
 
 async function login() {
     const userStore = useUserStore()
+    const tokenStore = useTokenStore()
     try {
         const response = await Auth.login(username.value, password.value)
         userStore.username = username.value
         userStore.isNew = false
-        userStore.saveAccessToken(response.access_token)
-        userStore.saveRefreshToken(response.refresh_token)
+        tokenStore.accessToken = response.access_token
         router.push({name: "quizzes"})
     } catch (err) {
         errorMessage.value = errorToString(err)

@@ -34,3 +34,7 @@ type UpdateCardRequest struct {
 	Options  *[]string `json:"options"`
 	Correct  *[]int    `json:"correct"`
 }
+
+type DeleteCardsRequest struct {
+	Cards []uint `json:"cards" binding:"required"`
+}
