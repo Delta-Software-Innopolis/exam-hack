@@ -9,6 +9,7 @@ import router from '@/router';
 
 import LeftArrowSVG from '@/assets/LeftArrow.svg'
 import RightArrowSVG from '@/assets/RightArrow.svg'
+import HintSVG from '@/assets/Hint.svg'
 
 const route = useRoute();
 const quizzesStore = useNewQuizzesStore()
@@ -16,6 +17,7 @@ const quiz = ref(quizzesStore.getMyQuizInfo(route.params.quizId))
 const questionNum = ref(0)
 const card = computed(() => quiz.value ? quiz.value.cards[questionNum.value] : undefined) as ComputedRef<Card>
 const lastClicked = ref<number|null>(null)
+const isHintClicked = ref(false)
 
 const progressWidth = computed(()=> {
     const total = (quiz.value ? quiz.value.cards.length : 1) || 1
@@ -29,6 +31,7 @@ const styles = ref<string[]>(new Array(4).fill('default'))
 
 function nextCard(){
     lastClicked.value = null
+    isHintClicked.value = false
     if (questionNum.value < (quiz.value ? quiz.value.cards.length : 1) - 1) {
         questionNum.value++;
         styles.value = new Array(4).fill('default')
@@ -86,9 +89,11 @@ function checkAnswer(index:number) {
                 </div>
             </div>
             <div class="arrow-container">
-                <button  v-if="questionNum != 0" @click="prevCard" class="arrow" :disabled="isDisabled"><LeftArrowSVG/></button>
-                <button v-if="questionNum != quiz.cards.length-1" @click="nextCard" class="arrow" :disabled="isDisabled" style="right: 0; position: absolute;"><RightArrowSVG/></button>
+                <button  v-if="questionNum != 0" @click="prevCard" class="arrow left-arrow" :disabled="isDisabled"><LeftArrowSVG/></button>
+                <BasicButton title="Hint from AI" @click="isHintClicked = !isHintClicked" variant="ai" class="hint-button"><HintSVG/></BasicButton>
+                <button v-if="questionNum != quiz.cards.length-1" @click="nextCard" class="arrow right-arrow" :disabled="isDisabled"><RightArrowSVG/></button>
             </div>
+            <div class="hint-wrapper" v-if="isHintClicked"><div>{{ card.hint }}</div></div>
         </div>
     </div>
 </template>
@@ -182,6 +187,7 @@ function checkAnswer(index:number) {
     width: 100%;
     position: relative;
     display: flex;
+    justify-content: space-evenly;
 }
 
 .arrow {
@@ -215,6 +221,26 @@ function checkAnswer(index:number) {
     display: block;
     width: 32px;
     height: 32px;
+}
+
+.hint-wrapper {
+    width: 100%;
+    background-color: white;
+    font-size: 18px;
+    border-radius: 16px;
+    justify-content: left;
+    align-items: center;
+    padding: 16px;
+    text: center;
+}
+
+.hint-button {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
 }
 
 </style>
