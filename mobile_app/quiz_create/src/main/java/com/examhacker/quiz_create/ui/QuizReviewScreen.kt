@@ -1,93 +1,215 @@
 package com.examhacker.quiz_create.ui
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import com.arkivanov.decompose.extensions.compose.subscribeAsState
+import com.arkivanov.decompose.router.slot.ChildSlot
+import com.examhacker.common.data.AnswerVariant
+import com.examhacker.common.data.Question
+import com.examhacker.common.ui.AppNavigationBar
+import com.examhacker.common.ui.FloatingAddButton
+import com.examhacker.common.ui.NavigationTab
+import com.examhacker.common.ui.QuestionList
+import com.examhacker.common.ui.ScreenTitle
+import com.examhacker.resources.R
 import com.examhacker.quiz_create.component.IQuizReviewComponent
+import com.examhacker.quiz_create.ui.common.CreationStage
+import com.examhacker.quiz_create.ui.common.QuizCreationTopBar
+import com.examhacker.resources.ColorPreset
+import com.examhacker.resources.Dimensions
 
 @Composable
 internal fun QuizReviewScreen(component: IQuizReviewComponent) {
-    QuizReviewUI()
+    val model by component.model.subscribeAsState()
+    val slot by component.slot.subscribeAsState()
+
+    QuizReviewUI(
+        model = model,
+        slot = slot,
+        onEditQuestionClick = component::onEditQuestionClick,
+        onAddQuestion = component::onAddQuestionClick,
+        onSaveQuizClick = component::onSaveQuizClick,
+        goBack = component::goBack
+    )
 }
 
 @Composable
-private fun QuizReviewUI() {
-    // Временные данные для примера
-    val questions = listOf(
-        "Why do dogs think their tails are...",
-        "Why something is this thing? ...",
-        "Why do dogs think their tails are..."
-    )
+private fun QuizReviewUI(
+    model: IQuizReviewComponent.Model,
+    slot: ChildSlot<*, IQuizReviewComponent.Child>?,
+    onEditQuestionClick: (Int, Question) -> Unit,
+    onAddQuestion: () -> Unit,
+    onSaveQuizClick: () -> Unit,
+    goBack: () -> Unit
+) {
+    Scaffold(
+        topBar = {
+            QuizCreationTopBar(
+                creationStage = CreationStage.REVIEW,
+                onBackClick = {},
+                onForthClick = {},
+                isForthEnabled = false,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .statusBarsPadding()
+            )
+        },
+        bottomBar = {
+            AppNavigationBar(
+                selectedTab = NavigationTab.QUIZ_LIST,
+                onQuizListClick = {},
+                onQuizHubClick = {},
+                onProfileClick = {},
+                onSettingsClick = {},
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .navigationBarsPadding()
+            )
+        },
+        modifier = Modifier.fillMaxSize(),
+        containerColor = ColorPreset.BackgroundVariant
+    ) { contentPadding ->
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(contentPadding)
+                .padding(Dimensions.ScreenPadding)
+        ) {
+            QuestionListWithTitle(
+                questions = model.questions,
+                onEditQuestionClick = onEditQuestionClick,
+                modifier = Modifier.fillMaxWidth()
+            )
 
+            SaveQuizAddQuestionButtons(
+                onAddQuestion = onAddQuestion,
+                onSaveQuizClick = onSaveQuizClick,
+                saveEnabled = model.questions.isNotEmpty(),
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+    }
+
+    slot?.child?.instance?.let { child ->
+        when(child) {
+            is IQuizReviewComponent.Child.EditQuestionDialog ->
+                EditQuestionDialog(child.component)
+
+            is IQuizReviewComponent.Child.AddQuestionDialog  ->
+                AddQuestionDialog(child.component)
+        }
+    }
+
+    BackHandler { goBack() }
+}
+
+@Composable
+private fun QuestionListWithTitle(
+    questions: List<Question>,
+    onEditQuestionClick: (Int, Question) -> Unit,
+    modifier: Modifier = Modifier
+) {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 24.dp, vertical = 32.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(Dimensions.QuizReviewTitleSpacing),
+        modifier = modifier
     ) {
-        // Заголовок
-        Text(
-            text = "Review generated questions",
-            style = MaterialTheme.typography.headlineMedium
+        ScreenTitle(
+            text = stringResource(R.string.quiz_review_title),
+            modifier = Modifier.fillMaxWidth(),
+            fontSize = Dimensions.CreateScreenTitleFontSize,
+            horizontalArrangement = Arrangement.Start
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Список вопросов
-        LazyColumn(
-            modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            items(questions) { question ->
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant
-                    )
-                ) {
-                    Text(
-                        text = question,
-                        modifier = Modifier.padding(16.dp)
-                    )
-                }
-            }
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Кнопка Add question
-        Button(
-            onClick = { /* TODO: add question */ },
+        QuestionList(
+            questions = questions,
+            onQuestionClick = onEditQuestionClick,
             modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Add question")
-        }
+        )
+    }
+}
 
-        Spacer(modifier = Modifier.height(16.dp))
+@Composable
+private fun SaveQuizAddQuestionButtons(
+    onAddQuestion: () -> Unit,
+    onSaveQuizClick: () -> Unit,
+    saveEnabled: Boolean,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        horizontalAlignment = Alignment.End,
+        modifier = modifier
+    ) {
+        FloatingAddButton(onAddQuestion)
 
-        // Кнопка Save Quiz
-        Button(
-            onClick = { /* TODO: save quiz */ },
+        QuizSaveButton(
+            onClick = onSaveQuizClick,
+            enabled = saveEnabled,
             modifier = Modifier.fillMaxWidth()
+        )
+    }
+}
+
+@Composable
+private fun QuizSaveButton(
+    onClick: () -> Unit,
+    enabled: Boolean,
+    modifier: Modifier = Modifier
+) {
+    Button(
+        onClick = onClick,
+        modifier = modifier,
+        enabled = enabled,
+        shape = RoundedCornerShape(Dimensions.ButtonRadius),
+        contentPadding = PaddingValues(Dimensions.ScreenPadding),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = ColorPreset.PositivePrimary,
+            disabledContainerColor = ColorPreset.PositivePrimary,
+
+            contentColor = ColorPreset.BackgroundVariant,
+            disabledContentColor = ColorPreset.TextDefaultSecondary
+        )
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(Dimensions.ButtonContentSpacing)
         ) {
-            Text("Save Quiz")
+            Icon(
+                painter = painterResource(R.drawable.ic_check),
+                contentDescription = ""
+            )
+
+            Text(
+                text = stringResource(R.string.quiz_save_button_label),
+                fontSize = Dimensions.ButtonLabelFontSize,
+                fontWeight = FontWeight.Normal
+            )
         }
     }
 }
@@ -96,6 +218,44 @@ private fun QuizReviewUI() {
 @Composable
 private fun PreviewQuizReviewScreen() {
     MaterialTheme {
-        QuizReviewUI()
+        QuizReviewUI(
+            model = IQuizReviewComponent.Model().copy(questions = createMockQuestions()),
+            slot = null,
+            onEditQuestionClick = {_, _ ->},
+            onAddQuestion = {},
+            onSaveQuizClick = {},
+            goBack = {}
+        )
     }
 }
+
+private fun createMockQuestions(): List<Question> =
+    listOf(
+        Question(
+            description = "Why do dogs think their tails are so clingy, they always want to grab it?",
+            variants = listOf(
+                AnswerVariant("Option 1", false),
+                AnswerVariant("Option 2", true),
+                AnswerVariant("Option 3", false),
+                AnswerVariant("Option 4", false)
+            )
+        ),
+        Question(
+            description = "Why something is this thing?",
+            variants = listOf(
+                AnswerVariant("Option 1", false),
+                AnswerVariant("Option 2", true),
+                AnswerVariant("Option 3", false),
+                AnswerVariant("Option 4", false)
+            )
+        ),
+        Question(
+            description = "Why do dogs think their tails are so clingy, they always want to grab it?",
+            variants = listOf(
+                AnswerVariant("Option 1", false),
+                AnswerVariant("Option 2", true),
+                AnswerVariant("Option 3", false),
+                AnswerVariant("Option 4", false)
+            )
+        )
+    )

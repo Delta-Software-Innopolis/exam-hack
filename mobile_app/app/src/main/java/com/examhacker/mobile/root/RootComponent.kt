@@ -6,6 +6,7 @@ import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.pop
+import com.arkivanov.decompose.router.stack.pushNew
 import com.arkivanov.decompose.router.stack.replaceCurrent
 import com.arkivanov.decompose.router.stack.pushToFront
 import kotlinx.serialization.Serializable
@@ -93,7 +94,7 @@ class RootComponent(
                 IRootComponent.Child.QuizList(
                     QuizListComponent(
                         componentContext,
-                        toQuizCreation = {},
+                        toQuizCreation = ::navigateToQuizCreation,
                         toQuizHub = {},
                         toProfile = {},
                         toSettings = {},
@@ -111,8 +112,7 @@ class RootComponent(
                     QuizCreateComponent(
                         componentContext,
                         filePicker = filePicker,
-                        back = ::back,
-                        onFinish = { }
+                        back = ::back
                     )
                 )
 
@@ -147,7 +147,7 @@ class RootComponent(
     }
 
     private fun navigateToQuizCreation() {
-        TODO()
+        navigation.pushNew(Config.QuizCreate)
     }
 
     private fun navigateToQuizHub() {

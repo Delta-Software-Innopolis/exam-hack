@@ -1,8 +1,12 @@
 package com.examhacker.quiz_create.ui.common
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -16,6 +20,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import com.examhacker.resources.ColorPreset
 import com.examhacker.resources.Dimensions
 import com.examhacker.resources.R
@@ -42,12 +47,16 @@ fun QuizCreationTopBar(
 
         CreationProgressIndicator(creationStage)
 
-        NavigationButton(
-            onClick = onForthClick,
-            isEnabled = isForthEnabled,
-            painter = painterResource(R.drawable.ic_arrow_right),
-            modifier = Modifier.padding(Dimensions.NavigationButtonPadding)
-        )
+        if (creationStage != CreationStage.REVIEW) {
+            NavigationButton(
+                onClick = onForthClick,
+                isEnabled = isForthEnabled,
+                painter = painterResource(R.drawable.ic_arrow_right),
+                modifier = Modifier.padding(Dimensions.NavigationButtonPadding)
+            )
+        } else {
+            Spacer(Modifier.width(Dimensions.QuizCreateNavigationButtonSize))
+        }
     }
 }
 

@@ -27,6 +27,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -186,7 +187,7 @@ private fun FileInputWithButtons(
 
             AIGenerateButton(
                 onClick = onGenerateClick,
-                enabled = false,
+                enabled = files.isNotEmpty(),
                 modifier = Modifier.weight(2.5f)
             )
         }
@@ -318,7 +319,7 @@ private fun AIGenerationScreenTitle(
 
         Text(
             text = stringResource(R.string.quiz_generate_title_lower_part),
-            fontSize = Dimensions.AIGenerateTitleLowerFontSize,
+            fontSize = Dimensions.CreateScreenTitleFontSize,
             fontWeight = FontWeight.Bold,
             color = ColorPreset.Black,
             textAlign = TextAlign.Start
@@ -373,10 +374,12 @@ private fun AIGenerateButton(
     enabled: Boolean,
     modifier: Modifier = Modifier
 ) {
-    val notEnabledStroke = Stroke(
-        width = 6f,
-        pathEffect = PathEffect.dashPathEffect(floatArrayOf(12f, 12f))
-    )
+    val notEnabledStroke = remember {
+        Stroke(
+            width = 6f,
+            pathEffect = PathEffect.dashPathEffect(floatArrayOf(12f, 12f))
+        )
+    }
 
     OutlinedButton(
         onClick = onClick,

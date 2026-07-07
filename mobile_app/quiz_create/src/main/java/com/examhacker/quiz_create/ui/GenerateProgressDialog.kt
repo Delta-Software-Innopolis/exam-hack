@@ -2,7 +2,6 @@ package com.examhacker.quiz_create.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -13,13 +12,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.dropShadow
-import androidx.compose.ui.graphics.shadow.Shadow
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
@@ -37,7 +33,7 @@ internal fun GenerateProgressDialog() {
         )
     ) {
         Card(
-            shape = RoundedCornerShape(Dimensions.GenerateDialogRaius),
+            shape = RoundedCornerShape(Dimensions.GenerateDialogRadius),
             colors = CardDefaults.cardColors(
                 containerColor = ColorPreset.BackgroundVariant,
                 disabledContainerColor = ColorPreset.BackgroundVariant,
@@ -66,7 +62,7 @@ internal fun GenerateProgressDialog() {
                 ) {
                     Text(
                         text = stringResource(R.string.generation_progress_dialog_title),
-                        fontSize = Dimensions.AIGenerateTitleLowerFontSize,
+                        fontSize = Dimensions.CreateScreenTitleFontSize,
                         fontWeight = FontWeight.Bold
                     )
 
