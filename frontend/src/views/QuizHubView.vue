@@ -9,7 +9,7 @@ import BasicButton from "@/components/newBasic/BasicButton.vue";
 import Search from "@/components/newBasic/Search.vue";
 import SearchSVG from "@/assets/Search.svg"
 
-const quizzes = ref(QuizComponent);
+const quizzes = ref<QuizItem[]>([]);
 const isLoading = ref(false)
 
 const book = ref('')
@@ -88,7 +88,7 @@ onBeforeMount(async ()=> {
         </div>
     </div>
     <div class="Quiz-Container">
-      <QuizComponent v-if="quizzes"  v-for="quiz in quizzes" 
+      <QuizComponent v-if="quizzes.length() > 1"  v-for="quiz in quizzes" 
         :key="quiz.id" 
         :id="quiz.id"
         :name="quiz.name"
