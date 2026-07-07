@@ -6,6 +6,8 @@ ENV ?= dev
 prod:
 	$(DC) \
 		-p exam-hacker-prod \
+		-f docker-compose.yml \
+		-f docker-compose.prod.yml \
 		--env-file .env.prod \
 		up --build -d
 
@@ -27,6 +29,9 @@ test:
 
 down:
 	$(DC) -p exam-hacker-$(ENV) down
+
+pull:
+	$(DC) -p exam-hacker-$(ENV) pull
 
 db-shell:
 	. ./.env.$(ENV) && $(DC) -p exam-hacker-$(ENV) exec db psql -U $$POSTGRES_USER -d $$POSTGRES_DB
