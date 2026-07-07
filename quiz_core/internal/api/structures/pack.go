@@ -4,6 +4,7 @@ import "time"
 
 type CreatePackRequest struct {
 	Name string `json:"name" binding:"required"`
+	Cards []CreateCardRequest `json:"cards"`
 }
 
 type PackResponse struct {

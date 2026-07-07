@@ -3,13 +3,12 @@ package api_shortcuts
 import (
 	"errors"
 	structs "quiz_core/internal/api/structures"
-	"quiz_core/internal/models"
 	"quiz_core/internal/db"
+	"quiz_core/internal/models"
 	"strings"
 
 	"gorm.io/gorm"
 )
-
 
 func ValidateCreateCardsRequest(req structs.CreateCardsRequest) error {
 	for _, card := range req.Cards {
@@ -43,7 +42,7 @@ func ValidateCreateCardsRequest(req structs.CreateCardsRequest) error {
 
 func CardResponses(cards []models.Card) []structs.CardResponse {
 	response := make([]structs.CardResponse, 0, len(cards))
-	
+
 	for _, card := range cards {
 		cardResp := structs.CardResponse{
 			ID:       card.ID,
@@ -64,6 +63,41 @@ func CardResponses(cards []models.Card) []structs.CardResponse {
 	}
 
 	return response
+}
+
+func CreateCardsForPack(tx *gorm.DB, packID uint, cardRequests []structs.CreateCardRequest) ([]models.Card, error) {
+	createdCards := make([]models.Card, 0, len(cardRequests))
+
+	for _, cardReq := range cardRequests {
+		card := models.Card{
+			Question: strings.TrimSpace(cardReq.Question),
+			Hint:     strings.TrimSpace(cardReq.Hint),
+			PackID:   packID,
+		}
+
+		if err := tx.Create(&card).Error; err != nil {
+			return nil, err
+		}
+
+		correct := CorrectIndexSet(cardReq.Correct)
+		options := make([]models.CardOption, 0, len(cardReq.Options))
+		for i, option := range cardReq.Options {
+			options = append(options, models.CardOption{
+				Content: strings.TrimSpace(option),
+				IsRight: correct[i],
+				CardID:  card.ID,
+			})
+		}
+
+		if err := tx.Create(&options).Error; err != nil {
+			return nil, err
+		}
+
+		card.Options = options
+		createdCards = append(createdCards, card)
+	}
+
+	return createdCards, nil
 }
 
 func ValidateUpdateCardsRequest(req structs.UpdateCardsRequest) error {
@@ -126,7 +160,7 @@ func ValidateCorrectIndexes(indexes []int, optionsCount int) error {
 
 func EnsurePackOwned(packID uint, authorID uint) error {
 	var pack models.Pack
-	
+
 	return db.DB.
 		Where("id = ? AND author_id = ?", packID, authorID).
 		First(&pack).Error

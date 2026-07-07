@@ -114,7 +114,7 @@ func newCoreTestApp(t *testing.T) *coreTestApp {
 	protected.POST("/pack/:share_code", AddSharedPack)
 	protected.POST("/cards/:pack_id", cards.CreateCards)
 	protected.PATCH("/cards", cards.UpdateCards)
-	protected.DELETE("/cards/:card_id", cards.DeleteCard)
+	protected.DELETE("/cards", cards.DeleteCard)
 	protected.GET("/cards/:pack_id", cards.GetCards)
 
 	app.router = router
@@ -198,6 +198,7 @@ func createTestSchema(t *testing.T, testDB *gorm.DB) {
 func Test_CoreHandlersIntegration(t *testing.T) {
 	testData := map[string][]string{
 		"create pack grants owner permission": {"owner", "Biology"},
+		"create pack with cards":              {"owner", "Physics"},
 		"create and get cards":                {"owner", "Biology"},
 		"update card":                         {"owner", "Biology", "Updated question"},
 		"get packs by permission":             {"owner", "guest", "Shared"},
@@ -210,6 +211,7 @@ func Test_CoreHandlersIntegration(t *testing.T) {
 
 	expectedData := map[string][]string{
 		"create pack grants owner permission": {"1"},
+		"create pack with cards":              {"1", "2"},
 		"create and get cards":                {"1"},
 		"update card":                         {"Updated question"},
 		"get packs by permission":             {"1"},
@@ -237,6 +239,41 @@ func Test_CoreHandlersIntegration(t *testing.T) {
 				}
 				if permission.Permission != 1 {
 					t.Fatalf("expected permission 1, got %d", permission.Permission)
+				}
+			},
+		},
+		{
+			name: "create pack with cards",
+			verifyResult: func(t *testing.T, p *coreTestApp, testName string) {
+				payload := cardsPayload()
+				payload["name"] = testData[testName][1]
+
+				resp, body := p.postJSON(t, "/core/pack", payload, "owner")
+				assertStatus(t, resp, http.StatusCreated)
+
+				if len(body.Cards) != mustAtoi(t, expectedData[testName][0]) {
+					t.Fatalf("expected one created card, got %#v", body.Cards)
+				}
+				if body.Cards[0].ID == 0 {
+					t.Fatal("expected created card id")
+				}
+				if len(body.Cards[0].Options) != mustAtoi(t, expectedData[testName][1]) {
+					t.Fatalf("expected two options, got %#v", body.Cards[0].Options)
+				}
+				if len(body.Cards[0].Correct) != 1 || body.Cards[0].Correct[0] != 1 {
+					t.Fatalf("unexpected correct indexes: %#v", body.Cards[0].Correct)
+				}
+
+				var cardsCount int64
+				p.db.Model(&models.Card{}).Where("pack_id = ?", body.ID).Count(&cardsCount)
+				if cardsCount != int64(mustAtoi(t, expectedData[testName][0])) {
+					t.Fatalf("expected one persisted card, got %d", cardsCount)
+				}
+
+				var optionsCount int64
+				p.db.Model(&models.CardOption{}).Where("card_id = ?", body.Cards[0].ID).Count(&optionsCount)
+				if optionsCount != int64(mustAtoi(t, expectedData[testName][1])) {
+					t.Fatalf("expected two persisted options, got %d", optionsCount)
 				}
 			},
 		},
@@ -353,7 +390,7 @@ func Test_CoreHandlersIntegration(t *testing.T) {
 				p.cards["main"] = p.createCard(p.t, p.packs["main"].ID)
 			},
 			verifyResult: func(t *testing.T, p *coreTestApp, testName string) {
-				resp, _ := p.delete(t, "/core/cards/"+itoa(p.cards["main"].ID), "owner")
+				resp, _ := p.deleteJSON(t, "/core/cards", map[string]any{"cards": []uint{p.cards["main"].ID}}, "owner")
 				assertStatus(t, resp, http.StatusOK)
 
 				var count int64
@@ -496,6 +533,11 @@ func (p *coreTestApp) get(t *testing.T, path string, username string) (*httptest
 func (p *coreTestApp) delete(t *testing.T, path string, username string) (*httptest.ResponseRecorder, coreResponse) {
 	t.Helper()
 	return p.requestJSON(t, http.MethodDelete, path, nil, username)
+}
+
+func (p *coreTestApp) deleteJSON(t *testing.T, path string, body any, username string) (*httptest.ResponseRecorder, coreResponse) {
+	t.Helper()
+	return p.requestJSON(t, http.MethodDelete, path, body, username)
 }
 
 func (p *coreTestApp) requestJSON(t *testing.T, method string, path string, body any, username string) (*httptest.ResponseRecorder, coreResponse) {
