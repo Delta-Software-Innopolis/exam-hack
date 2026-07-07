@@ -42,7 +42,7 @@ services:
       - POSTGRES_PORT=${POSTGRES_PORT}
       - ALGORITHM=${ALGORITHM}
     ports:
-      - 8000:8000
+      - 8067:8067
     depends_on:
       migration:
         condition: service_completed_successfully
