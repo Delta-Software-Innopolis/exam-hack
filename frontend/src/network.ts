@@ -8,6 +8,9 @@ export const AUTH_URL = import.meta.env.DEV
 export const CORE_URL = import.meta.env.DEV
     ? "http://localhost:8001"
     : import.meta.env.VITE_CORE_URL_DEV;
+export const HUB_URL = import.meta.env.DEV
+    ? "http://localhost:8067"
+    : import.meta.env.VITE_HUB_URL_DEV;
 
 
 export class NetworkManager {

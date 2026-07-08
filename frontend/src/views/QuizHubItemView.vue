@@ -9,16 +9,46 @@ import CrossSVG from '@/assets/Cross.svg'
 import CheckSVG from '@/assets/Check.svg'
 import { updateCards, createCards, deleteCards } from '@/core'
 import { useNewQuizzesStore } from '@/stores/new-quizzes';
+import useNetworkManager, { HUB_URL } from '@/network';
 
 const route = useRoute()
 const router = useRouter()
 const quizzesStore = useNewQuizzesStore()
+const networkManager = useNetworkManager()
 const quiz = ref(quizzesStore.getHubQuizInfo(route.params.quizId))
 
 const hasUnsavedChanges = ref(false)
 const deletedCards = ref<number[]>([])
 const isSaving = ref(false)
 
+async function addToCollection() {
+    const quizId = route.params.quizId
+    if (quizId === undefined) {
+        console.error('Missing quiz id in route params')
+        return
+    }
+
+    try {
+        const response = await networkManager.fetch(
+            new URL(`/packs/${quizId}`, HUB_URL),
+            {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        },
+        )
+
+        if (!response.ok) {
+            throw new Error(`Failed to add quiz: ${response.status}`)
+        }
+
+        console.log('Quiz added to collection', quizId)
+        router.push("/quizzes")
+    } catch (error) {
+        console.error('Could not add quiz to collection:', error)
+    }
+}
 
 function notImplemented() {
     alert('Thank you for trying!\nThis will be implemented later 🫡')
@@ -222,7 +252,7 @@ async function submitChanges() {
                 </div>
                 <div class="actions">
                     <div class="top-buttons">
-                        <BasicButton variant="primary" @click="notImplemented">Add to collection</BasicButton>
+                        <BasicButton variant="primary" @click="addToCollection()">Add to collection</BasicButton>
                     </div>
                     <!-- <div class="bottom-buttons">
                         <BasicButton variant="primary" class="red-button" @click="notImplemented">Delete</BasicButton>
