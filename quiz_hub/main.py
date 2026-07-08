@@ -7,7 +7,13 @@ app = FastAPI()
 
 origins = [
     "http://localhost:5173",
-    "http://examhacker.ru"
+    "http://examhacker.ru",
+    "http://111.88.118.254",
+    "http://core.examhacker.ru",
+    "https://111.88.118.254:8081",
+    "https://examhacker.ru",
+    "https://core.examhacker.ru",
+    "http://www.examhacker.ru"
 ]
 
 app.include_router(pack_router)
