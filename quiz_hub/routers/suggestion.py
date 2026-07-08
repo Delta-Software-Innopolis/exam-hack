@@ -5,7 +5,7 @@ from sqlalchemy import select
 from models.published_pack import Published_pack as PublishedPackModel
 from models.pack import Pack as PackModel
 router = APIRouter(
-    prefix="/suggestions",
+    prefix="/hub/suggestions",
     tags=["suggestions"]
 )
 

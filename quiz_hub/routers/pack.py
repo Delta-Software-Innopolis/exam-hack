@@ -10,7 +10,7 @@ from pydantic_models.published_quiz import PublishedQuizesResponse, PublishedPac
 from typing import Any
 from dependencies import validate_token
 router = APIRouter(
-    prefix="/packs",
+    prefix="/hub/packs",
     tags=["packs"]
 )
 
