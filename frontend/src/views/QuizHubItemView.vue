@@ -30,7 +30,7 @@ async function addToCollection() {
 
     try {
         const response = await networkManager.fetch(
-            new URL(`/packs/${quizId}`, HUB_URL),
+            new URL(`/hub/packs/${quizId}`, HUB_URL),
             {
             method: 'POST',
             headers: {
