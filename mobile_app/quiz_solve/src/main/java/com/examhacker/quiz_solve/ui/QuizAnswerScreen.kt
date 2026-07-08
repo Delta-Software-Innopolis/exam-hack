@@ -42,8 +42,8 @@ fun QuizAnswerScreen(
             uiState.answers.forEach { answer ->
 
                 AnswerCard(
-                    text = answer.text,
-                    state = answer.state
+                    answer = answer,
+                    onClick = {}
                 )
 
             }
