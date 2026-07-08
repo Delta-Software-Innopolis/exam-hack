@@ -12,6 +12,10 @@ import com.arkivanov.decompose.router.stack.pushToFront
 import kotlinx.serialization.Serializable
 import com.examhacker.authentication.component.AuthenticationComponent
 import com.examhacker.authentication.component.IAuthenticationComponent
+import com.examhacker.common.data.AnswerVariant
+import com.examhacker.common.data.Question
+import com.examhacker.common.data.Quiz
+import com.examhacker.common.ui.AnswerVariantCard
 import com.examhacker.common.utility.FilePicker
 import com.examhacker.mobile.introduction_screen.IIntroductionComponent
 import com.examhacker.mobile.introduction_screen.IntroductionComponent
@@ -32,6 +36,7 @@ import com.examhacker.settings.component.ISettingsComponent
 import com.examhacker.quiz_list.component.QuizListComponent
 import com.examhacker.quiz_solve.component.QuizSolveComponent
 import com.examhacker.settings.component.SettingsComponent
+import kotlinx.serialization.Contextual
 
 interface IRootComponent {
 
@@ -71,7 +76,7 @@ class RootComponent(
     private fun createChild(config: Config, componentContext: ComponentContext,)
     : IRootComponent.Child =
         when (config) {
-            Config.Introduction   ->
+            is Config.Introduction   ->
                 IRootComponent.Child.Introduction(
                     IntroductionComponent(
                         componentContext = componentContext,
@@ -81,7 +86,7 @@ class RootComponent(
                     )
                 )
 
-            Config.Authentication ->
+            is Config.Authentication ->
                 IRootComponent.Child.Authentication(
                     AuthenticationComponent(
                         componentContext = componentContext,
@@ -90,11 +95,30 @@ class RootComponent(
                     )
                 )
 
-            Config.QuizList       ->
+            is Config.QuizList       ->
                 IRootComponent.Child.QuizList(
                     QuizListComponent(
                         componentContext,
-                        toQuizCreation = ::navigateToQuizCreation,
+                        toQuizCreation = ::navigateToQuizCreate,
+                        toQuizInfo = {
+                            navigateToQuizInfo(
+                                Quiz(
+                                    id = 1,
+                                    authorName = "User",
+                                    name = "Quiz name",
+                                    description = "Nice description",
+                                    questions = listOf(
+                                        Question(
+                                            description = "How much?",
+                                            variants = listOf(
+                                                AnswerVariant("One", false),
+                                                AnswerVariant("Two", true)
+                                            )
+                                        )
+                                    )
+                                )
+                            )
+                        },
                         toQuizHub = {},
                         toProfile = {},
                         toSettings = {},
@@ -102,12 +126,17 @@ class RootComponent(
                     )
                 )
 
-            Config.QuizEdit       ->
+            is Config.QuizEdit       ->
                 IRootComponent.Child.QuizEdit(
-                    QuizEditComponent(componentContext)
+                    QuizEditComponent(
+                        componentContext = componentContext,
+                        questions = config.quiz.questions,
+                        saveQuiz = { },
+                        back = ::back,
+                    )
                 )
 
-            Config.QuizCreate     ->
+            is Config.QuizCreate     ->
                 IRootComponent.Child.QuizCreate(
                     QuizCreateComponent(
                         componentContext,
@@ -116,27 +145,34 @@ class RootComponent(
                     )
                 )
 
-            Config.QuizInfo       ->
+            is Config.QuizInfo       ->
                 IRootComponent.Child.QuizInfo(
-                    QuizInfoComponent(componentContext)
+                    QuizInfoComponent(
+                        componentContext = componentContext,
+                        quiz = config.quiz,
+                        toSolve = { navigateToQuizSolve(config.quiz) },
+                        toEdit = { navigateToQuizEdit(config.quiz) },
+                        deleteQuiz = { back() },
+                        back = ::back,
+                    )
                 )
 
-            Config.QuizHub        ->
+            is Config.QuizHub        ->
                 IRootComponent.Child.QuizHub(
                     QuizHubComponent(componentContext)
                 )
 
-            Config.QuizSolve      ->
+            is Config.QuizSolve      ->
                 IRootComponent.Child.QuizSolve(
                     QuizSolveComponent(componentContext)
                 )
 
-            Config.Profile        ->
+            is Config.Profile        ->
                 IRootComponent.Child.Profile(
                     ProfileComponent(componentContext)
                 )
 
-            Config.Settings       ->
+            is Config.Settings       ->
                 IRootComponent.Child.Settings(
                     SettingsComponent(componentContext)
                 )
@@ -146,7 +182,7 @@ class RootComponent(
         navigation.replaceCurrent(Config.QuizList)
     }
 
-    private fun navigateToQuizCreation() {
+    private fun navigateToQuizCreate() {
         navigation.pushNew(Config.QuizCreate)
     }
 
@@ -162,8 +198,20 @@ class RootComponent(
         navigation.pushToFront(Config.Settings)
     }
 
+    private fun navigateToQuizSolve(quiz: Quiz) {
+        navigation.pushNew(Config.QuizSolve(quiz))
+    }
+
+    private fun navigateToQuizEdit(quiz: Quiz) {
+        navigation.pushNew(Config.QuizEdit(quiz))
+    }
+
     private fun fromIntroductionToAuth() {
         navigation.replaceCurrent(Config.Authentication)
+    }
+
+    private fun navigateToQuizInfo(quiz: Quiz) {
+        navigation.pushNew(Config.QuizInfo(quiz))
     }
 
     private fun back() {
@@ -179,15 +227,15 @@ class RootComponent(
         @Serializable
         data object QuizList : Config()
         @Serializable
-        data object QuizEdit : Config()
+        data class QuizEdit(@Contextual val quiz: Quiz) : Config()
         @Serializable
         data object QuizCreate : Config()
         @Serializable
-        data object QuizInfo : Config()
+        data class QuizInfo(@Contextual val quiz: Quiz) : Config() // Replace with quiz ID, when connect to backend and local db
         @Serializable
         data object QuizHub : Config()
         @Serializable
-        data object QuizSolve : Config()
+        data class QuizSolve(@Contextual val quiz: Quiz) : Config()
         @Serializable
         data object Profile : Config()
         @Serializable

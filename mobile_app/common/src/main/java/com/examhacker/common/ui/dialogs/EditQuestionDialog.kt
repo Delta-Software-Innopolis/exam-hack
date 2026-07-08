@@ -1,35 +1,25 @@
-package com.examhacker.quiz_create.ui
+package com.examhacker.common.ui.dialogs
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.examhacker.common.data.AnswerVariant
-import com.examhacker.common.ui.dialogs.QuestionDescriptionInputField
-import com.examhacker.common.ui.dialogs.TopDialogBar
-import com.examhacker.common.ui.dialogs.VariantsSection
+import com.examhacker.common.ui.DeleteButton
 import com.examhacker.resources.R
-import com.examhacker.quiz_create.component.IEditQuestionDialogComponent
+import com.examhacker.common.utility.dialogs.IEditQuestionDialogComponent
 import com.examhacker.resources.ColorPreset
 import com.examhacker.resources.Dimensions
 
@@ -104,42 +94,9 @@ private fun EditQuestionDialogUI(
                 modifier = Modifier.fillMaxWidth()
             )
 
-            DeleteQuestionButton(
-                onDeleteQuestionClick = onDeleteQuestionClick,
+            DeleteButton(
+                onDeleteClick = onDeleteQuestionClick,
                 modifier = Modifier.fillMaxWidth()
-            )
-        }
-    }
-}
-
-@Composable
-private fun DeleteQuestionButton(
-    onDeleteQuestionClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Button(
-        onClick = onDeleteQuestionClick,
-        modifier = modifier,
-        shape = RoundedCornerShape(Dimensions.ButtonRadius),
-        contentPadding = PaddingValues(Dimensions.ScreenPadding),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = ColorPreset.ErrorPrimary,
-            contentColor = ColorPreset.BackgroundVariant
-        )
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(Dimensions.ButtonContentSpacing)
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.ic_trash_can),
-                contentDescription = ""
-            )
-
-            Text(
-                text = stringResource(R.string.delete_question_button_label),
-                fontSize = Dimensions.ButtonLabelFontSize,
-                fontWeight = FontWeight.Normal
             )
         }
     }

@@ -35,6 +35,8 @@ import com.examhacker.common.ui.FloatingAddButton
 import com.examhacker.common.ui.NavigationTab
 import com.examhacker.common.ui.QuestionList
 import com.examhacker.common.ui.ScreenTitle
+import com.examhacker.common.ui.dialogs.AddQuestionDialog
+import com.examhacker.common.ui.dialogs.EditQuestionDialog
 import com.examhacker.resources.R
 import com.examhacker.quiz_create.component.IQuizReviewComponent
 import com.examhacker.quiz_create.ui.common.CreationStage

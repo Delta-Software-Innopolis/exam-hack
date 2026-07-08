@@ -1,4 +1,4 @@
-package com.examhacker.quiz_create.ui
+package com.examhacker.common.ui.dialogs
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -25,11 +25,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
-import com.examhacker.common.ui.dialogs.QuestionDescriptionInputField
-import com.examhacker.common.ui.dialogs.TopDialogBar
-import com.examhacker.common.ui.dialogs.VariantsSection
 import com.examhacker.resources.R
-import com.examhacker.quiz_create.component.IAddQuestionDialogComponent
+import com.examhacker.common.utility.dialogs.IAddQuestionDialogComponent
 import com.examhacker.resources.ColorPreset
 import com.examhacker.resources.Dimensions
 

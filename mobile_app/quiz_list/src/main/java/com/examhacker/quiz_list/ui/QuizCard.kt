@@ -59,7 +59,9 @@ fun QuizCard(
             painter = painterResource(R.drawable.ic_play),
             contentDescription = null,
             tint = ColorPreset.TextDefaultSecondary,
-            modifier = Modifier.size(34.dp)
+            modifier = Modifier
+                .padding(Dimensions.NavigationButtonPadding)
+                .size(34.dp)
         )
     }
 }
