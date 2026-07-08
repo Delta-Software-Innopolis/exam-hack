@@ -3,19 +3,52 @@ import { ref, watch, onUnmounted, useTemplateRef, type Ref, onMounted } from 'vu
 import { useRouter, useRoute } from 'vue-router';
 import BasicButton from '@/components/newBasic/BasicButton.vue';
 import EditQuestion from '@/components/newBasic/EditQuestion.vue';
-import type { Card, CardType } from '@/types';
+import type { Card, CardType, QuizItem, QuizHubItem } from '@/types';
 import BasicInput from '@/components/newBasic/BasicInput.vue';
 import CrossSVG from '@/assets/Cross.svg'
 import CheckSVG from '@/assets/Check.svg'
 import { updateCards, createCards, deleteCards } from '@/core'
 import { useNewQuizzesStore } from '@/stores/new-quizzes';
-import useNetworkManager, { HUB_URL } from '@/network';
+import useNetworkManager, { HUB_URL} from '@/network';
 
 const route = useRoute()
 const router = useRouter()
 const quizzesStore = useNewQuizzesStore()
 const networkManager = useNetworkManager()
-const quiz = ref(quizzesStore.getHubQuizInfo(route.params.quizId))
+// const quiz = ref(quizzesStore.getHubQuizInfo(route.params.quizId))
+const quiz = ref<QuizHubItem|null>(null)
+onMounted(async() => {
+    quiz.value = await getQuiz()
+    console.log(quiz.value)
+})
+async function getQuiz() {
+    const quizId = route.params.quizId
+    if (quizId === undefined) {
+        console.error('Missing quiz id in route params')
+        return
+    }
+
+    try {
+        const response = await networkManager.unauth_fetch(
+            new URL(`/hub/packs/${quizId}`, HUB_URL),
+            {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        },
+        )
+
+        if (!response.ok) {
+            throw new Error(`Failed to get quiz: ${response.status}`)
+        }
+        const result = await response.json()
+        return result
+        console.log('Quiz getted successfully', quizId)
+    } catch (error) {
+        console.error('Could not add quiz to collection:', error)
+    }
+}
 
 const hasUnsavedChanges = ref(false)
 const deletedCards = ref<number[]>([])
@@ -96,25 +129,25 @@ function openOverlay() {
 }
 
 
-function onStartAddNewQuestion() {
-    if (!newQuestion.value) {
-        newQuestion.value = true
-        activeQuestion.value = structuredClone(NEW_QUESTION)
-    }
-    activeQuestionId.value = quiz.value ? quiz.value.cards.length + 1 : -1
-    openOverlay()
-}
+// function onStartAddNewQuestion() {
+//     if (!newQuestion.value) {
+//         newQuestion.value = true
+//         activeQuestion.value = structuredClone(NEW_QUESTION)
+//     }
+//     activeQuestionId.value = quiz.value ? quiz.value.cards.length + 1 : -1
+//     openOverlay()
+// }
 
-function onStartEditQuestion(q_id: number) {
-    let q = quiz.value ? quiz.value.cards[q_id] : undefined
-    if (q) {
-        newQuestion.value = false
-        activeQuestion.value = q 
-        activeQuestionId.value = q_id
+// function onStartEditQuestion(q_id: number) {
+//     let q = quiz.value ? quiz.value.cards[q_id] : undefined
+//     if (q) {
+//         newQuestion.value = false
+//         activeQuestion.value = q 
+//         activeQuestionId.value = q_id
         
-        openOverlay()
-    }
-}
+//         openOverlay()
+//     }
+// }
 
 function chooseCorrectOption(i: number) {
     activeQuestion.value.correct = [i]
@@ -130,29 +163,29 @@ onUnmounted(()=>{
     window.removeEventListener('mousedown', onmousedown)
 })
 
-function onAddQuestion() {
-    if (quiz.value)
-        quiz.value.cards.push(activeQuestion.value)
-    activeQuestion.value = structuredClone(NEW_QUESTION)
-    hasUnsavedChanges.value = true
-    closeOverlay()
-}
+// function onAddQuestion() {
+//     if (quiz.value)
+//         quiz.value.cards.push(activeQuestion.value)
+//     activeQuestion.value = structuredClone(NEW_QUESTION)
+//     hasUnsavedChanges.value = true
+//     closeOverlay()
+// }
 
-function onDeleteQuestion() {
-    if (quiz.value === undefined) { return }
-    const card = quiz.value.cards[activeQuestionId.value]
-    if (card === undefined) { return }
+// function onDeleteQuestion() {
+//     if (quiz.value === undefined) { return }
+//     const card = quiz.value.cards[activeQuestionId.value]
+//     if (card === undefined) { return }
 
-    if (card.id > 0) {
-        deletedCards.value.push(card.id)
-    }
+//     if (card.id > 0) {
+//         deletedCards.value.push(card.id)
+//     }
 
-    quiz.value.cards.splice(activeQuestionId.value, 1)
-    // for (const [i, card] of quiz.value.cards.entries()) { card.id = i+1 }  // fix the ids
-    activeQuestion.value = structuredClone(NEW_QUESTION)
-    hasUnsavedChanges.value = true
-    closeOverlay()
-}
+//     quiz.value.cards.splice(activeQuestionId.value, 1)
+//     // for (const [i, card] of quiz.value.cards.entries()) { card.id = i+1 }  // fix the ids
+//     activeQuestion.value = structuredClone(NEW_QUESTION)
+//     hasUnsavedChanges.value = true
+//     closeOverlay()
+// }
 
 watch(
     () => quiz.value,
@@ -164,36 +197,36 @@ watch(
     { deep: true }
 )
 
-async function submitChanges() {
-    if (quiz.value === undefined) { return }
-    isSaving.value = true
+// async function submitChanges() {
+//     if (quiz.value === undefined) { return }
+//     isSaving.value = true
 
-    const updatedCards = quiz.value.cards.filter((card: Card) => card.id > 0)
-    const newCards = quiz.value.cards.filter((card: Card) => card.id < 0)
+//     const updatedCards = quiz.value.cards.filter((card: Card) => card.id > 0)
+//     const newCards = quiz.value.cards.filter((card: Card) => card.id < 0)
 
-    let ok = true
+//     let ok = true
 
-    if (updatedCards.length > 0)
-        ok &&= await updateCards(updatedCards)
+//     if (updatedCards.length > 0)
+//         ok &&= await updateCards(updatedCards)
 
-    if (newCards.length > 0)
-        ok &&= await createCards(quiz.value.id, newCards)
+//     if (newCards.length > 0)
+//         ok &&= await createCards(quiz.value.id, newCards)
 
-    if (deletedCards.value.length > 0)
-        ok &&= await deleteCards(deletedCards.value)
+//     if (deletedCards.value.length > 0)
+//         ok &&= await deleteCards(deletedCards.value)
 
-    if (!ok) {
-        isSaving.value = false
-        alert("Couldn't save changes")
-        return
-    }
+//     if (!ok) {
+//         isSaving.value = false
+//         alert("Couldn't save changes")
+//         return
+//     }
 
-    deletedCards.value = []
-    hasUnsavedChanges.value = false
+//     deletedCards.value = []
+//     hasUnsavedChanges.value = false
 
-    await quizzesStore.fetchMyQuizzes()
-    isSaving.value = false
-}
+//     await quizzesStore.fetchMyQuizzes()
+//     isSaving.value = false
+// }
 
 
 </script>
@@ -201,7 +234,6 @@ async function submitChanges() {
 <template>
     <div class="main-container" v-if="quiz">
         <div ref="overlay" class="overlay" v-if="showOverlay" :class="overlayClass">
-
             <div class="question-edit-window" v-if="activeQuestion">
                 <div class="top-line">
                     <h3 v-if="newQuestion">Add {{ activeQuestionId }}th Question</h3>
@@ -217,8 +249,8 @@ async function submitChanges() {
                         <CrossSVG v-else class="option-cross" @click="chooseCorrectOption(i-1)"/>
                     </div>
                 </div>
-                <BasicButton variant="primary" v-if="newQuestion" @click="onAddQuestion">Add Question</BasicButton>
-                <BasicButton variant="primary" v-else class="red-button" @click="onDeleteQuestion">Delete Question</BasicButton>
+                <!-- <BasicButton variant="primary" v-if="newQuestion" @click="onAddQuestion">Add Question</BasicButton>
+                <BasicButton variant="primary" v-else class="red-button" @click="onDeleteQuestion">Delete Question</BasicButton> -->
             </div>
 
         </div>
@@ -226,12 +258,12 @@ async function submitChanges() {
             <div class="title">
                 <h1>{{ quiz.name || 'Unknown Quiz' }}</h1>
                 <span class="author">
-                    by <a href="#">{{ quiz.author.username || 'Someone'}}</a>
+                    by <a href="#">{{ quiz.author.name || 'Someone'}}</a>
                 </span>
             </div>
-            <div class="description">
+            <!-- <div class="description">
                 {{ quiz.description || "This quiz has no description..." }}
-            </div>
+            </div> -->
             <div class="stats-n-actions">
                 <div class="stats">
                     <div class="commpletion">
@@ -240,6 +272,9 @@ async function submitChanges() {
                             <span class="percentage">0%</span>
                             <div class="bar"></div>
                         </div>
+                    </div>
+                    <div class="tags-container">
+                        <div v-for="(value, key) in quiz">{{key}}: {{ value }}</div>
                     </div>
                     <!-- <div class="statistics">
                         <h4>Statistics</h4>

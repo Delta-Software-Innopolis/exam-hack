@@ -6,8 +6,8 @@ from models.published_pack import Published_pack as PublishedPackModel
 from models.user import User as UserModel
 from models.pack import Pack as PackModel
 from sqlalchemy import select, text, func, or_, desc
-from pydantic_models.published_quiz import PublishedQuizesResponse, PublishedPackNew
-from typing import Any
+from pydantic_models.published_quiz import PublishedQuizesResponse, PublishedPackNew, PublishedQuiz
+from typing import Any, cast
 from dependencies import validate_token
 router = APIRouter(
     prefix="/hub/packs",
@@ -185,3 +185,36 @@ async def add_pack(
         })
     await session.commit()
     return {"adding": "success"}
+
+@router.get("/{pack_id}", response_model=PublishedQuiz)
+async def get_pack_by_id(
+    pack_id: int,
+    session: AsyncSession = Depends(get_async_db)
+)-> PublishedQuiz:
+    stmt = (select(PublishedPackModel)
+        .where(PublishedPackModel.id == pack_id)
+        .join(PublishedPackModel.source)
+        .options(
+            load_only(
+                PublishedPackModel.id,
+                PublishedPackModel.rating,
+                PublishedPackModel.subject,
+                PublishedPackModel.university,
+                PublishedPackModel.professor,
+                PublishedPackModel.course_book,
+                PublishedPackModel.description
+            ),
+            joinedload(PublishedPackModel.author)
+            .options(load_only(UserModel.id, UserModel.name)),
+            selectinload(PublishedPackModel.forks)
+            .options(
+                joinedload(PublishedPackModel.source),
+            ),
+            joinedload(PublishedPackModel.source)
+            .options(load_only(PackModel.name))
+        )
+    )
+    result = (await session.scalars(stmt)).first()
+    if result is None:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="no pack with such id")
+    return cast(PublishedQuiz, result)

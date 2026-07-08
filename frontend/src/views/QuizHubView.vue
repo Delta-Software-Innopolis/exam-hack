@@ -91,7 +91,7 @@ onBeforeMount(async ()=> {
         :key="quiz.id" 
         :id="quiz.id"
         :name="quiz.name"
-        :author="quiz.author.username"
+        :author="quiz.author.name"
         :description="quiz.description"/>
       <div v-else>Sorry, we can't find such quizzes</div>
     </div>
