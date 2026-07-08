@@ -24,7 +24,7 @@ Students can upload lecture materials and automatically generate quizzes and fla
 - ML - Python with Pydantic and OpenAI
 
 ## Launch/Access Instructions
-#### You can access ExamHacker by the link: http://111.88.118.254:9080/
+#### You can access ExamHacker by the link: http://examhacker.ru
 
 #### Or you can build the app yourself:
 
