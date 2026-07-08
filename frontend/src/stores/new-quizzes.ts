@@ -14,7 +14,7 @@ export const UNKNOWN_QUIZ: QuizItem = {
     creation_date: new Date(),
     updation_date: new Date(),
     forked_from: 0,
-    author: { id: -1, username: '' },
+    author: { id: -1, name: '' },
     description: '',
     cards: []
 }

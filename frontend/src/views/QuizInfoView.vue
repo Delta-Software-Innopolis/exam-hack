@@ -196,7 +196,7 @@ async function submitChanges() {
             <div class="title">
                 <h1>{{ quiz.name || 'Unknown Quiz' }}</h1>
                 <span class="author">
-                    by <a href="#">{{ quiz.author.username || 'You'}}</a>
+                    by <a href="#">{{ quiz.author.name || 'You'}}</a>
                 </span>
             </div>
             <div class="description">

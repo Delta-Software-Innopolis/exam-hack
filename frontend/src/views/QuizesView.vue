@@ -40,7 +40,7 @@ onBeforeUpdate(()=>{
         :mock="quiz.mock"
         :id="quiz.id"
         :name="quiz.name"
-        :author="quiz.author.username"
+        :author="quiz.author.name"
         :description="quiz.description"
       </QuizComponent>
     </div>

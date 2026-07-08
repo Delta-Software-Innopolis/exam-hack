@@ -19,6 +19,8 @@ const card = computed(() => quiz.value ? quiz.value.cards[questionNum.value] : u
 const lastClicked = ref<number|null>(null)
 const isHintClicked = ref(false)
 
+console.log("CARD:", card)
+
 const progressWidth = computed(()=> {
     const total = (quiz.value ? quiz.value.cards.length : 1) || 1
     const current = questionNum.value + 1
@@ -76,11 +78,11 @@ function checkAnswer(index:number) {
                 </div>
             </div>
             <div class="question">
-                <div class="title">{{ card.question }}</div>
+                <div class="title">{{ card?.question }}</div>
                 <div class="option-container">
                 <BasicButton 
                 class="option"
-                v-for="(option, index) in card.options"
+                v-for="(option, index) in card?.options"
                         :key="index"
                         :variant="styles[index]"
                         @click="checkAnswer(index)"
@@ -93,7 +95,7 @@ function checkAnswer(index:number) {
                 <BasicButton title="Hint from AI" @click="isHintClicked = !isHintClicked" variant="ai" class="hint-button"><HintSVG/></BasicButton>
                 <button v-if="questionNum != quiz.cards.length-1" @click="nextCard" class="arrow right-arrow" :disabled="isDisabled"><RightArrowSVG/></button>
             </div>
-            <div class="hint-wrapper" v-if="isHintClicked"><div>{{ card.hint }}</div></div>
+            <div class="hint-wrapper" v-if="isHintClicked"><div>{{ card?.hint }}</div></div>
         </div>
     </div>
 </template>

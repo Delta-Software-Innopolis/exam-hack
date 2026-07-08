@@ -9,7 +9,7 @@ export const MOCK_QUIZZES: QuizItem[] = [
     description: "Man, that's just a wonderful quiz to learn the fundamentals of JS. I cannot emphasize more of how I love it, it's just enermously splendid.",
     creation_date: new Date("2025-01-10"),
     updation_date: new Date("2025-05-20"),
-    author: { id: 1, username: "You" },
+    author: { id: 1, name: "You" },
     cards: [
       {
         id: 1,
@@ -51,7 +51,7 @@ export const MOCK_QUIZZES: QuizItem[] = [
     name: "Vue 3 Essentials",
     creation_date: new Date("2025-02-14"),
     updation_date: new Date("2025-06-01"),
-    author: { id: 1, username: "You" },
+    author: { id: 1, name: "You" },
     forked_from: 1,
     cards: [
       {
@@ -94,7 +94,7 @@ export const MOCK_QUIZZES: QuizItem[] = [
     name: "Docker Basics",
     creation_date: new Date("2025-03-01"),
     updation_date: new Date("2025-06-15"),
-    author: { id: 1, username: "You" },
+    author: { id: 1, name: "You" },
     description: "Core concepts required to work with Docker containers.",
     cards: [
       {
@@ -155,7 +155,7 @@ export const MOCK_QUIZZES: QuizItem[] = [
     name: "REST APIs",
     creation_date: new Date("2025-03-15"),
     updation_date: new Date("2025-06-20"),
-    author: { id: 1, username: "You" },
+    author: { id: 1, name: "You" },
     description: "Understanding common HTTP methods and status codes.",
     cards: [
       {
@@ -198,7 +198,7 @@ export const MOCK_QUIZZES: QuizItem[] = [
     name: "PostgreSQL Essentials",
     creation_date: new Date("2025-04-01"),
     updation_date: new Date("2025-06-18"),
-    author: { id: 1, username: "You" },
+    author: { id: 1, name: "You" },
     cards: [
       {
         id: 18,
