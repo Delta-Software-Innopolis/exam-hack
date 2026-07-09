@@ -1,53 +1,89 @@
 package com.examhacker.quiz_solve.component
 
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.router.stack.ChildStack
+import com.arkivanov.decompose.router.stack.StackNavigation
+import com.arkivanov.decompose.router.stack.childStack
+import com.arkivanov.decompose.router.stack.items
+import com.arkivanov.decompose.router.stack.pop
+import com.arkivanov.decompose.value.MutableValue
+import com.arkivanov.decompose.value.Value
+import com.examhacker.common.data.Quiz
+import kotlinx.serialization.Serializable
 
 interface IQuizSolveComponent {
-    val answerComponent: IQuizAnswerComponent
-    val resultComponent: IQuizResultComponent
-    var currentScreen: QuizSolveScreen
-}
+    val stack: Value<ChildStack<*, Child>>
+    val model: Value<Model>
 
-enum class QuizSolveScreen {
-    ANSWER,
-    RESULT
+    data class Model(
+        val quiz: Quiz? = null,
+        val correctCount: Int = 0
+    )
+
+    sealed class Child {
+        data class QuizQuestion(val component: IQuizQuestionComponent) : Child()
+        data class QuizResult(val component: IQuizResultComponent) : Child()
+    }
 }
 
 class QuizSolveComponent(
-    componentContext: ComponentContext
-) : IQuizSolveComponent,
-    ComponentContext by componentContext {
+    componentContext: ComponentContext,
+    private val goBack: () -> Unit,
+) : IQuizSolveComponent, ComponentContext by componentContext {
 
-    override var currentScreen = QuizSolveScreen.ANSWER
+    private val _model =  MutableValue(IQuizSolveComponent.Model())
+    override val model = _model
 
-    override val answerComponent =
-        QuizAnswerComponent(
-            componentContext = componentContext,
-            goBack = {
-                // TODO
-            },
-            onPreviousQuestion = {
-                // TODO
-            },
-            onNextQuestion = {
-                currentScreen = QuizSolveScreen.RESULT
-            },
-            onOpenAiChat = {
-                // TODO childSlot
-            }
+    private val navigation = StackNavigation<Config>()
+    override val stack: Value<ChildStack<*, IQuizSolveComponent.Child>> =
+        childStack(
+            source = navigation,
+            serializer = Config.serializer(),
+            initialConfiguration = Config.QuizQuestion,
+            handleBackButton = false,
+            childFactory = ::createChild
         )
 
-    override val resultComponent =
-        QuizResultComponent(
-            componentContext = componentContext,
-            onContinueGrinding = {
-                currentScreen = QuizSolveScreen.ANSWER
-            },
-            onTakeBreak = {
-                // TODO
-            },
-            goBack = {
-                currentScreen = QuizSolveScreen.ANSWER
-            }
-        )
+    private fun createChild(
+        config: Config,
+        componentContext: ComponentContext
+    ): IQuizSolveComponent.Child =
+        when(config) {
+            is Config.QuizQuestion ->
+                IQuizSolveComponent.Child.QuizQuestion(
+                    QuizQuestionComponent(
+                        componentContext = componentContext,
+                        goBack = ::back,
+                        onPreviousQuestion = {},
+                        onNextQuestion = {},
+                        onOpenAiChat = {}
+                    )
+                )
+
+            is Config.QuizResult   ->
+                IQuizSolveComponent.Child.QuizResult(
+                    QuizResultComponent(
+                        componentContext = componentContext,
+                        onContinueGrinding = {},
+                        onTakeBreak = {},
+                        goBack = ::back
+                    )
+                )
+        }
+
+    private fun back() {
+        if (stack.items.size > 1) {
+            navigation.pop()
+        } else {
+            goBack()
+        }
+    }
+
+    @Serializable
+    sealed class Config {
+        @Serializable
+        data object QuizQuestion : Config()
+        @Serializable
+        data object QuizResult : Config()
+    }
 }

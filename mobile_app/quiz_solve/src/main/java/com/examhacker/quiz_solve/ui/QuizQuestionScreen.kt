@@ -6,13 +6,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.examhacker.quiz_solve.component.IQuizAnswerComponent
+import com.examhacker.quiz_solve.component.IQuizQuestionComponent
 import com.examhacker.resources.Dimensions
-import androidx.compose.foundation.layout.Column
 
 @Composable
-fun QuizAnswerScreen(
-    component: IQuizAnswerComponent
+fun QuizQuestionScreen(
+    component: IQuizQuestionComponent
 ) {
 
     val uiState = component.uiState

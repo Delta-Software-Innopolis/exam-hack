@@ -11,7 +11,7 @@ fun QuizSolveScreen(
     when (component.currentScreen) {
 
         QuizSolveState.ANSWER ->
-            QuizAnswerScreen(component.answerComponent)
+            QuizQuestionScreen(component.answerComponent)
 
         QuizSolveState.RESULT ->
             QuizResultScreen(component.resultComponent)

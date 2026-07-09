@@ -164,7 +164,10 @@ class RootComponent(
 
             is Config.QuizSolve      ->
                 IRootComponent.Child.QuizSolve(
-                    QuizSolveComponent(componentContext)
+                    QuizSolveComponent(
+                        componentContext = componentContext,
+                        goBack = ::back
+                    )
                 )
 
             is Config.Profile        ->
