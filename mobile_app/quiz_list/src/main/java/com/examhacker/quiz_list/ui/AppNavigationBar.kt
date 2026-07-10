@@ -48,7 +48,8 @@ fun AppNavigationBar(
 
         NavigationItem(
             text = "QuizHub",
-            icon = R.drawable.search_magnifying_glass,
+            icon = R.drawable..
+                search_magnifying_glass,
             selected = selectedIndex == 1,
             onClick = onQuizHubClick
         )

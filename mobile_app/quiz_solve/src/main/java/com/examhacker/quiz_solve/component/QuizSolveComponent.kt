@@ -54,8 +54,6 @@ class QuizSolveComponent(
                     QuizQuestionComponent(
                         componentContext = componentContext,
                         goBack = ::back,
-                        onPreviousQuestion = {},
-                        onNextQuestion = {},
                         onOpenAiChat = {}
                     )
                 )

@@ -6,14 +6,17 @@ import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
 import com.examhacker.common.data.AnswerVariant
 import com.examhacker.common.data.Question
+import kotlin.compareTo
 
 interface IQuizQuestionComponent {
     val model: Value<Model>
 
     data class Model(
         val questions: List<Question> = emptyList(),
-        val currentQuestion: Question? = null,
-        val answers: List<AnswerVariant?> = emptyList()
+        val currentQuestionIndex: Int = 0,
+        val answers: List<AnswerVariant?> = emptyList(),
+        val nextEnabled: Boolean = false,
+        val previousEnabled: Boolean = false
     )
 
     fun back()
@@ -33,30 +36,32 @@ class QuizQuestionComponent(
     override val model = _model
 
     override fun goToPreviousQuestion() {
-        val currentIndex = model.value.questions.indexOf(model.value.currentQuestion)
-
-        if (currentIndex > 0) {
+        if (model.value.previousEnabled) {
             _model.update {
-                it.copy(currentQuestion = it.questions[currentIndex - 1])
+                it.copy(
+                    currentQuestionIndex = it.currentQuestionIndex - 1,
+                    nextEnabled = isNextEnabled(it.currentQuestionIndex - 1),
+                    previousEnabled = isPreviousEnabled(it.currentQuestionIndex - 1)
+                )
             }
         }
     }
 
     override fun goToNextQuestion() {
-        val currentIndex = model.value.questions.indexOf(model.value.currentQuestion)
-
-        if (currentIndex < model.value.questions.lastIndex
-            && currentIndex != -1) {
+        if (model.value.nextEnabled) {
             _model.update {
-                it.copy(currentQuestion = it.questions[currentIndex + 1])
+                it.copy(
+                    currentQuestionIndex = it.currentQuestionIndex + 1,
+                    nextEnabled = isNextEnabled(it.currentQuestionIndex + 1),
+                    previousEnabled = isPreviousEnabled(it.currentQuestionIndex + 1)
+                )
             }
         }
     }
 
     override fun answerCurrentQuestion(answer: AnswerVariant) {
-        val currentIndex = model.value.questions.indexOf(model.value.currentQuestion)
         val updatedAnswers = model.value.answers.toMutableList()
-        updatedAnswers.add(currentIndex, answer)
+        updatedAnswers.add(model.value.currentQuestionIndex, answer)
 
         _model.update {
             it.copy(answers = updatedAnswers)
@@ -69,6 +74,15 @@ class QuizQuestionComponent(
 
     override fun back() {
         goBack()
+    }
+
+    private fun isNextEnabled(index: Int): Boolean {
+        return index < model.value.questions.lastIndex
+            && index != -1
+    }
+
+    private fun isPreviousEnabled(index: Int): Boolean {
+        return index > 0
     }
     
     private fun createMockData(): IQuizQuestionComponent.Model {
@@ -94,8 +108,10 @@ class QuizQuestionComponent(
 
         return IQuizQuestionComponent.Model(
             questions = listOf(question1, question2),
-            currentQuestion = question1,
-            answers = emptyMap()
+            currentQuestionIndex = 0,
+            answers = emptyList(),
+            nextEnabled = true,
+            previousEnabled = false
         )
     }
 }
