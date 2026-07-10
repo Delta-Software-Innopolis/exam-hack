@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ref, watch, onUnmounted, useTemplateRef, type Ref, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
-import BasicButton from '@/components/newBasic/BasicButton.vue';
-import EditQuestion from '@/components/newBasic/EditQuestion.vue';
+import BasicButton from '@/components/basic/BasicButton.vue';
+import EditQuestion from '@/components/basic/EditQuestion.vue';
 import type { Card, CardType, QuizItem, QuizHubItem } from '@/types';
-import BasicInput from '@/components/newBasic/BasicInput.vue';
+import BasicInput from '@/components/basic/BasicInput.vue';
 import CrossSVG from '@/assets/Cross.svg'
 import CheckSVG from '@/assets/Check.svg'
 import { useNewQuizzesStore } from '@/stores/new-quizzes';

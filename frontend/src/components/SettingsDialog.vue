@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import BasicButton from './newBasic/BasicButton.vue'
+import BasicButton from './basic/BasicButton.vue'
 import CrossSVG from '@/assets/Cross.svg'
 
 const allowMultipleCorrects = defineModel<boolean>('allowMultipleCorrects', {default: true})

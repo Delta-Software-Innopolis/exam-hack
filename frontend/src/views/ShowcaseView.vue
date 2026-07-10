@@ -1,10 +1,10 @@
 <script setup lang="ts">
-  import BasicButton from '@/components/newBasic/BasicButton.vue';
-  import BasicInput from '@/components/newBasic/BasicInput.vue';
-  import QuizComponent from '@/components/newBasic/QuizComponent.vue';
-  import QuestionOption from '@/components/newBasic/QuestionOption.vue';
-  import QuizOption from '@/components/newBasic/QuizOption.vue';
-  import EditQuestion from '@/components/newBasic/EditQuestion.vue';
+  import BasicButton from '@/components/basic/BasicButton.vue';
+  import BasicInput from '@/components/basic/BasicInput.vue';
+  import QuizComponent from '@/components/basic/QuizComponent.vue';
+  import QuestionOption from '@/components/basic/QuestionOption.vue';
+  import QuizOption from '@/components/basic/QuizOption.vue';
+  import EditQuestion from '@/components/basic/EditQuestion.vue';
   import NavigationSidebar from '@/components/NavigationSidebar.vue';
   import { ref } from 'vue';
 import SettingsDialog from '@/components/SettingsDialog.vue';

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import BasicButton from '@/components/newBasic/BasicButton.vue';
-import BasicInput from '@/components/newBasic/BasicInput.vue';
+import BasicButton from '@/components/basic/BasicButton.vue';
+import BasicInput from '@/components/basic/BasicInput.vue';
 import { useRouter } from 'vue-router';
 import { onMounted, onUnmounted, ref, useTemplateRef, type Ref } from 'vue';
 import * as Auth from '@/auth';

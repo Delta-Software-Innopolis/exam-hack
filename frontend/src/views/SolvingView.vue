@@ -2,7 +2,7 @@
 import { useRoute } from 'vue-router';
 import { useNewQuizzesStore } from '@/stores/new-quizzes';
 import { onBeforeMount, onUnmounted, type ComputedRef } from 'vue';
-import BasicButton from '@/components/newBasic/BasicButton.vue';
+import BasicButton from '@/components/basic/BasicButton.vue';
 import type { Card } from '@/types'
 import { ref, computed } from 'vue';
 import router from '@/router';

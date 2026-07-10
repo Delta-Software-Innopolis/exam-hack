@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onBeforeMount } from "vue";
-import QuizHubItemComponent from "@/components/newBasic/QuizHubItemComponent.vue";
-import Search from "@/components/newBasic/Search.vue";
+import QuizHubItemComponent from "@/components/basic/QuizHubItemComponent.vue";
+import Search from "@/components/basic/Search.vue";
 import SearchSVG from "@/assets/Search.svg"
 import type { QuizItem } from "@/types";
 import { useNewQuizzesStore } from "@/stores/new-quizzes";

@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
+import FileAddSVG from "@/assets/FileAdd.svg"
+
 const files = ref<File[]>([]);
 
 function handleFileSelect(e: Event) {
@@ -20,62 +22,99 @@ function removeFile(index: number) {
 </script>
 
 <template>
-  <div class="list-wrapper">
-  <ul>
-    <li v-for="(file, index) in files" :key="file.name"> 
-      <span class="remove-button" @click="removeFile(index)">X</span> 
-      {{ file.name }}
-    </li>
-  </ul>
+  <div class="file-upload">
+    <div class="file-list-wrapper">
+      <ul v-if="files.length > 0">
+        <li v-for="(file, index) in files" :key="file.name"> 
+          <span class="remove-button" @click="removeFile(index)">X</span> 
+          {{ file.name }}
+        </li>
+      </ul>
+      <div v-else class="no-files-wrapper">Upload files first</div>
+    </div>
+    <label for="file-input" class="btn">
+      <span>
+          <FileAddSVG />
+          <span class="button-text">Add files</span>
+      </span>
+    </label>
+    <input id="file-input" type="file" multiple hidden @change="handleFileSelect" />
   </div>
-  <label for="file-input" class="btn">
-	  <span>
-        <!-- <img src="/add_files_icon.svg" alt="add_files_icon.svg" /> -->
-        <span class="button-text">Add files</span>
-    </span>
-  </label>
-  <input id="file-input" type="file" multiple hidden @change="handleFileSelect" />
 </template>
 
 <style>
-  .list-wrapper {
-    width: 400px;
-    heigh: 78px;
-    background-color: white;
-    border-radius: 16px;
-    border: 1px solid #D9D9D9;
-    padding: 16px;
-    padding-bottom: 8px;
-    padding-top: 8px;
-    margin-bottom: 8px;
+  .file-upload {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
   }
 
-  .list-wrapper ul {
+  .file-list-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 10em;
+    height: 100%;
+    background-color: var(--white);
+    border-radius: 16px;
+    border: 1px solid var(--secondary);
+    padding: 16px;
+  }
+
+  .file-list-wrapper ul {
     list-style: none;
     padding-left: 0;
+  }
+
+  .no-files-wrapper {
+    user-select: none;
+    display: flex;
+    height: 100%;
+    width: 100%;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: var(--secondary);
+    text-align: center;
   }
   
   .remove-button {
     font-weight: 700;
-    color: red;
+    color: var(--raddish);
     cursor: pointer;
   }
 
   .btn {
-    display: inline-block;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
     cursor: pointer;
-    width: 400px;
     padding: 16px;
     padding-top: 8px;
     padding-bottom: 8px;
     font-size: 16px;
-    border: 1px solid #D9D9D9;
-    background-color: white;
+    border: 1px solid var(--secondary);
+    background-color: var(--white);
     border-radius: 16px;
+    --icon-width: 16px;
+    --icon-height: 16px;
+    --icon-stroke: var(--secondary-dimm);
+    color: var(--secondary-dimm);
+    transition: 0.2s;
   }
+
   .btn,
-  .list-wrapper {
+  .file-list-wrapper {
     box-sizing: border-box;
+  }
+
+  .btn:hover {
+    background-color: var(--background-light);
+  }
+
+  .btn:active {
+    background-color: var(--background-dimm);
   }
 
   .btn > span {

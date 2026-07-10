@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import BasicFileUpload from '@/components/newBasic/BasicFileUpload.vue';
-import BasicButton from '@/components/newBasic/BasicButton.vue';
-import BasicInput from '@/components/newBasic/BasicInput.vue';
-import BasicTextArea from '@/components/newBasic/BasicTextArea.vue';
-import EditQuestion from '@/components/newBasic/EditQuestion.vue';
+import BasicFileUpload from '@/components/basic/BasicFileUpload.vue';
+import BasicButton from '@/components/basic/BasicButton.vue';
+import BasicInput from '@/components/basic/BasicInput.vue';
+import BasicTextArea from '@/components/basic/BasicTextArea.vue';
+import EditQuestion from '@/components/basic/EditQuestion.vue';
 import CrossSVG from '@/assets/Cross.svg';
 import CheckSVG from '@/assets/Check.svg';
 import LoadingThingSVG from '@/assets/LoadingThing.svg';
