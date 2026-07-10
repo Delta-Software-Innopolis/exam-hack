@@ -23,11 +23,16 @@ export interface QuizItem {
     cards: Card[],
     mock?: boolean
 }
+
+
 export interface QuizHubItem {
     id: number,
-    author: Author,
-    raiting: number|null,
     name: string,
+    description?: string,
+    forked_from?: number,
+    author: Author,
+    cards: Card[],
+    raiting: number|null,
     subject: string,
     university: string,
     professor: string,

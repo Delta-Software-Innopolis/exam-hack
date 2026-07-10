@@ -7,20 +7,19 @@ import type { Card, CardType, QuizItem, QuizHubItem } from '@/types';
 import BasicInput from '@/components/newBasic/BasicInput.vue';
 import CrossSVG from '@/assets/Cross.svg'
 import CheckSVG from '@/assets/Check.svg'
-import { updateCards, createCards, deleteCards } from '@/core'
 import { useNewQuizzesStore } from '@/stores/new-quizzes';
 import useNetworkManager, { HUB_URL} from '@/network';
 
 const route = useRoute()
 const router = useRouter()
-const quizzesStore = useNewQuizzesStore()
 const networkManager = useNetworkManager()
-// const quiz = ref(quizzesStore.getHubQuizInfo(route.params.quizId))
 const quiz = ref<QuizHubItem|null>(null)
+
 onMounted(async() => {
     quiz.value = await getQuiz()
     console.log(quiz.value)
 })
+
 async function getQuiz() {
     const quizId = route.params.quizId
     if (quizId === undefined) {
@@ -44,15 +43,10 @@ async function getQuiz() {
         }
         const result = await response.json()
         return result
-        console.log('Quiz getted successfully', quizId)
     } catch (error) {
         console.error('Could not add quiz to collection:', error)
     }
 }
-
-const hasUnsavedChanges = ref(false)
-const deletedCards = ref<number[]>([])
-const isSaving = ref(false)
 
 async function addToCollection() {
     const quizId = route.params.quizId
@@ -87,25 +81,9 @@ function notImplemented() {
     alert('Thank you for trying!\nThis will be implemented later 🫡')
 }
 
-const NEW_QUESTION = { 
-    id: -1,
-    question: 'new question',
-    options: [
-        'opt 1',
-        'opt 2',
-        'opt 3',
-        'opt 4',
-    ],
-    correct: [1],
-    hint: 'some hint here',
-    explanation: 'some explanation here',
-}
-
 const overlayClass = ref({'hidden-overlay': true})
 const showOverlay = ref(false)
-const activeQuestion: Ref<Card> = ref(structuredClone(NEW_QUESTION))
 const activeQuestionId = ref(-1)
-const newQuestion = ref(true)
 const overlayRef = useTemplateRef('overlay')
 
 
@@ -129,32 +107,6 @@ function openOverlay() {
 }
 
 
-// function onStartAddNewQuestion() {
-//     if (!newQuestion.value) {
-//         newQuestion.value = true
-//         activeQuestion.value = structuredClone(NEW_QUESTION)
-//     }
-//     activeQuestionId.value = quiz.value ? quiz.value.cards.length + 1 : -1
-//     openOverlay()
-// }
-
-// function onStartEditQuestion(q_id: number) {
-//     let q = quiz.value ? quiz.value.cards[q_id] : undefined
-//     if (q) {
-//         newQuestion.value = false
-//         activeQuestion.value = q 
-//         activeQuestionId.value = q_id
-        
-//         openOverlay()
-//     }
-// }
-
-function chooseCorrectOption(i: number) {
-    activeQuestion.value.correct = [i]
-    hasUnsavedChanges.value = true
-}
-
-
 onMounted(()=>{
     window.addEventListener('mousedown', onmousedown)
 })
@@ -162,98 +114,13 @@ onMounted(()=>{
 onUnmounted(()=>{
     window.removeEventListener('mousedown', onmousedown)
 })
-
-// function onAddQuestion() {
-//     if (quiz.value)
-//         quiz.value.cards.push(activeQuestion.value)
-//     activeQuestion.value = structuredClone(NEW_QUESTION)
-//     hasUnsavedChanges.value = true
-//     closeOverlay()
-// }
-
-// function onDeleteQuestion() {
-//     if (quiz.value === undefined) { return }
-//     const card = quiz.value.cards[activeQuestionId.value]
-//     if (card === undefined) { return }
-
-//     if (card.id > 0) {
-//         deletedCards.value.push(card.id)
-//     }
-
-//     quiz.value.cards.splice(activeQuestionId.value, 1)
-//     // for (const [i, card] of quiz.value.cards.entries()) { card.id = i+1 }  // fix the ids
-//     activeQuestion.value = structuredClone(NEW_QUESTION)
-//     hasUnsavedChanges.value = true
-//     closeOverlay()
-// }
-
-watch(
-    () => quiz.value,
-    () => {
-        if (!isSaving.value) {
-            hasUnsavedChanges.value = true
-        }
-    },
-    { deep: true }
-)
-
-// async function submitChanges() {
-//     if (quiz.value === undefined) { return }
-//     isSaving.value = true
-
-//     const updatedCards = quiz.value.cards.filter((card: Card) => card.id > 0)
-//     const newCards = quiz.value.cards.filter((card: Card) => card.id < 0)
-
-//     let ok = true
-
-//     if (updatedCards.length > 0)
-//         ok &&= await updateCards(updatedCards)
-
-//     if (newCards.length > 0)
-//         ok &&= await createCards(quiz.value.id, newCards)
-
-//     if (deletedCards.value.length > 0)
-//         ok &&= await deleteCards(deletedCards.value)
-
-//     if (!ok) {
-//         isSaving.value = false
-//         alert("Couldn't save changes")
-//         return
-//     }
-
-//     deletedCards.value = []
-//     hasUnsavedChanges.value = false
-
-//     await quizzesStore.fetchMyQuizzes()
-//     isSaving.value = false
-// }
-
-
 </script>
 
 <template>
     <div class="main-container" v-if="quiz">
         <div ref="overlay" class="overlay" v-if="showOverlay" :class="overlayClass">
-            <div class="question-edit-window" v-if="activeQuestion">
-                <div class="top-line">
-                    <h3 v-if="newQuestion">Add {{ activeQuestionId }}th Question</h3>
-                    <h3 v-else>Edit Question {{ activeQuestionId }}</h3>
-                    <CrossSVG @click="closeOverlay"/>
-                </div>
-                <BasicInput v-model="activeQuestion.question"/>
-                <h4>Options</h4>
-                <div class="options-wrapper">
-                    <div class="option-item" v-for="i in activeQuestion.options.length">
-                        <input v-model="activeQuestion.options[i-1]"></input>
-                        <CheckSVG v-if="activeQuestion.correct[0] == i-1" class="option-check"/>
-                        <CrossSVG v-else class="option-cross" @click="chooseCorrectOption(i-1)"/>
-                    </div>
-                </div>
-                <!-- <BasicButton variant="primary" v-if="newQuestion" @click="onAddQuestion">Add Question</BasicButton>
-                <BasicButton variant="primary" v-else class="red-button" @click="onDeleteQuestion">Delete Question</BasicButton> -->
-            </div>
-
         </div>
+
         <div class="left-side">
             <div class="title">
                 <h1>{{ quiz.name || 'Unknown Quiz' }}</h1>
@@ -261,37 +128,19 @@ watch(
                     by <a href="#">{{ quiz.author.name || 'Someone'}}</a>
                 </span>
             </div>
-            <!-- <div class="description">
-                {{ quiz.description || "This quiz has no description..." }}
-            </div> -->
+            <div class="description">
+                {{ quiz?.description || "This quiz has no description..." }}
+            </div>
             <div class="stats-n-actions">
                 <div class="stats">
-                    <div class="commpletion">
-                        <h4>Completion</h4>
-                        <div class="progress-bar">
-                            <span class="percentage">0%</span>
-                            <div class="bar"></div>
-                        </div>
-                    </div>
-                    <div class="tags-container">
-                        <div v-for="(value, key) in quiz">{{key}}: {{ value }}</div>
-                    </div>
-                    <!-- <div class="statistics">
-                        <h4>Statistics</h4>
-                        <ul>
-                            <li>Attempts: 0</li>
-                            <li>R/W ratio: 0.5</li>
-                            <li>Time practicing: 10m 32s</li>
-                        </ul>
-                    </div> -->
+                    <ul class="tags-container">
+                        <li v-for="(value, key) in quiz">{{key}}: {{ value }}</li>
+                    </ul>
                 </div>
                 <div class="actions">
                     <div class="top-buttons">
                         <BasicButton variant="primary" @click="addToCollection()">Add to collection</BasicButton>
                     </div>
-                    <!-- <div class="bottom-buttons">
-                        <BasicButton variant="primary" class="red-button" @click="notImplemented">Delete</BasicButton>
-                    </div> -->
                 </div>
             </div>
         </div>
