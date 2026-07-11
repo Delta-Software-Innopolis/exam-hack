@@ -6,16 +6,18 @@ import MagnifyingGlassSVG from '@/assets/MagnifyingGlass.svg'
 import UserSVG from '@/assets/User.svg'
 import SettingsSVG from '@/assets/Settings.svg'
 import CircleSVG from '@/assets/Circle.svg'
-import { computed, useTemplateRef } from 'vue';
+import ExamHackerHorizontalSVG from '@/assets/ExamHackerHorizontal.svg';
 
 const route = useRoute()
-const router = useRouter()
 
 </script>
 
 
 <template>
     <div class="navigation-sidebar">
+        <div class="exam-hacker-logo">
+            <ExamHackerHorizontalSVG/>
+        </div>
         <nav>
             <RouterLink to="/quizzes" class="nav-button" :class="{active: route.path.match('/quizzes.*')}">
                 <BookSVG />
@@ -49,9 +51,14 @@ const router = useRouter()
         background-color: var(--white);
         display: flex;
         flex-direction: column;
-        gap: 16px;
+        gap: 8px;
         padding: 16px;
         width: max-content;
+    }
+
+    .exam-hacker-logo {
+        --icon-height: 38px;
+        --icon-width: fit-content;
     }
 
     .navigation-sidebar nav {
