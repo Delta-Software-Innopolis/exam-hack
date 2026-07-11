@@ -6,6 +6,7 @@ import QuizComponent from "@/components/basic/QuizComponent.vue";
 import { useRouter } from "vue-router";
 import { useNewQuizzesStore } from "@/stores/new-quizzes";
 import BasicButton from "@/components/basic/BasicButton.vue";
+import PlusButton from "@/components/buttons/PlusButton.vue";
 
 const router = useRouter();
 const quizzesStore = useNewQuizzesStore()
@@ -31,7 +32,9 @@ onBeforeUpdate(()=>{
     <div class="top-container">
       <h1>Saved Quizzes</h1>
       <div class="actions-wrapper">
-        <BasicButton variant="primary" @click="router.push({name: 'quizzes-new'})">Create New</BasicButton>
+        <PlusButton variant="primary" @click="router.push({name: 'quizzes-new'})">
+            Create New
+        </PlusButton>
       </div>
     </div>
     <div class="Quiz-Container">
@@ -45,7 +48,7 @@ onBeforeUpdate(()=>{
       </QuizComponent>
     </div>
   </div>
-  <div v-else>Loading</div>
+  <div v-else>Loading...</div>
 </template>
 
 <style scoped>

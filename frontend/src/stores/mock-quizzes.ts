@@ -14,7 +14,7 @@ export const MOCK_QUIZZES: QuizItem[] = [
       {
         id: 1,
         question: "Which keyword is used to declare a constant in JavaScript?",
-        options: ["var", "let", "const", "static"],
+        options: ["var", "let", "const", "public static void main(int args[])...................................... fdsafds af fdfdsafds fdfdsa"],
         correct: [2],
         hint: "Introduced in ES6.",
         explanation: "The const keyword creates a block-scoped constant."

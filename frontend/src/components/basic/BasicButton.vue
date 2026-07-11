@@ -152,11 +152,17 @@ button {
 }
 
 .red {
-  background-color: var(--quiz-red);
+  background-color: var(--raddish);
+  color: var(--white);
+  /* font-weight: bold; */
 }
 
 .red:hover {
-  background-color: var(--quiz-red-dimm);
+  background-color: var(--raddish-dimm);
+}
+
+.red:active {
+  background-color: var(--raddish-dark);
 }
 
 /* in order to make .ai:disabled i think we should use svg image of the disabled button,

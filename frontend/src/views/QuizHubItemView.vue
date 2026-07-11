@@ -2,13 +2,12 @@
 import { ref, watch, onUnmounted, useTemplateRef, type Ref, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import BasicButton from '@/components/basic/BasicButton.vue';
-import EditQuestion from '@/components/basic/EditQuestion.vue';
 import type { Card, CardType, QuizItem, QuizHubItem } from '@/types';
-import BasicInput from '@/components/basic/BasicInput.vue';
-import CrossSVG from '@/assets/Cross.svg'
-import CheckSVG from '@/assets/Check.svg'
-import { useNewQuizzesStore } from '@/stores/new-quizzes';
+import ModalQuestionView from '@/components/quiz-info/ModalQuestionView.vue';
 import useNetworkManager, { HUB_URL} from '@/network';
+import QuizOption from '@/components/basic/QuizOption.vue';
+import QuizQuestionsList from '@/components/quiz-info/QuizQuestionsList.vue';
+import PlusButton from '@/components/buttons/PlusButton.vue';
 
 const route = useRoute()
 const router = useRouter()
@@ -42,6 +41,7 @@ async function getQuiz() {
             throw new Error(`Failed to get quiz: ${response.status}`)
         }
         const result = await response.json()
+        result.cards = []
         return result
     } catch (error) {
         console.error('Could not add quiz to collection:', error)
@@ -81,46 +81,14 @@ function notImplemented() {
     alert('Thank you for trying!\nThis will be implemented later 🫡')
 }
 
-const overlayClass = ref({'hidden-overlay': true})
-const showOverlay = ref(false)
-const activeQuestionId = ref(-1)
-const overlayRef = useTemplateRef('overlay')
+const activeQuestionId = ref(-1);
+const modalQuestionView = useTemplateRef('modal-question-view');
 
-
-function closeOverlay() {
-    overlayClass.value['hidden-overlay'] = true;
-    setTimeout(()=>{ showOverlay.value = false; }, 180)
-    activeQuestionId.value = -1
-}
-
-
-function onmousedown(event: MouseEvent) {
-    if (overlayRef.value && event.target === overlayRef.value) {
-        closeOverlay()
-    }
-}
-
-
-function openOverlay() {
-    overlayClass.value['hidden-overlay'] = false;
-    showOverlay.value = true;
-}
-
-
-onMounted(()=>{
-    window.addEventListener('mousedown', onmousedown)
-})
-
-onUnmounted(()=>{
-    window.removeEventListener('mousedown', onmousedown)
-})
 </script>
 
 <template>
     <div class="main-container" v-if="quiz">
-        <div ref="overlay" class="overlay" v-if="showOverlay" :class="overlayClass">
-        </div>
-
+        <ModalQuestionView ref="modal-question-view"/>
         <div class="left-side">
             <div class="title">
                 <h1>{{ quiz.name || 'Unknown Quiz' }}</h1>
@@ -139,15 +107,16 @@ onUnmounted(()=>{
                 </div>
                 <div class="actions">
                     <div class="top-buttons">
-                        <BasicButton variant="primary" @click="addToCollection()">Add to collection</BasicButton>
+                        <PlusButton variant="primary" @click="addToCollection()">Add to collection</PlusButton>
                     </div>
                 </div>
             </div>
         </div>
         <div class="right-side">
-            <p>There should be information about rating</p>
-            <p>Also ability to add the quiz to your own collection</p>
-            <p>Also we should show forks of this quiz here</p>
+            <div class="top-action-bar">
+                <h2>Questions</h2>
+            </div>
+            <QuizQuestionsList :cards="quiz.cards" variant="view" />
         </div>
     </div>
 </template>
