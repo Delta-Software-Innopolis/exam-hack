@@ -2,7 +2,10 @@ package com.examhacker.common.ui
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
@@ -93,22 +96,17 @@ private fun QuizSolveIconButton(
 }
 
 @Composable
-private fun QuizSolveAiButton(
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Button(
-        onClick = onClick,
-        modifier = modifier,
-        shape = RoundedCornerShape(Dimensions.ButtonRadius),
-        contentPadding = PaddingValues(Dimensions.NavigationButtonPadding),
-        border = BorderStroke(
-            width = Dimensions.ThickBorderWidth,
-            brush = ColorPreset.AIBackground
-        ),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = ColorPreset.Transparent,
-        )
+private fun QuizSolveAiButton(onClick: () -> Unit) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+            .clickable { onClick() }
+            .border(
+                width = Dimensions.ThickBorderWidth,
+                brush = ColorPreset.AIBackground,
+                shape = RoundedCornerShape(Dimensions.ButtonRadius)
+            )
+            .padding(Dimensions.NavigationButtonPadding)
     ) {
         Image(
             painter = painterResource(R.drawable.ic_gradient_star),

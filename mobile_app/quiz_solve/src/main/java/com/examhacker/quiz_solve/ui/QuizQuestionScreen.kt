@@ -1,5 +1,6 @@
 package com.examhacker.quiz_solve.ui
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -84,7 +85,9 @@ private fun QuizQuestionUI(
             QuizProgressBar(
                 solvedQuestions = model.answers.count { it != null },
                 totalQuestions = model.questions.size,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(Dimensions.QuizProgressBarPadding)
             )
 
             QuizSolveQuestionSection(
@@ -95,6 +98,8 @@ private fun QuizQuestionUI(
             )
         }
     }
+
+    BackHandler { back() }
 }
 
 @Preview(
@@ -137,7 +142,7 @@ private fun createMockData(): IQuizQuestionComponent.Model {
     return IQuizQuestionComponent.Model(
         questions = listOf(question1, question2),
         currentQuestionIndex = 0,
-        answers = emptyList(),
+        answers = List(2) { null },
         nextEnabled = true,
         previousEnabled = false
     )

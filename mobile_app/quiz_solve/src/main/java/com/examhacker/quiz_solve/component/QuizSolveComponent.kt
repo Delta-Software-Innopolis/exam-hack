@@ -61,9 +61,10 @@ class QuizSolveComponent(
             is Config.QuizResult   ->
                 IQuizSolveComponent.Child.QuizResult(
                     QuizResultComponent(
+                        correctAnswerCount = 4,
+                        questionCount = 5,
                         componentContext = componentContext,
-                        onContinueGrinding = {},
-                        onTakeBreak = {},
+                        onQuitSolving = {},
                         goBack = ::back
                     )
                 )

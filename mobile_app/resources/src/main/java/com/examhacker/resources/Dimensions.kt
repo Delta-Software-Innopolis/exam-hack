@@ -31,8 +31,6 @@ class Dimensions {
 
         // Authentication
         val InputFieldsSpacing = 16.dp
-        val AuthScreenSpacing = 32.dp
-        val AuthButtonPadding = 14.dp
 
         // Quiz Create
         val InputButtonSpacing = 10.dp
@@ -75,7 +73,9 @@ class Dimensions {
         val VariantsSpacing = 16.dp
         val ProgressBarSpacing = 4.dp
         val ProgressBarHeight = 16.dp
+        val QuizResultSectionSpacing = 32.dp
         val QuestionDescriptionFontSize = 20.sp
+        val QuizResultFontSize = 20.sp
         val AnswerVariantFontSize = 18.sp
         val ProgressBarFontSize = 16.sp
 
@@ -111,8 +111,10 @@ class Dimensions {
 
         // Quiz Progress Bar
         val QuizProgressBarCornerRadius = 100.dp
-        val QuizProgressBarHorizontalPadding = 16.dp
+        val QuizProgressBarPadding = 16.dp
         val QuizProgressBarTextSpacing = 8.dp
-        val ProgressBarCornerRadius = 100.dp
+
+        // DrawScope dimensions
+        const val PROGRESS_BAR_CORNER_RADIUS = 100f
     }
 }
