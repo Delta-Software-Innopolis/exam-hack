@@ -6,9 +6,11 @@ import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.items
 import com.arkivanov.decompose.router.stack.pop
+import com.arkivanov.decompose.router.stack.pushNew
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
-import com.examhacker.common.data.Quiz
+import com.arkivanov.decompose.value.update
+import com.examhacker.common.data.Question
 import kotlinx.serialization.Serializable
 
 interface IQuizSolveComponent {
@@ -16,8 +18,8 @@ interface IQuizSolveComponent {
     val model: Value<Model>
 
     data class Model(
-        val quiz: Quiz? = null,
-        val correctCount: Int = 0
+        val questions: List<Question> = emptyList(),
+        val correctCount: Int = 0,
     )
 
     sealed class Child {
@@ -28,13 +30,24 @@ interface IQuizSolveComponent {
 
 class QuizSolveComponent(
     componentContext: ComponentContext,
+    questions: List<Question>,
     private val goBack: () -> Unit,
 ) : IQuizSolveComponent, ComponentContext by componentContext {
 
     private val _model =  MutableValue(IQuizSolveComponent.Model())
     override val model = _model
 
+    init {
+        _model.update {
+            it.copy(
+                questions = questions,
+                correctCount = 0
+            )
+        }
+    }
+
     private val navigation = StackNavigation<Config>()
+
     override val stack: Value<ChildStack<*, IQuizSolveComponent.Child>> =
         childStack(
             source = navigation,
@@ -53,22 +66,38 @@ class QuizSolveComponent(
                 IQuizSolveComponent.Child.QuizQuestion(
                     QuizQuestionComponent(
                         componentContext = componentContext,
-                        goBack = ::back,
-                        onOpenAiChat = {}
+                        questions = model.value.questions,
+                        updateResults = ::updateResults,
+                        goToResults = ::navigateToResults,
+                        goBack = ::back
                     )
                 )
 
             is Config.QuizResult   ->
                 IQuizSolveComponent.Child.QuizResult(
                     QuizResultComponent(
-                        correctAnswerCount = 4,
-                        questionCount = 5,
+                        correctAnswerCount = model.value.correctCount,
+                        questionCount = model.value.questions.size,
                         componentContext = componentContext,
-                        onQuitSolving = {},
+                        onQuitSolving = ::onQuitSolving,
                         goBack = ::back
                     )
                 )
         }
+
+    private fun updateResults(correctCount: Int) {
+        _model.update {
+            it.copy(correctCount = correctCount)
+        }
+    }
+
+    private fun navigateToResults() {
+        navigation.pushNew(Config.QuizResult)
+    }
+
+    private fun onQuitSolving() {
+        goBack()
+    }
 
     private fun back() {
         if (stack.items.size > 1) {

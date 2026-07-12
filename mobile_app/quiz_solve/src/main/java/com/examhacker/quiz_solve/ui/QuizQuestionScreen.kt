@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
+import com.arkivanov.decompose.router.slot.ChildSlot
 import com.examhacker.common.data.AnswerVariant
 import com.examhacker.common.data.Question
 import com.examhacker.common.ui.QuizProgressBar
@@ -29,9 +30,11 @@ import com.examhacker.resources.Dimensions
 @Composable
 fun QuizQuestionScreen(component: IQuizQuestionComponent) {
     val model by component.model.subscribeAsState()
+    val slot by component.slot.subscribeAsState()
 
     QuizQuestionUI(
         model = model,
+        slot = slot,
         onAnswerCurrentQuestion = component::answerCurrentQuestion,
         onPreviousQuestion = component::goToPreviousQuestion,
         onNextQuestion = component::goToNextQuestion,
@@ -43,6 +46,7 @@ fun QuizQuestionScreen(component: IQuizQuestionComponent) {
 @Composable
 private fun QuizQuestionUI(
     model: IQuizQuestionComponent.Model,
+    slot: ChildSlot<*, IQuizQuestionComponent.Child>?,
     onAnswerCurrentQuestion: (AnswerVariant) -> Unit,
     onPreviousQuestion: () -> Unit,
     onNextQuestion: () -> Unit,
@@ -99,6 +103,13 @@ private fun QuizQuestionUI(
         }
     }
 
+    slot?.child?.instance?.let {
+        when(val child = it) {
+            is IQuizQuestionComponent.Child.AIChat ->
+                AIChatBottomSheet(it.component)
+        }
+    }
+
     BackHandler { back() }
 }
 
@@ -110,6 +121,7 @@ private fun QuizQuestionUI(
 private fun QuizQuestionScreen() {
     QuizQuestionUI(
         model = createMockData(),
+        slot = null,
         onAnswerCurrentQuestion = {},
         onPreviousQuestion = {},
         onNextQuestion = {},

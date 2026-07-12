@@ -44,7 +44,7 @@ class Dimensions {
         val GenerateDialogRadius = 16.dp
         val QuizCreateNavigationButtonSize = 50.dp
         val QuizReviewTitleSpacing = 32.dp
-        val CreateScreenTitleFontSize = 24.sp
+        val SubTitleFontSize = 24.sp
         val GenerateInstructionFontSize = 16.sp
 
         // Quiz Edit and Add Dialogs
@@ -75,6 +75,19 @@ class Dimensions {
         val ProgressBarHeight = 16.dp
         val QuizResultSectionSpacing = 32.dp
         val QuestionDescriptionFontSize = 20.sp
+        val BottomSheetDragHandleWidth = 64.dp
+        val BottomSheetDragHandleHeight = 4.dp
+        val BottomSheetDragHandleRadius = 100.dp
+        val BottomSheetRadius = 16.dp
+        val BottomSheetBottomPadding = 32.dp
+        val AIChatSpacing = 16.dp
+        val MessageBoxMaxWidth = 312.dp
+        val MessageBoxRadius = 16.dp
+        val MessageBoxVerticalPadding = 8.dp
+        val MessageBoxHorizontalPadding = 16.dp
+        val ChatInputSpacing = 16.dp
+        val ChatMinHeight = 340.dp
+        val ChatMessageFontSize = 16.sp
         val QuizResultFontSize = 20.sp
         val AnswerVariantFontSize = 18.sp
         val ProgressBarFontSize = 16.sp

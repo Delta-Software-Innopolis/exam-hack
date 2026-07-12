@@ -15,7 +15,6 @@ import com.examhacker.authentication.component.IAuthenticationComponent
 import com.examhacker.common.data.AnswerVariant
 import com.examhacker.common.data.Question
 import com.examhacker.common.data.Quiz
-import com.examhacker.common.ui.AnswerVariantCard
 import com.examhacker.common.utility.FilePicker
 import com.examhacker.mobile.introduction_screen.IIntroductionComponent
 import com.examhacker.mobile.introduction_screen.IntroductionComponent
@@ -166,6 +165,7 @@ class RootComponent(
                 IRootComponent.Child.QuizSolve(
                     QuizSolveComponent(
                         componentContext = componentContext,
+                        questions = config.quiz.questions,
                         goBack = ::back
                     )
                 )
