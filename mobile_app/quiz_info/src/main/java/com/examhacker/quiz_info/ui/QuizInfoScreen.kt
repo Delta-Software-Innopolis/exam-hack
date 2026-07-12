@@ -50,6 +50,7 @@ import com.examhacker.common.data.QuizStatistics
 import com.examhacker.common.ui.AppNavigationBar
 import com.examhacker.common.ui.DeleteButton
 import com.examhacker.common.ui.NavigationTab
+import com.examhacker.common.ui.QuizProgressBar
 import com.examhacker.common.ui.SingleBackButtonTopBar
 import com.examhacker.resources.R
 import com.examhacker.quiz_info.component.IQuizInfoComponent
@@ -358,6 +359,8 @@ private fun QuizProgressBar(
                 fontWeight = FontWeight.Normal,
                 color = ColorPreset.Black
             )
+
+            
 
             LinearProgressIndicator(
                 progress = { progress },

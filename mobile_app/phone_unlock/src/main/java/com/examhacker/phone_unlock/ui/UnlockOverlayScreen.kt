@@ -22,9 +22,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.examhacker.common.ui.AnswerVariantCard
 import com.examhacker.common.ui.AnswerVariantStatus
 import com.examhacker.common.ui.QuizProgressBar
-import com.examhacker.common.ui.QuizSolveNavigationBar
 import com.examhacker.common.data.AnswerVariant
 import com.examhacker.common.data.Question
+import com.examhacker.common.ui.QuizSolveBottomBar
 import com.examhacker.phone_unlock.controller.UnlockOverlayController
 import com.examhacker.resources.ColorPreset
 import com.examhacker.resources.Dimensions
@@ -49,8 +49,8 @@ private fun UnlockOverlayUI(
 ) {
     Scaffold(
         bottomBar = {
-            QuizSolveNavigationBar(
-                onHintClick = takeHint,
+            QuizSolveBottomBar(
+                onAiClick = takeHint,
                 modifier = Modifier
                     .fillMaxWidth()
                     .navigationBarsPadding()

@@ -62,7 +62,7 @@ internal fun GenerateProgressDialog() {
                 ) {
                     Text(
                         text = stringResource(R.string.generation_progress_dialog_title),
-                        fontSize = Dimensions.CreateScreenTitleFontSize,
+                        fontSize = Dimensions.SubTitleFontSize,
                         fontWeight = FontWeight.Bold
                     )
 

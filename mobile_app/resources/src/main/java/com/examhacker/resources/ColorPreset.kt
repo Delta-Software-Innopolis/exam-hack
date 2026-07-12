@@ -32,6 +32,7 @@ class ColorPreset {
 
         val ErrorPrimary = Color(0xFFFF4F4F)
         val PositivePrimary = Color(0xFF00B093)
+        val PositiveSecondary = Color(0xFFA1E3D8)
         val Secondary = Color(0xFFAAAAAA)
         val SecondaryDimm = Color(0xFF676767)
 
