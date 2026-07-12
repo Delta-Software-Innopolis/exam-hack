@@ -8,10 +8,10 @@ import CrossSVG from '@/assets/Cross.svg';
 import CheckSVG from '@/assets/Check.svg';
 import LoadingThingSVG from '@/assets/LoadingThing.svg';
 
-import { onMounted, onUnmounted, ref, useTemplateRef, type Ref } from 'vue';
+import { onMounted, onUnmounted, ref, useTemplateRef, type Ref, watch } from 'vue';
 import type { Card } from '@/types';
 import { fetchCreateQuiz } from '@/core';
-import { useRouter } from 'vue-router';
+import { useRouter, onBeforeRouteLeave } from 'vue-router';
 import { generateCards } from '@/generation';
 import SettingsDialog from '@/components/SettingsDialog.vue';
 
@@ -32,6 +32,8 @@ const allowMultipleCorrects = ref(true)
 const generateQuestionsNumber = ref(10)
 
 const currentStep = ref(1)
+
+const hasUnsavedProgress = ref(false)
 
 
 async function onGenerateConfirm() {
@@ -229,6 +231,38 @@ async function onFinishCreation() {
     }
 
 }
+
+
+watch(
+    [quizTitle, quizDescription],
+    () => hasUnsavedProgress.value = true
+)
+
+
+function beforeUnload(event: BeforeUnloadEvent) {
+    if (!hasUnsavedProgress.value) return
+    event.preventDefault()
+    event.returnValue = ''
+}
+
+
+onMounted(()=>{
+    window.addEventListener('beforeunload', beforeUnload)
+})
+
+
+onUnmounted(()=>{
+    window.removeEventListener('beforeunload', beforeUnload)
+})
+
+
+onBeforeRouteLeave(() => {
+    if (!hasUnsavedProgress.value) return true
+
+    return window.confirm(
+        "Your quiz progress will be lost. Continue?"
+    )
+})
 </script>
 
 
