@@ -7,7 +7,7 @@ import type { Card, CardType, QuizItem } from '@/types';
 import BasicInput from '@/components/basic/BasicInput.vue';
 import TrashSVG from '@/assets/Trash.svg';
 import PlaySVG from '@/assets/Play.svg';
-import { updateCards, createCards, deleteCards } from '@/core'
+import { updateCards, createCards, deleteCards, deletePack } from '@/core'
 import { UNKNOWN_QUIZ, useNewQuizzesStore } from '@/stores/new-quizzes';
 import QuizQuestionsList from '@/components/quiz-info/QuizQuestionsList.vue';
 import ModalQuestionEdit from '@/components/quiz-info/ModalQuestionEdit.vue';
@@ -30,6 +30,27 @@ const activeQuestion = ref<Card>();
 
 function notImplemented() {
     alert('Thank you for trying!\nThis will be implemented later 🫡')
+}
+
+async function onDeleteQuiz() {
+    if (!quiz.value) return
+
+    const confirmed = confirm(
+        `Delete quiz "${quiz.value.name}"?\n\nThis action cannot be undone.`
+    )
+
+    if (!confirmed) return
+
+    const ok = await deletePack(quiz.value.id)
+
+    if (!ok) {
+        alert("Couldn't delete quiz")
+        return
+    }
+
+    await quizzesStore.fetchMyQuizzes()
+
+    router.push("/quizzes")
 }
 
 const NEW_QUESTION = { 
@@ -174,7 +195,7 @@ async function submitChanges() {
                     </div>
                     <div class="bottom-buttons">
                         <TrashButton v-if="knownQuiz" variant="red" 
-                            @click="notImplemented"
+                            @click="onDeleteQuiz"
                         >
                             Delete
                         </TrashButton>
