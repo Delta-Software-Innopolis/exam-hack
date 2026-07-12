@@ -2,7 +2,7 @@ import 'vue-router'
 
 declare module 'vue-router' {
   interface RouteMeta {
-    showSidebar: boolean = true
+    showSidebar?: boolean = false
     headerInfo?: string
     headerClass?: string
   }

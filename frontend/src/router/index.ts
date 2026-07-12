@@ -12,6 +12,7 @@ import UnknownView from '@/views/UnknownView.vue'
 import QuizCreationView from '@/views/QuizCreationView.vue'
 import QuizHubView from '@/views/QuizHubView.vue'
 import QuizHubItemView from '@/views/QuizHubItemView.vue'
+import WorkingOnView from '@/views/WorkingOnView.vue'
 
 
 const router = createRouter({
@@ -92,13 +93,13 @@ const router = createRouter({
     {
       path: '/profile',
       name: 'profile',
-      component: UnknownView,
+      component: WorkingOnView,
       meta: { showSidebar: true}
     },
     {
       path: '/settings',
       name: 'settings',
-      component: UnknownView,
+      component: WorkingOnView,
       meta: { showSidebar: true}
     },
     {
@@ -107,6 +108,12 @@ const router = createRouter({
       component: UnknownView,
       meta: { showSidebar: true }
     },
+    {
+      path: '/void',
+      name: 'void',
+      component: UnknownView,
+      meta: { showSidebar: true }
+    }
   ],
 })
 

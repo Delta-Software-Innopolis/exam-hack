@@ -61,7 +61,7 @@ export const useNewQuizzesStore = defineStore('newQuizzes', () =>
     function getMyQuizInfo(quizId: string | string[] | undefined) {
         let quiz = undefined
         if (typeof quizId !== 'string') {
-            return undefined
+            quiz = undefined;
         } else if (quizId.startsWith(MOCK_PREFIX)) {
             let pureQuizId = Number(quizId.slice(MOCK_PREFIX.length-1))
             quiz = MOCK_QUIZZES.at(pureQuizId)

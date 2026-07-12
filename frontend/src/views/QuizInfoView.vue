@@ -1,23 +1,25 @@
 <script setup lang="ts">
-import { ref, watch, onUnmounted, useTemplateRef, type Ref, onMounted } from 'vue';
+import { ref, watch, onUnmounted, useTemplateRef, type Ref, onMounted, computed } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import BasicButton from '@/components/basic/BasicButton.vue';
 import EditQuestion from '@/components/basic/EditQuestion.vue';
-import type { Card, CardType } from '@/types';
+import type { Card, CardType, QuizItem } from '@/types';
 import BasicInput from '@/components/basic/BasicInput.vue';
 import TrashSVG from '@/assets/Trash.svg';
 import PlaySVG from '@/assets/Play.svg';
 import { updateCards, createCards, deleteCards } from '@/core'
-import { useNewQuizzesStore } from '@/stores/new-quizzes';
+import { UNKNOWN_QUIZ, useNewQuizzesStore } from '@/stores/new-quizzes';
 import QuizQuestionsList from '@/components/quiz-info/QuizQuestionsList.vue';
 import ModalQuestionEdit from '@/components/quiz-info/ModalQuestionEdit.vue';
 import TrashButton from '@/components/buttons/TrashButton.vue';
 import PlayButton from '@/components/buttons/PlayButton.vue';
+import UnknownView from './UnknownView.vue';
 
-const route = useRoute()
-const router = useRouter()
-const quizzesStore = useNewQuizzesStore()
-const quiz = ref(quizzesStore.getMyQuizInfo(route.params.quizId))
+const route = useRoute();
+const router = useRouter();
+const quizzesStore = useNewQuizzesStore();
+const quiz = ref<QuizItem>(quizzesStore.getMyQuizInfo(route.params.quizId));
+const knownQuiz = computed(()=>quiz.value.id !== -1);
 
 const hasUnsavedChanges = ref(false)
 const deletedCards = ref<number[]>([])
@@ -129,13 +131,11 @@ async function submitChanges() {
     await quizzesStore.fetchMyQuizzes()
     isSaving.value = false
 }
-
 </script>
 
 <template>
-    <ModalQuestionEdit ref="modal-edit" @click-delete="onDeleteQuestion"/>
-
-    <div class="main-container" v-if="quiz">
+    <div class="main-container" v-if="knownQuiz">
+        <ModalQuestionEdit ref="modal-edit" @click-delete="onDeleteQuestion"/>
         <div class="left-side">
             <div class="title">
                 <h1>{{ quiz.name || 'Unknown Quiz' }}</h1>
@@ -166,12 +166,18 @@ async function submitChanges() {
                 </div>
                 <div class="actions">
                     <div class="top-buttons">
-                        <PlayButton variant="primary" @click="router.push(`/quizzes/${route.params.quizId}/solving`)">
+                        <PlayButton v-if="knownQuiz" variant="primary" 
+                            @click="router.push(`/quizzes/${route.params.quizId}/solving`)"
+                        >
                             Attempt
                         </PlayButton>
                     </div>
                     <div class="bottom-buttons">
-                        <TrashButton variant="red" @click="notImplemented"> Delete </TrashButton>
+                        <TrashButton v-if="knownQuiz" variant="red" 
+                            @click="notImplemented"
+                        >
+                            Delete
+                        </TrashButton>
                     </div>
                 </div>
             </div>
@@ -189,6 +195,7 @@ async function submitChanges() {
             />
         </div>
     </div>
+    <UnknownView v-else />
 </template>
 
 

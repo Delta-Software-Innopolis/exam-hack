@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useRoute } from 'vue-router';
 import { useNewQuizzesStore } from '@/stores/new-quizzes';
-import { onBeforeMount, onUnmounted, type ComputedRef } from 'vue';
+import { onBeforeMount, onMounted, onUnmounted, type ComputedRef } from 'vue';
 import BasicButton from '@/components/basic/BasicButton.vue';
 import type { Card } from '@/types'
 import { ref, computed } from 'vue';
@@ -10,10 +10,12 @@ import router from '@/router';
 import LeftArrowSVG from '@/assets/LeftArrow.svg'
 import RightArrowSVG from '@/assets/RightArrow.svg'
 import HintSVG from '@/assets/Hint.svg'
+import UnknownView from './UnknownView.vue';
 
 const route = useRoute();
 const quizzesStore = useNewQuizzesStore()
 const quiz = ref(quizzesStore.getMyQuizInfo(route.params.quizId))
+const knownQuiz = computed(()=>quiz.value.id !== -1);
 const questionNum = ref(0)
 const card = computed(() => quiz.value ? quiz.value.cards[questionNum.value] : undefined) as ComputedRef<Card>
 const lastClicked = ref<number|null>(null)
@@ -68,8 +70,10 @@ function checkAnswer(index:number) {
 
 }
 </script>
+
+
 <template>
-    <div class="container" v-if="quiz">
+    <div class="container" v-if="knownQuiz">
         <div class="main-container">
             <div class="progress-bar">
                 <div class="card-num">{{ questionNum + 1}} / {{ quiz.cards.length }}</div>
@@ -98,6 +102,7 @@ function checkAnswer(index:number) {
             <div class="hint-wrapper" v-if="isHintClicked"><div>{{ card?.hint }}</div></div>
         </div>
     </div>
+    <UnknownView v-else />
 </template>
 
 <style scoped>
@@ -233,7 +238,6 @@ function checkAnswer(index:number) {
     justify-content: left;
     align-items: center;
     padding: 16px;
-    text: center;
 }
 
 .hint-button {

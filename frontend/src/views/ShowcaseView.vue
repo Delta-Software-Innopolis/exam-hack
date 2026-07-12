@@ -23,6 +23,7 @@ function _alert(...any: unknown[]) { alert(...any); }
 
 const modalView = useTemplateRef('modalView');
 const modalEdit = useTemplateRef('modalEdit');
+const modalHint = useTemplateRef('modalHint');
 </script>
 
 <template>
@@ -52,8 +53,15 @@ const modalEdit = useTemplateRef('modalEdit');
     <ModalQuestionView ref="modalView"/>
     <ModalQuestionEdit ref="modalEdit"
         @click-delete="(q)=>_alert(`clicked delete on ${q}`)"
-        @question-edit="(q)=>console.log(`edited ${q}`)"
     />
+
+
+    <ModalWindow ref="modalHint">
+        Hint cool hint etc...
+    </ModalWindow>
+
+    <BasicButton @click="modalHint?.open()">Open modal hint</BasicButton>
+
   </div>
 </template>
 

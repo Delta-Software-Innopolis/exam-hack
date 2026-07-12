@@ -8,6 +8,7 @@ import useNetworkManager, { HUB_URL} from '@/network';
 import QuizOption from '@/components/basic/QuizOption.vue';
 import QuizQuestionsList from '@/components/quiz-info/QuizQuestionsList.vue';
 import PlusButton from '@/components/buttons/PlusButton.vue';
+import UnknownView from './UnknownView.vue';
 
 const route = useRoute()
 const router = useRouter()
@@ -119,6 +120,7 @@ const modalQuestionView = useTemplateRef('modal-question-view');
             <QuizQuestionsList :cards="quiz.cards" variant="view" />
         </div>
     </div>
+    <UnknownView v-else />
 </template>
 
 

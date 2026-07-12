@@ -7,16 +7,16 @@ const router = useRouter()
 </script>
 
 <template>
-<div class="unknown">
+<div class="working-on">
     <div class="wrapper">
-        <h3>4️⃣0️⃣4️⃣ There is nothing on this page</h3>
+        <h3>🛠️ We developing this screen, come back later ⚠️</h3>
         <BasicButton @click="router.push('/')">Go back</BasicButton>
     </div>
 </div>
 </template>
 
 <style scoped>
-.unknown {
+.working-on {
     display: flex;
     flex-direction: column;
     gap: 16px;
