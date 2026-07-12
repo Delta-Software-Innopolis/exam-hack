@@ -5,8 +5,8 @@ type PackPermission struct {
 	PackID     uint `gorm:"column:pack_id;primaryKey;index:ix_pack_permissions_pack_id" json:"pack_id"`
 	Permission int  `gorm:"column:permission;not null;index:ix_pack_permissions_permission" json:"permission"`
 
-	User User `gorm:"foreignKey:UserID;references:ID" json:"user,omitempty"`
-	Pack Pack `gorm:"foreignKey:PackID;references:ID" json:"pack,omitempty"`
+	User User `gorm:"foreignKey:UserID;references:ID;constraint:OnDelete:CASCADE" json:"user,omitempty"`
+	Pack Pack `gorm:"foreignKey:PackID;references:ID;constraint:OnDelete:CASCADE" json:"pack,omitempty"`
 }
 
 func (PackPermission) TableName() string {
