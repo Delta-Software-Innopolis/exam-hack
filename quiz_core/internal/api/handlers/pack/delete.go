@@ -55,16 +55,6 @@ func DeletePack(c *gin.Context) {
 			return err
 		}
 
-		if err := tx.
-			Where("card_id IN (?)", tx.Table("cards").Select("id").Where("pack_id = ?", packID)).
-			Delete(&models.CardOption{}).Error; err != nil {
-			return err
-		}
-
-		if err := tx.Where("pack_id = ?", packID).Delete(&models.Card{}).Error; err != nil {
-			return err
-		}
-
 		return tx.Delete(&pack).Error
 	})
 	if err != nil {
