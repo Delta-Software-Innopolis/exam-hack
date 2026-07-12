@@ -166,7 +166,7 @@ async function submitChanges() {
                 </div>
                 <div class="actions">
                     <div class="top-buttons">
-                        <PlayButton variant="primary" @click="router.push(`/quizzes/${quiz.id}/solving`)">
+                        <PlayButton variant="primary" @click="router.push(`/quizzes/${route.params.quizId}/solving`)">
                             Attempt
                         </PlayButton>
                     </div>
