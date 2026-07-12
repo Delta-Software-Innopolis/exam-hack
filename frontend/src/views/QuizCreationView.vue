@@ -21,6 +21,8 @@ const questions: Ref<Card[]> = ref([]);
 const allowMultipleCorrects = ref(true);
 const generateQuestionsNumber = ref<number>(10);
 
+const hasUnsavedProgress = ref(false)
+
 
 const hasUnsavedProgress = ref(false)
 
