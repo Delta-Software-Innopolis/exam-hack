@@ -7,11 +7,12 @@ import type { Card, QuizItem } from '@/types';
 import { useNewQuizzesStore } from '@/stores/new-quizzes';
 import QuizQuestionsList from '@/components/quiz/QuizQuestionsList.vue';
 import ModalQuestionEdit from '@/components/modals/ModalQuestionEdit.vue';
+import { updateCards, createCards, deleteCards, deletePack } from '@/core'
 import TrashButton from '@/components/buttons/TrashButton.vue';
 import PlayButton from '@/components/buttons/PlayButton.vue';
 import UnknownView from './UnknownView.vue';
 import ModalQuestionAdd from '@/components/modals/ModalQuestionAdd.vue';
-import PlusButton from '@/components/buttons/PlusButton.vue';
+import PlusButton from '@/components/buttons/PlusButton.vue';10
 
 const route = useRoute();
 const router = useRouter();
@@ -54,6 +55,26 @@ async function onDeleteQuiz() {
 const modalEdit = useTemplateRef('modal-edit');
 const modalAdd = useTemplateRef('modal-add');
 
+async function onDeleteQuiz() {
+    if (!quiz.value) return
+
+    const confirmed = confirm(
+        `Delete quiz "${quiz.value.name}"?\n\nThis action cannot be undone.`
+    )
+
+    if (!confirmed) return
+
+    const ok = await deletePack(quiz.value.id)
+
+    if (!ok) {
+        alert("Couldn't delete quiz")
+        return
+    }
+
+    await quizzesStore.fetchMyQuizzes()
+
+    router.push("/quizzes")
+}
 
 function onStartEditQuestion(q_idx: number) {
     let q = quiz?.value?.cards.at(q_idx);
