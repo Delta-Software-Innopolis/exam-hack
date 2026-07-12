@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -38,6 +39,14 @@ dependencies {
     // Ktor
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.client.cio)
+    implementation(libs.ktor.client.content.negotiation)
+    implementation(libs.ktor.client.logging)
+    implementation(libs.ktor.client.auth)
+    implementation(libs.ktor.kotlinx.serialization)
+
+    // Datastore
+    implementation(libs.androidx.datastore)
+    implementation(libs.androidx.datastore.core)
 
     // Testing
     testImplementation(libs.junit)
