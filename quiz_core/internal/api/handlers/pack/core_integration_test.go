@@ -34,21 +34,23 @@ type coreTestApp struct {
 }
 
 type coreResponse struct {
-	ID        uint                `json:"id"`
-	Name      string              `json:"name"`
-	ShareCode string              `json:"share_code"`
-	Author    userResponse        `json:"author"`
-	Packs     []packWithCardsBody `json:"packs"`
-	Cards     []cardBody          `json:"cards"`
-	Error     string              `json:"error"`
+	ID          uint                `json:"id"`
+	Name        string              `json:"name"`
+	Description *string             `json:"description"`
+	ShareCode   string              `json:"share_code"`
+	Author      userResponse        `json:"author"`
+	Packs       []packWithCardsBody `json:"packs"`
+	Cards       []cardBody          `json:"cards"`
+	Error       string              `json:"error"`
 }
 
 type packWithCardsBody struct {
-	ID        uint         `json:"id"`
-	Name      string       `json:"name"`
-	ShareCode string       `json:"share_code"`
-	Author    userResponse `json:"author"`
-	Cards     []cardBody   `json:"cards"`
+	ID          uint         `json:"id"`
+	Name        string       `json:"name"`
+	Description *string      `json:"description"`
+	ShareCode   string       `json:"share_code"`
+	Author      userResponse `json:"author"`
+	Cards       []cardBody   `json:"cards"`
 }
 
 type userResponse struct {
@@ -140,6 +142,7 @@ func createTestSchema(t *testing.T, testDB *gorm.DB) {
 		`CREATE TABLE packs (
 			id integer PRIMARY KEY AUTOINCREMENT,
 			name varchar(50) NOT NULL,
+			description text,
 			creation_date datetime NOT NULL,
 			updating_date datetime,
 			share_code varchar(64) NOT NULL UNIQUE,
@@ -207,7 +210,7 @@ func createTestSchema(t *testing.T, testDB *gorm.DB) {
 func Test_CoreHandlersIntegration(t *testing.T) {
 	testData := map[string][]string{
 		"create pack grants owner permission": {"owner", "Biology"},
-		"create pack with cards":              {"owner", "Physics"},
+		"create pack with cards":              {"owner", "Physics", "Mechanics basics"},
 		"create and get cards":                {"owner", "Biology"},
 		"update card":                         {"owner", "Biology", "Updated question"},
 		"get packs by permission":             {"owner", "guest", "Shared"},
@@ -256,10 +259,14 @@ func Test_CoreHandlersIntegration(t *testing.T) {
 			verifyResult: func(t *testing.T, p *coreTestApp, testName string) {
 				payload := cardsPayload()
 				payload["name"] = testData[testName][1]
+				payload["description"] = testData[testName][2]
 
 				resp, body := p.postJSON(t, "/core/pack", payload, "owner")
 				assertStatus(t, resp, http.StatusCreated)
 
+				if body.Description == nil || *body.Description != testData[testName][2] {
+					t.Fatalf("expected description %q, got %#v", testData[testName][2], body.Description)
+				}
 				if len(body.Cards) != mustAtoi(t, expectedData[testName][0]) {
 					t.Fatalf("expected one created card, got %#v", body.Cards)
 				}
@@ -469,7 +476,7 @@ func (p *coreTestApp) createPack(t *testing.T, name string, username string) mod
 	var pack models.Pack
 	if err := p.db.Transaction(func(tx *gorm.DB) error {
 		var err error
-		pack, err = sc.CreatePackWithOwnerPermission(tx, name, p.users[username].ID)
+		pack, err = sc.CreatePackWithOwnerPermission(tx, name, nil, p.users[username].ID)
 		return err
 	}); err != nil {
 		t.Fatalf("create pack: %v", err)

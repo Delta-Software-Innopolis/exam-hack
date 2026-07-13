@@ -40,7 +40,7 @@ func ForkPack(c *gin.Context) {
 			return err
 		}
 
-		newPack, err := sc.CreatePackWithOwnerPermission(tx, originalPack.Name, userID)
+		newPack, err := sc.CreatePackWithOwnerPermission(tx, originalPack.Name, originalPack.Description, userID)
 		if err != nil {
 			return err
 		}
