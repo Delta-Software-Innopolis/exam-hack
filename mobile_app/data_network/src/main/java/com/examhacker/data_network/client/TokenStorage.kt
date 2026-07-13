@@ -2,17 +2,11 @@ package com.examhacker.data_network.client
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.examhacker.domain.repository.ITokenStorage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-interface TokenStorage {
-    suspend fun getAccessToken(): String?
-    suspend fun getRefreshToken(): String?
-    suspend fun saveTokens(accessToken: String, refreshToken: String)
-    suspend fun clearTokens()
-}
-
-class TokenStoragePrefsImpl(private val context: Context) : TokenStorage {
+class TokenStoragePrefs(private val context: Context) : ITokenStorage {
     private val prefs: SharedPreferences by lazy {
         context.getSharedPreferences("auth_prefs", Context.MODE_PRIVATE)
     }

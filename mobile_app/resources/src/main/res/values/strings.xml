@@ -17,6 +17,17 @@
 	<string name="login">Login</string>
 	<string name="switch_to_register_label">I don’t have an account yet</string>
 	<string name="demo_end_button_label">Sit back, and wait</string>
+	<string name="error_blank_email">Enter your email</string>
+	<string name="error_blank_password">Enter your password</string>
+	<string name="error_blank_repeated_password">Repeat the password</string>
+	<string name="error_different_passwords">Passwords do not match</string>
+	<string name="error_no_internet">No Internet connection</string>
+	<string name="error_timeout">Connection timeout</string>
+	<string name="error_invalid_credentials">Invalid email or password</string>
+	<string name="error_email_already_in_use">Account with this email already exists</string>
+	<string name="error_authentication_fail">Authentication failed</string>
+	<string name="error_server">Internal server error occurred</string>
+	<string name="error_unknown">Unknown error occurred</string>
 
 	<!-- App Navigation Bar -->
 	<string name="quiz_hub_navigation_label">QuizHub</string>

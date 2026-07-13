@@ -55,6 +55,14 @@ dependencies {
     implementation(libs.decompose.compose)
     implementation(libs.decompose.experimental)
 
+    // Ktor
+    implementation(libs.ktor.client.core)
+    implementation(libs.ktor.client.cio)
+    implementation(libs.ktor.client.content.negotiation)
+    implementation(libs.ktor.client.logging)
+    implementation(libs.ktor.client.auth)
+    implementation(libs.ktor.kotlinx.serialization)
+
     // Project
     implementation(project(":authentication"))
     implementation(project(":quiz_create"))
@@ -69,6 +77,7 @@ dependencies {
     implementation(project(":common"))
     implementation(project(":resources"))
     implementation(project(":domain"))
+    implementation(project(":data_network"))
 
     // Tests
     testImplementation(libs.junit)

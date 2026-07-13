@@ -14,15 +14,15 @@ import com.arkivanov.decompose.router.stack.pushToFront
 import kotlinx.serialization.Serializable
 import com.examhacker.authentication.component.AuthenticationComponent
 import com.examhacker.authentication.component.IAuthenticationComponent
-import com.examhacker.common.data.AnswerVariant
-import com.examhacker.common.data.Question
-import com.examhacker.common.data.Quiz
 import com.examhacker.common.utility.FilePicker
 import com.examhacker.domain.model.AnswerVariant
 import com.examhacker.domain.model.Author
 import com.examhacker.domain.model.Question
 import com.examhacker.domain.model.Quiz
 import com.examhacker.domain.model.QuizInfo
+import com.examhacker.domain.repository.IAuthenticationRepository
+import com.examhacker.domain.repository.IQuizRepository
+import com.examhacker.domain.repository.ITokenStorage
 import com.examhacker.common.utility.ISettingStorage
 import com.examhacker.mobile.introduction_screen.IIntroductionComponent
 import com.examhacker.mobile.introduction_screen.IntroductionComponent
@@ -67,6 +67,9 @@ interface IRootComponent {
 
 class RootComponent(
     private val componentContext: ComponentContext,
+    private val tokenStorage: ITokenStorage,
+    private val authRepository: IAuthenticationRepository,
+    private val quizRepository: IQuizRepository,
     private val permissionHandler: IPermissionHandler,
     private val settingStorage: ISettingStorage,
     private val filePicker: FilePicker,
@@ -101,6 +104,8 @@ class RootComponent(
                 IRootComponent.Child.Authentication(
                     AuthenticationComponent(
                         componentContext = componentContext,
+                        authRepository = authRepository,
+                        tokenStorage = tokenStorage,
                         goToQuizList = ::fromAuthToQuizList,
                         goBack = ::back
                     )
@@ -118,7 +123,7 @@ class RootComponent(
                                     info = QuizInfo(
                                         id = 1,
                                         name = "Quiz name",
-                                        creationDate = now(),
+                                        creationDate = now().toString(),
                                         updatingDate = null,
                                         author = Author(1, "User")
                                     ),

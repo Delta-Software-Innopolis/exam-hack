@@ -30,7 +30,7 @@ dependencies {
     // Core
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
-    implementation(libs.material)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
 
     // Kotlinx
     implementation(libs.kotlinx.coroutines.core)

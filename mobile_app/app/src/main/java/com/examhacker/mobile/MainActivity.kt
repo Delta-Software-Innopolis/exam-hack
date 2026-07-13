@@ -14,6 +14,10 @@ import com.arkivanov.decompose.defaultComponentContext
 import com.arkivanov.decompose.extensions.compose.stack.Children
 import com.examhacker.authentication.ui.AuthenticationScreen
 import com.examhacker.common.utility.AndroidFilePicker
+import com.examhacker.data_network.client.Client
+import com.examhacker.data_network.client.TokenStoragePrefs
+import com.examhacker.data_network.repository.AuthenticationRepository
+import com.examhacker.data_network.repository.QuizRepository
 import com.examhacker.common.utility.SettingStorage
 import com.examhacker.mobile.introduction_screen.IntroductionScreen
 import com.examhacker.mobile.root.IRootComponent
@@ -38,6 +42,11 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
+        val tokenStorage = TokenStoragePrefs(this)
+        val client = Client.provideHttpClient(tokenStorage)
+        val authRepository = AuthenticationRepository(client)
+        val quizRepository = QuizRepository(client)
+
         val permissionHandler = PermissionHandler(
             context = this,
             notificationLauncher = notificationPermissionLauncher
@@ -50,8 +59,12 @@ class MainActivity : ComponentActivity() {
             lifecycleOwner = this,
             contentResolver = contentResolver,
         )
+
         val root = RootComponent(
             componentContext = defaultComponentContext(),
+            tokenStorage = tokenStorage,
+            authRepository = authRepository,
+            quizRepository = quizRepository,
             permissionHandler = permissionHandler,
             settingStorage = settingStorage,
             filePicker = filePicker,

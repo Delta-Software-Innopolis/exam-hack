@@ -480,7 +480,7 @@ private fun createMockQuiz() =
         info = QuizInfo(
             id = 1,
             name = "Full Quiz Title, maybe a long one",
-            creationDate = now(),
+            creationDate = now().toString(),
             updatingDate = null,
             author = Author(1, "User")
         ),

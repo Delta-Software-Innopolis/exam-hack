@@ -2,6 +2,7 @@ package com.examhacker.data_network.client
 
 import com.examhacker.data_network.dto.NetworkAuthResponse
 import com.examhacker.data_network.dto.RefreshRequest
+import com.examhacker.domain.repository.ITokenStorage
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
@@ -22,11 +23,9 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
 object Client {
-    private const val BASE_URL = "https://your-api-domain.com" // Replace with your actual domain
+    private const val BASE_URL = "https://examhacker.ru"
 
-    fun provideHttpClient(
-        tokenStorage: TokenStorage
-    ): HttpClient {
+    fun provideHttpClient(tokenStorage: ITokenStorage): HttpClient {
         return HttpClient(CIO) {
 
             engine {
