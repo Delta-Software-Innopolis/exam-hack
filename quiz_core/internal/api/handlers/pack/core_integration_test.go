@@ -81,6 +81,10 @@ func newCoreTestApp(t *testing.T) *coreTestApp {
 	}
 	sqlDB.SetMaxOpenConns(1)
 
+	if err := testDB.Exec("PRAGMA foreign_keys = ON").Error; err != nil {
+		t.Fatalf("enable foreign keys: %v", err)
+	}
+
 	createTestSchema(t, testDB)
 	db.DB = testDB
 
@@ -139,25 +143,30 @@ func createTestSchema(t *testing.T, testDB *gorm.DB) {
 			creation_date datetime NOT NULL,
 			updating_date datetime,
 			share_code varchar(64) NOT NULL UNIQUE,
-			author_id integer NOT NULL
+			author_id integer NOT NULL,
+			FOREIGN KEY (author_id) REFERENCES users(id)
 		)`,
 		`CREATE TABLE pack_permissions (
 			user_id integer NOT NULL,
 			pack_id integer NOT NULL,
 			permission integer NOT NULL,
-			PRIMARY KEY (user_id, pack_id)
+			PRIMARY KEY (user_id, pack_id),
+			FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+			FOREIGN KEY (pack_id) REFERENCES packs(id) ON DELETE CASCADE
 		)`,
 		`CREATE TABLE cards (
 			id integer PRIMARY KEY AUTOINCREMENT,
 			question text NOT NULL,
 			pack_id integer NOT NULL,
-			hint text NOT NULL
+			hint text NOT NULL,
+			FOREIGN KEY (pack_id) REFERENCES packs(id) ON DELETE CASCADE
 		)`,
 		`CREATE TABLE card_options (
 			id integer PRIMARY KEY AUTOINCREMENT,
 			content text NOT NULL,
 			is_right boolean NOT NULL,
-			card_id integer NOT NULL
+			card_id integer NOT NULL,
+			FOREIGN KEY (card_id) REFERENCES cards(id) ON DELETE CASCADE
 		)`,
 		`CREATE TABLE forks (
 			fork_id integer NOT NULL,

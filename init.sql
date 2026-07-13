@@ -57,8 +57,8 @@ CREATE TABLE pack_permissions (
     permission INTEGER NOT NULL,
     
     PRIMARY KEY (user_id, pack_id), 
-    FOREIGN KEY(user_id) REFERENCES users (id), 
-    FOREIGN KEY(pack_id) REFERENCES packs (id)
+    FOREIGN KEY(user_id) REFERENCES users (id) ON DELETE CASCADE, 
+    FOREIGN KEY(pack_id) REFERENCES packs (id) ON DELETE CASCADE
 );
 
 CREATE INDEX ix_pack_permissions_user_id ON pack_permissions (user_id);
@@ -73,7 +73,7 @@ CREATE TABLE cards (
     pack_id INTEGER NOT NULL, 
     hint TEXT NOT NULL, 
     PRIMARY KEY (id), 
-    FOREIGN KEY(pack_id) REFERENCES packs (id)
+    FOREIGN KEY(pack_id) REFERENCES packs (id) ON DELETE CASCADE
 );
 
 CREATE INDEX ix_cards_id ON cards (id);
@@ -149,7 +149,7 @@ CREATE TABLE card_options (
     is_right BOOLEAN NOT NULL, 
     card_id INTEGER NOT NULL, 
     PRIMARY KEY (id), 
-    FOREIGN KEY(card_id) REFERENCES cards (id)
+    FOREIGN KEY(card_id) REFERENCES cards (id) ON DELETE CASCADE
 );
 
 CREATE INDEX ix_card_options_id ON card_options (id);

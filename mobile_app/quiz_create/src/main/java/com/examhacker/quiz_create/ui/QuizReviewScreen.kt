@@ -145,7 +145,7 @@ private fun QuestionListWithTitle(
         ScreenTitle(
             text = stringResource(R.string.quiz_review_title),
             modifier = Modifier.fillMaxWidth(),
-            fontSize = Dimensions.CreateScreenTitleFontSize,
+            fontSize = Dimensions.SubTitleFontSize,
             horizontalArrangement = Arrangement.Start
         )
 

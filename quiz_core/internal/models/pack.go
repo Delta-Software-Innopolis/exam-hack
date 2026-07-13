@@ -11,8 +11,8 @@ type Pack struct {
 	AuthorID     uint       `gorm:"column:author_id;not null;index:ix_packs_author_id" json:"-"`
 
 	Author      User             `gorm:"foreignKey:AuthorID;references:ID" json:"author,omitempty"`
-	Permissions []PackPermission `gorm:"foreignKey:PackID;references:ID" json:"permissions,omitempty"`
-	Cards       []Card           `gorm:"foreignKey:PackID;references:ID" json:"cards,omitempty"`
+	Permissions []PackPermission `gorm:"foreignKey:PackID;references:ID;constraint:OnDelete:CASCADE" json:"permissions,omitempty"`
+	Cards       []Card           `gorm:"foreignKey:PackID;references:ID;constraint:OnDelete:CASCADE" json:"cards,omitempty"`
 	Forks       []Fork           `gorm:"foreignKey:ForkID;references:ID" json:"forks,omitempty"`
 	OriginalFor []Fork           `gorm:"foreignKey:OriginalID;references:ID" json:"original_for,omitempty"`
 }

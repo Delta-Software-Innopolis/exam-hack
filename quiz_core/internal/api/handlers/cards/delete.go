@@ -7,7 +7,6 @@ import (
 	sc "quiz_core/internal/api/shortcuts"
 	structs "quiz_core/internal/api/structures"
 	"quiz_core/internal/db"
-	"quiz_core/internal/models"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -37,10 +36,6 @@ func DeleteCard(c *gin.Context) {
 		for _, cardID := range req.Cards {
 			card, err := sc.FindOwnedCard(tx, uint(cardID), authorID)
 			if err != nil {
-				return err
-			}
-
-			if err := tx.Where("card_id = ?", card.ID).Delete(&models.CardOption{}).Error; err != nil {
 				return err
 			}
 
