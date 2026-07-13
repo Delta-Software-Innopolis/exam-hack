@@ -19,6 +19,7 @@ class PublishedQuiz(BaseModel):
     university: str
     professor: str
     course_book: str
+    description: str
     forks: list[Fork]
     model_config = ConfigDict(from_attributes=True)
 
@@ -31,4 +32,18 @@ class PublishedPackNew(BaseModel):
     university: str
     professor: str
     course_book: str
+
+class Card(BaseModel):
+    id: PositiveInt
+    question: str
+    options: list[str]
+    correct: list[PositiveInt]
+    hint: str
+
+
+
+
+class FullPublishedQuiz(PublishedQuiz):
+    cards: list[Card]
+
 

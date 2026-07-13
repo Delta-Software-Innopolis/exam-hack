@@ -20,4 +20,4 @@ class Card_option(Base):
     is_right: Mapped[bool] = mapped_column(nullable=False)
     card_id: Mapped[int] = mapped_column(ForeignKey("cards.id"), nullable=False)
 
-    card: Mapped["Card"] = relationship("Card", uselist=False, back_populates="options")
+    card: Mapped["Card"] = relationship("Card", uselist=False, back_populates="options_models")
