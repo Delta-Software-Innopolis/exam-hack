@@ -11,15 +11,15 @@ import QuizCreationGeneration from '@/components/quiz/QuizCreationGeneration.vue
 import QuizCreationEdit from '@/components/quiz/QuizCreationEdit.vue';
 
 
-const router = useRouter()
+const router = useRouter();
 
-const quizTitle = ref('')
-const quizDescription = ref('')
-const uploadedFiles: Ref<File[]> = ref([])
-const questions: Ref<Card[]> = ref([])
+const quizTitle = ref('');
+const quizDescription = ref('');
+const uploadedFiles: Ref<File[]> = ref([]);
+const questions: Ref<Card[]> = ref([]);
 
-const allowMultipleCorrects = ref(true)
-const generateQuestionsNumber = ref(10)
+const allowMultipleCorrects = ref(true);
+const generateQuestionsNumber = ref<number>(10);
 
 
 const hasUnsavedProgress = ref(false)
