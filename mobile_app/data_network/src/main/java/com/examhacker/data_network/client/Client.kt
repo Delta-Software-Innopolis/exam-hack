@@ -1,6 +1,6 @@
 package com.examhacker.data_network.client
 
-import com.examhacker.data_network.dto.AuthResponse
+import com.examhacker.data_network.dto.NetworkAuthResponse
 import com.examhacker.data_network.dto.RefreshRequest
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -81,7 +81,7 @@ object Client {
                                     contentType(Json)
                                     setBody(RefreshRequest(refreshToken))
                                 }
-                                val authResponse = response.body<AuthResponse>()
+                                val authResponse = response.body<NetworkAuthResponse>()
                                 tokenStorage.saveTokens(
                                     authResponse.access_token,
                                     authResponse.refresh_token

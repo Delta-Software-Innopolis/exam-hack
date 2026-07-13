@@ -8,7 +8,7 @@ data class Pack(
     val name: String,
     val creation_date: String,
     val updating_date: String? = null,
-    val author: Author
+    val author: PackAuthor
 )
 
 @Serializable
@@ -33,19 +33,19 @@ data class PackWithCards(
     val description: String? = null,
     val creation_date: String,
     val updating_date: String? = null,
-    val author: Author,
+    val author: PackAuthor,
     val cards: List<Card>
 )
 
 @Serializable
-data class Author(
+data class PackAuthor(
     val id: Int,
     val name: String
 )
 
 @Serializable
 data class Card(
-    val id: Int? = null,
+    val id: Int,
     val question: String,
     val hint: String? = null,
     val options: List<String>,

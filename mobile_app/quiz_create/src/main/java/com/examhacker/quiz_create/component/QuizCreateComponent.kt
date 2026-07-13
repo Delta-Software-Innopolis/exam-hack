@@ -11,18 +11,19 @@ import com.arkivanov.decompose.router.stack.pushNew
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
-import com.examhacker.common.data.AnswerVariant
-import com.examhacker.common.data.Question
-import com.examhacker.common.data.Quiz
 import com.examhacker.common.utility.FilePicker
+import com.examhacker.domain.model.AnswerVariant
+import com.examhacker.domain.model.Question
+import com.examhacker.domain.model.Quiz
 import kotlinx.serialization.Serializable
+import kotlin.time.ExperimentalTime
 
 interface IQuizCreateComponent {
     val stack: Value<ChildStack<*, Child>>
     val model: Value<Model>
 
     data class Model(
-        val quiz: Quiz = Quiz(0, "", "", "", emptyList())
+        val quiz: Quiz? = null
     )
 
     sealed class Child {
@@ -97,10 +98,11 @@ class QuizCreateComponent(
                 )
         }
 
+    @OptIn(ExperimentalTime::class)
     private fun updateQuizName(name: String) {
         _model.update {
             it.copy(
-                quiz = it.quiz.copy(name = name)
+                quiz = it.quiz?.copy(info = it.quiz.info.copy(name = name))
             )
         }
     }
@@ -108,7 +110,7 @@ class QuizCreateComponent(
     private fun updateQuizDescription(description: String) {
         _model.update {
             it.copy(
-                quiz = it.quiz.copy(description = description)
+                quiz = it.quiz?.copy(description = description)
             )
         }
     }
@@ -147,7 +149,7 @@ class QuizCreateComponent(
     private fun updateQuestions(questions: List<Question>) {
         _model.update {
             it.copy(
-                quiz = it.quiz.copy(questions = questions)
+                quiz = it.quiz?.copy(questions = questions)
             )
         }
     }
@@ -160,7 +162,7 @@ class QuizCreateComponent(
     private fun createMockQuestions(): List<Question> =
         listOf(
             Question(
-                id = 1,
+                id = 0,
                 description = "Why do dogs think their tails are so clingy, they always want to grab it?",
                 variants = listOf(
                     AnswerVariant("Option 1", false),
@@ -170,7 +172,7 @@ class QuizCreateComponent(
                 )
             ),
             Question(
-                id = 2,
+                id = 1,
                 description = "Why something is this thing?",
                 variants = listOf(
                     AnswerVariant("Option 1", false),
@@ -180,7 +182,7 @@ class QuizCreateComponent(
                 )
             ),
             Question(
-                id = 3,
+                id = 2,
                 description = "Why do dogs think their tails are so clingy, they always want to grab it?",
                 variants = listOf(
                     AnswerVariant("Option 1", false),

@@ -9,11 +9,11 @@ import com.arkivanov.decompose.router.slot.dismiss
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
-import com.examhacker.common.data.Question
 import com.examhacker.common.utility.dialogs.AddQuestionDialogComponent
 import com.examhacker.common.utility.dialogs.EditQuestionDialogComponent
 import com.examhacker.common.utility.dialogs.IAddQuestionDialogComponent
 import com.examhacker.common.utility.dialogs.IEditQuestionDialogComponent
+import com.examhacker.domain.model.Question
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 

@@ -48,6 +48,9 @@ dependencies {
     implementation(libs.androidx.datastore)
     implementation(libs.androidx.datastore.core)
 
+    // Other modules
+    implementation(project(":domain"))
+
     // Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

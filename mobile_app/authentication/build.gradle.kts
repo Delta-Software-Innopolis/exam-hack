@@ -50,7 +50,7 @@ dependencies {
     // Project
     implementation(project(":resources"))
     implementation(project(":common"))
-    implementation(project(":data_network"))
+    implementation(project(":domain"))
 
     // Testing
     testImplementation(libs.junit)

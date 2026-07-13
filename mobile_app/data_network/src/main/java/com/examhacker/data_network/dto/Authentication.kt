@@ -9,7 +9,7 @@ data class RefreshRequest(
     val refresh_token: String
 )
 
-data class AuthResponse(
+data class NetworkAuthResponse(
     val access_token: String,
     val refresh_token: String
 )

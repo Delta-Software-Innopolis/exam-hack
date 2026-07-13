@@ -1,4 +1,4 @@
-package com.examhacker.common.data
+package com.examhacker.domain.model
 
 import android.net.Uri
 

@@ -23,6 +23,8 @@ import com.examhacker.common.ui.QuizProgressBar
 import com.examhacker.common.ui.QuizSolveBottomBar
 import com.examhacker.common.ui.QuizSolveQuestionSection
 import com.examhacker.common.ui.SingleBackButtonTopBar
+import com.examhacker.domain.model.AnswerVariant
+import com.examhacker.domain.model.Question
 import com.examhacker.common.ui.ai_chat.AIChatBottomSheet
 import com.examhacker.quiz_solve.component.IQuizQuestionComponent
 import com.examhacker.resources.ColorPreset

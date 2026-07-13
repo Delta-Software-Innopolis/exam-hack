@@ -8,7 +8,7 @@ import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
-import com.examhacker.common.data.AnswerVariant
+import com.examhacker.domain.model.AnswerVariant
 import com.examhacker.phone_unlock.R
 import com.examhacker.phone_unlock.controller.UnlockOverlayController
 import kotlinx.coroutines.CoroutineScope

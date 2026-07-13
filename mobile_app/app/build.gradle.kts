@@ -68,6 +68,7 @@ dependencies {
     implementation(project(":settings"))
     implementation(project(":common"))
     implementation(project(":resources"))
+    implementation(project(":domain"))
 
     // Tests
     testImplementation(libs.junit)

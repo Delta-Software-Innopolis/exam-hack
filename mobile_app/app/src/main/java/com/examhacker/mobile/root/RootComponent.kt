@@ -18,6 +18,11 @@ import com.examhacker.common.data.AnswerVariant
 import com.examhacker.common.data.Question
 import com.examhacker.common.data.Quiz
 import com.examhacker.common.utility.FilePicker
+import com.examhacker.domain.model.AnswerVariant
+import com.examhacker.domain.model.Author
+import com.examhacker.domain.model.Question
+import com.examhacker.domain.model.Quiz
+import com.examhacker.domain.model.QuizInfo
 import com.examhacker.common.utility.ISettingStorage
 import com.examhacker.mobile.introduction_screen.IIntroductionComponent
 import com.examhacker.mobile.introduction_screen.IntroductionComponent
@@ -39,6 +44,8 @@ import com.examhacker.quiz_list.component.QuizListComponent
 import com.examhacker.quiz_solve.component.QuizSolveComponent
 import com.examhacker.settings.component.SettingsComponent
 import kotlinx.serialization.Contextual
+import kotlin.time.Clock.System.now
+import kotlin.time.ExperimentalTime
 
 interface IRootComponent {
 
@@ -76,6 +83,7 @@ class RootComponent(
             handleBackButton = false,
             childFactory = ::createChild,
         )
+    @OptIn(ExperimentalTime::class)
     private fun createChild(config: Config, componentContext: ComponentContext,)
     : IRootComponent.Child =
         when (config) {
@@ -107,9 +115,13 @@ class RootComponent(
                         toQuizInfo = {
                             navigateToQuizInfo(
                                 Quiz(
-                                    id = 1,
-                                    authorName = "User",
-                                    name = "Quiz name",
+                                    info = QuizInfo(
+                                        id = 1,
+                                        name = "Quiz name",
+                                        creationDate = now(),
+                                        updatingDate = null,
+                                        author = Author(1, "User")
+                                    ),
                                     description = "Nice description",
                                     questions = listOf(
                                         Question(

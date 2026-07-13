@@ -1,8 +1,11 @@
 package com.examhacker.data_network.repository
 
 import com.examhacker.data_network.dto.AuthRequest
-import com.examhacker.data_network.dto.AuthResponse
+import com.examhacker.data_network.dto.NetworkAuthResponse
 import com.examhacker.data_network.dto.RefreshRequest
+import com.examhacker.data_network.dto.toDomain
+import com.examhacker.domain.model.AuthResponse
+import com.examhacker.domain.repository.IAuthenticationRepository
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.post
@@ -10,14 +13,7 @@ import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 
-interface AuthRepository {
-    suspend fun register(username: String, password: String): Result<AuthResponse>
-    suspend fun login(username: String, password: String): Result<AuthResponse>
-    suspend fun refreshToken(refreshToken: String): Result<AuthResponse>
-    suspend fun logout(): Result<Unit>
-}
-
-class AuthRepositoryImpl(private val client: HttpClient) : AuthRepository {
+class AuthenticationRepository(private val client: HttpClient) : IAuthenticationRepository {
 
     override suspend fun register(username: String, password: String): Result<AuthResponse> {
         return try {
@@ -25,7 +21,7 @@ class AuthRepositoryImpl(private val client: HttpClient) : AuthRepository {
                 contentType(ContentType.Application.Json)
                 setBody(AuthRequest(username, password))
             }
-            Result.success(response.body())
+            Result.success(response.body<NetworkAuthResponse>().toDomain())
         } catch (e: Exception) {
             Result.failure(e)
         }
@@ -37,7 +33,7 @@ class AuthRepositoryImpl(private val client: HttpClient) : AuthRepository {
                 contentType(ContentType.Application.Json)
                 setBody(AuthRequest(username, password))
             }
-            Result.success(response.body())
+            Result.success(response.body<NetworkAuthResponse>().toDomain())
         } catch (e: Exception) {
             Result.failure(e)
         }
@@ -49,7 +45,7 @@ class AuthRepositoryImpl(private val client: HttpClient) : AuthRepository {
                 contentType(ContentType.Application.Json)
                 setBody(RefreshRequest(refreshToken))
             }
-            Result.success(response.body())
+            Result.success(response.body<NetworkAuthResponse>().toDomain())
         } catch (e: Exception) {
             Result.failure(e)
         }

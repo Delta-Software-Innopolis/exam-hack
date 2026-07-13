@@ -4,8 +4,8 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
-import com.examhacker.common.data.AnswerVariant
-import com.examhacker.common.data.Question
+import com.examhacker.domain.model.AnswerVariant
+import com.examhacker.domain.model.Question
 import kotlin.collections.plus
 
 interface IAddQuestionDialogComponent {
@@ -84,7 +84,7 @@ class AddQuestionDialogComponent(
     override fun onAddQuestion() {
         addQuestion(
             Question(
-                id = model.value.questionNumber,
+                id = 0, //TODO Remove
                 description = model.value.questionDescription,
                 variants = model.value.variants
             )

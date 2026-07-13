@@ -7,7 +7,7 @@ import android.provider.OpenableColumns
 import androidx.activity.result.ActivityResultRegistry
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.LifecycleOwner
-import com.examhacker.common.data.PickedFile
+import com.examhacker.domain.model.PickedFile
 import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.suspendCancellableCoroutine
 import java.util.UUID

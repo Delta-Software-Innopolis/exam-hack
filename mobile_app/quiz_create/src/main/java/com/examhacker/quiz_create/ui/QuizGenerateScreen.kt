@@ -46,9 +46,9 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import com.examhacker.resources.R
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
-import com.examhacker.common.data.PickedFile
 import com.examhacker.common.ui.AppNavigationBar
 import com.examhacker.common.ui.NavigationTab
+import com.examhacker.domain.model.PickedFile
 import com.examhacker.quiz_create.component.IQuizGenerateComponent
 import com.examhacker.quiz_create.ui.common.CreationStage
 import com.examhacker.quiz_create.ui.common.QuizCreationTopBar

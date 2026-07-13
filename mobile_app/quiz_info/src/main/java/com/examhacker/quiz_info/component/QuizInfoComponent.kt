@@ -4,14 +4,14 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
-import com.examhacker.common.data.Quiz
-import com.examhacker.common.data.QuizStatistics
+import com.examhacker.domain.model.Quiz
+import com.examhacker.domain.model.QuizStatistics
 
 interface IQuizInfoComponent {
     val model: Value<Model>
 
     data class Model(
-        val quiz: Quiz = Quiz(0, "", "", "", emptyList()),
+        val quiz: Quiz? = null,
         val statistics: QuizStatistics = QuizStatistics(0, 0.0f, 0, 0.0f)
     )
 
