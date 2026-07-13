@@ -15,6 +15,7 @@ import QuizHubItemView from '@/views/QuizHubItemView.vue'
 import WorkingOnView from '@/views/WorkingOnView.vue'
 import QuizInviteView from '@/views/QuizInviteView.vue'
 import ProfileView from '@/views/ProfileView.vue'
+import QuizInviteView from '@/views/QuizInviteView.vue'
 
 
 const router = createRouter({
@@ -99,6 +100,12 @@ const router = createRouter({
         meta: { showSidebar: true, withAnimation: true },
     },
     {
+      path: '/quizhub/:quizId',
+      name: 'quizhubItem',
+      component: QuizHubItemView,
+      meta: { showSidebar: true }
+    },
+    {
       path: '/profile/:username',
       name: 'profile',
       component: ProfileView,
@@ -115,6 +122,12 @@ const router = createRouter({
       name: 'quizInvite',
       component: QuizInviteView,
       meta: { showSidebar: true, withAnimation: true }
+    },
+    {
+      path: '/invite/:code',
+      name: 'quizInvite',
+      component: QuizInviteView,
+      meta: { showSidebar: true }
     },
     {
       path: '/:pathMatch(.*)*',
