@@ -45,6 +45,16 @@ export class NetworkManager {
         return await this.fetch(url, init)
     }
 
+    /**
+     * Send request to hub service
+     * @param path relative url path, without 'http://domain:port', example '/packs/3'
+     * @param init parameters for fetch
+     * @param auth use Authorization header or not (default is true)
+     */
+    async fetch_hub(path: string, init?: RequestInit | undefined, auth: boolean = true): Promise<Response> {
+        let url = new URL(path, HUB_URL)
+        return await this.fetch(url, init)
+    }
 
     async fetch(
         input: string | URL | Request,

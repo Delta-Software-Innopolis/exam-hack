@@ -12,6 +12,9 @@ import PlayButton from '@/components/buttons/PlayButton.vue';
 import UnknownView from './UnknownView.vue';
 import ModalQuestionAdd from '@/components/modals/ModalQuestionAdd.vue';
 import PlusButton from '@/components/buttons/PlusButton.vue';
+import ModalWindow from '@/components/basic/ModalWindow.vue';
+import BasicInput from '@/components/basic/BasicInput.vue';
+import { publishQuizToHub } from '@/hub.ts';
 
 const route = useRoute();
 const router = useRouter();
@@ -22,6 +25,12 @@ const knownQuiz = computed(()=>quiz.value.id !== -1);
 const hasUnsavedChanges = ref(false)
 const deletedCards = ref<number[]>([])
 const isSaving = ref(false)
+const publishData = ref({
+    university: '',
+    subject: '',
+    professor: '',
+    course_book: '',
+})
 
 const activeQuestion = ref<Card>();
 
@@ -32,6 +41,7 @@ function notImplemented() {
 
 const modalEdit = useTemplateRef('modal-edit');
 const modalAdd = useTemplateRef('modal-add');
+const modalPublish = useTemplateRef('modal-publish');
 
 
 function onStartEditQuestion(q_idx: number) {
@@ -105,6 +115,21 @@ async function submitChanges() {
     await quizzesStore.fetchMyQuizzes()
     isSaving.value = false
 }
+
+async function publishQuiz() {
+    const ok = await publishQuizToHub(
+        quiz.value.id,
+        publishData.value.subject,
+        publishData.value.university,
+        publishData.value.professor,
+        publishData.value.course_book,
+    );
+
+    if (!ok) {
+        alert("Couldn't publish quiz")
+        return
+    }
+}
 </script>
 
 <template>
@@ -146,6 +171,9 @@ async function submitChanges() {
                         >
                             Attempt
                         </PlayButton>
+                        <BasicButton @click="modalPublish?.open()">
+                            Publish to QuizHub
+                        </BasicButton>
                     </div>
                     <div class="bottom-buttons">
                         <TrashButton v-if="knownQuiz" variant="red" 
@@ -169,6 +197,22 @@ async function submitChanges() {
                 @click-question-item="onStartEditQuestion"
             />
         </div>
+        <ModalWindow ref="modal-publish">
+            <div class="publish-modal">
+                <h2>Publish to QuizHub</h2>
+
+                <div class="publish-form">
+                    <BasicInput placeholder="Enter subject" v-model="publishData.subject"></BasicInput>
+                    <BasicInput placeholder="Enter university" v-model="publishData.university"></BasicInput>
+                    <BasicInput placeholder="Enter professor" v-model="publishData.professor"></BasicInput>
+                    <BasicInput placeholder="Enter course book" v-model="publishData.course_book"></BasicInput>
+                </div>
+                
+                <BasicButton @click="publishQuiz">
+                    Publish
+                </BasicButton>
+            </div>
+        </ModalWindow>
     </div>
     <UnknownView v-else />
 </template>
@@ -293,4 +337,15 @@ button a {
     align-items: center;
 }
 
+.publish-modal {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.publish-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
 </style>
