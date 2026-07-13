@@ -63,7 +63,7 @@ private fun AddQuestionDialogUI(
     onAddQuestionClick: () -> Unit
 ) {
     Card(
-        shape = RoundedCornerShape(Dimensions.DialogCardRadius),
+        shape = RoundedCornerShape(Dimensions.DefaultCardRadius),
         colors = CardDefaults.cardColors(
             containerColor = ColorPreset.BackgroundVariant,
             disabledContainerColor = ColorPreset.BackgroundVariant

@@ -18,11 +18,14 @@ class Dimensions {
         val ButtonContentSpacing = 8.dp
         val NavigationIconSize = 34.dp
         val NavigationButtonPadding = 8.dp
+        val DefaultCardRadius = 16.dp
+        val SnackBarIconSize = 24.dp
         val ScreenTitleFontSize = 32.sp
         val SubtitleFontSize = 28.sp
         val InputLabelFontSize = 16.sp
         val ButtonLabelFontSize = 16.sp
         val QuestionCardFontSize = 16.sp
+        val SnackBarFontSize = 18.sp
 
         // AppNavigationBar
         val AppNavigationPaddingVertical = 8.dp
@@ -48,7 +51,6 @@ class Dimensions {
         val GenerateInstructionFontSize = 16.sp
 
         // Quiz Edit and Add Dialogs
-        val DialogCardRadius = 16.dp
         val DialogVerticalElementSpacing = 8.dp
         val DialogVerticalPadding = 12.dp
         val DialogHorizontalPadding = 16.dp
@@ -86,11 +88,22 @@ class Dimensions {
         val MessageBoxVerticalPadding = 8.dp
         val MessageBoxHorizontalPadding = 16.dp
         val ChatInputSpacing = 16.dp
-        val ChatMinHeight = 340.dp
         val ChatMessageFontSize = 16.sp
         val QuizResultFontSize = 20.sp
         val AnswerVariantFontSize = 18.sp
         val ProgressBarFontSize = 16.sp
+
+        // Settings
+        val SettingCardSpacing = 16.dp
+        val SettingSwitchPadding = 4.dp
+        val SettingSwitchThumbVerticalPadding = 16.dp
+        val SettingSwitchWidth = 200.dp
+        val SettingSwitchThumbWidth = 96.dp
+        val SettingSwitchThumbHeight = 51.dp
+        val SettingSwitchRadius = 20.dp
+        val SettingSwitchThumbRadius = 16.dp
+        val SettingLabelFontSize = 18.sp
+        val SettingOptionFontSize = 16.sp
 
         // Quiz List
         val QuizListFabSize = 64.dp

@@ -118,9 +118,9 @@ class RootComponent(
                                 )
                             )
                         },
-                        toQuizHub = {},
-                        toProfile = {},
-                        toSettings = {},
+                        toQuizHub = ::navigateToQuizHub,
+                        toProfile = ::navigateToProfile,
+                        toSettings = ::navigateToSettings,
                         goBack = ::back
                     )
                 )
@@ -177,7 +177,12 @@ class RootComponent(
 
             is Config.Settings       ->
                 IRootComponent.Child.Settings(
-                    SettingsComponent(componentContext)
+                    SettingsComponent(
+                        componentContext = componentContext,
+                        goToQuizList = ::navigateToQuizList,
+                        goToProfile = ::navigateToProfile,
+                        goToQuizHub = ::navigateToQuizHub,
+                    )
                 )
         }
 
@@ -190,15 +195,19 @@ class RootComponent(
     }
 
     private fun navigateToQuizHub() {
-        TODO()
+        navigation.pushToFront(Config.QuizHub)
     }
 
     private fun navigateToProfile() {
-        TODO()
+        navigation.pushToFront(Config.Profile)
     }
 
     private fun navigateToSettings() {
         navigation.pushToFront(Config.Settings)
+    }
+
+    private fun navigateToQuizList() {
+        navigation.pushToFront(Config.QuizList)
     }
 
     private fun navigateToQuizSolve(quiz: Quiz) {
