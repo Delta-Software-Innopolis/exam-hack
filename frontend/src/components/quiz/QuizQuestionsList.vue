@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { Card } from '@/types';
-import QuizQuestionItem from '../basic/QuizQuestionItem.vue';
+import QuizQuestionItem from '@/components/basic/QuizQuestionItem.vue';
 
 type Variant = 'view' | 'edit';
 

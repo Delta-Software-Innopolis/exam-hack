@@ -3,10 +3,10 @@ import { ref, watch, onUnmounted, useTemplateRef, type Ref, onMounted } from 'vu
 import { useRouter, useRoute } from 'vue-router';
 import BasicButton from '@/components/basic/BasicButton.vue';
 import type { Card, CardType, QuizItem, QuizHubItem } from '@/types';
-import ModalQuestionView from '@/components/quiz-info/ModalQuestionView.vue';
+import ModalQuestionView from '@/components/modals/ModalQuestionView.vue';
 import useNetworkManager, { HUB_URL} from '@/network';
 import QuizOption from '@/components/basic/QuizOption.vue';
-import QuizQuestionsList from '@/components/quiz-info/QuizQuestionsList.vue';
+import QuizQuestionsList from '@/components/quiz/QuizQuestionsList.vue';
 import PlusButton from '@/components/buttons/PlusButton.vue';
 import UnknownView from './UnknownView.vue';
 
