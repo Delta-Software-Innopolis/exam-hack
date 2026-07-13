@@ -25,7 +25,10 @@ class Published_pack(Base):
     @property
     def name(self):
         return self.source.name
-    
+
+    @property
+    def cards(self):
+        return self.source.cards 
     tsv_desc: Mapped[TSVECTOR] = mapped_column(
         TSVECTOR,
         Computed(
