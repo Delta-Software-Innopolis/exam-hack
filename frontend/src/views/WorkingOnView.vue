@@ -9,7 +9,7 @@ const router = useRouter()
 <template>
 <div class="working-on">
     <div class="wrapper">
-        <h3>🛠️ We developing this screen, come back later ⚠️</h3>
+        <h3>🛠️ We are developing this screen, come back later ⚠️</h3>
         <BasicButton @click="router.push('/')">Go back</BasicButton>
     </div>
 </div>

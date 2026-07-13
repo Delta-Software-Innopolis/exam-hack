@@ -16,10 +16,11 @@ button {
     --icon-width: 16px;
     --icon-height: 16px;
     --icon-stroke: var(--white);
+    padding-left: 12px;
     gap: 4px;
 }
 
-button .secondary {
-    --icon-stroke: var(--secondary);
+.secondary {
+    --icon-stroke: var(--secondary-dimm);
 }
 </style>

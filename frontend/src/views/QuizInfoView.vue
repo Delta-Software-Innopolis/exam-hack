@@ -1,19 +1,17 @@
 <script setup lang="ts">
-import { ref, watch, onUnmounted, useTemplateRef, type Ref, onMounted, computed } from 'vue';
+import { ref, watch, useTemplateRef, computed } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import BasicButton from '@/components/basic/BasicButton.vue';
-import EditQuestion from '@/components/basic/EditQuestion.vue';
-import type { Card, CardType, QuizItem } from '@/types';
-import BasicInput from '@/components/basic/BasicInput.vue';
-import TrashSVG from '@/assets/Trash.svg';
-import PlaySVG from '@/assets/Play.svg';
 import { updateCards, createCards, deleteCards, deletePack } from '@/core'
-import { UNKNOWN_QUIZ, useNewQuizzesStore } from '@/stores/new-quizzes';
-import QuizQuestionsList from '@/components/quiz-info/QuizQuestionsList.vue';
-import ModalQuestionEdit from '@/components/quiz-info/ModalQuestionEdit.vue';
+import type { Card, QuizItem } from '@/types';
+import { useNewQuizzesStore } from '@/stores/new-quizzes';
+import QuizQuestionsList from '@/components/quiz/QuizQuestionsList.vue';
+import ModalQuestionEdit from '@/components/modals/ModalQuestionEdit.vue';
 import TrashButton from '@/components/buttons/TrashButton.vue';
 import PlayButton from '@/components/buttons/PlayButton.vue';
 import UnknownView from './UnknownView.vue';
+import ModalQuestionAdd from '@/components/modals/ModalQuestionAdd.vue';
+import PlusButton from '@/components/buttons/PlusButton.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -53,45 +51,14 @@ async function onDeleteQuiz() {
     router.push("/quizzes")
 }
 
-const NEW_QUESTION = { 
-    id: -1,
-    question: 'new question',
-    options: [
-        'opt 1',
-        'opt 2',
-        'opt 3',
-        'opt 4',
-    ],
-    correct: [1],
-    hint: 'some hint here',
-    explanation: 'some explanation here',
-}
-
-const modalEdit = useTemplateRef('modal-edit')
-
+const modalEdit = useTemplateRef('modal-edit');
+const modalAdd = useTemplateRef('modal-add');
 
 
 function onStartEditQuestion(q_idx: number) {
     let q = quiz?.value?.cards.at(q_idx);
     modalEdit.value?.open(q);
 }
-
-
-// function onStartAddNewQuestion() {
-//     if (!newQuestion.value) {
-//         newQuestion.value = true
-//         activeQuestion.value = structuredClone(NEW_QUESTION)
-//     }
-//     activeQuestionId.value = quiz.value ? quiz.value.cards.length + 1 : -1
-// }
-
-
-// function onAddQuestion() {
-//     if (quiz.value)
-//         quiz.value.cards.push(activeQuestion.value)
-//     activeQuestion.value = structuredClone(NEW_QUESTION)
-//     hasUnsavedChanges.value = true
-// }
 
 
 function onDeleteQuestion(q: Card) {
@@ -107,9 +74,16 @@ function onDeleteQuestion(q: Card) {
 
     activeQuestion.value = undefined;
     quiz.value.cards.splice(cardIdx, 1)
-    // for (const [i, card] of quiz.value.cards.entries()) { card.id = i+1 }  // fix the ids
     hasUnsavedChanges.value = true
     modalEdit?.value?.close();
+}
+
+
+function onAddQuestion(q: Card) {
+    if (quiz.value === undefined) { return; }
+    quiz.value.cards.push(q);
+    hasUnsavedChanges.value = true;
+    modalAdd?.value?.close();
 }
 
 watch(
@@ -157,6 +131,7 @@ async function submitChanges() {
 <template>
     <div class="main-container" v-if="knownQuiz">
         <ModalQuestionEdit ref="modal-edit" @click-delete="onDeleteQuestion"/>
+        <ModalQuestionAdd ref="modal-add" @click-add="onAddQuestion" />
         <div class="left-side">
             <div class="title">
                 <h1>{{ quiz.name || 'Unknown Quiz' }}</h1>
@@ -207,7 +182,7 @@ async function submitChanges() {
             <div class="top-action-bar">
                 <h2>Questions</h2>
                 <div class="edit-quiz-buttons">
-                    <!-- <BasicButton variant="secondary" @click="onStartAddNewQuestion()">Add</BasicButton> -->
+                    <PlusButton variant="secondary" @click="modalAdd?.open()">Add</PlusButton>
                     <BasicButton v-if="hasUnsavedChanges" variant="primary" @click="submitChanges">Submit changes</BasicButton>
                 </div>
             </div>
