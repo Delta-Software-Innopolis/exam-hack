@@ -2,6 +2,7 @@
 <resources>
 	<!-- Common -->
 	<string name="app_name">ExamHacker</string>
+	<string name="not_implemented_text">Feature is not implemented</string>
 
 	<!-- Authentication -->
 	<string name="register_screen_title">Sign up to ExamHacker</string>
