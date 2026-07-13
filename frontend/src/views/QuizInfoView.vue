@@ -89,6 +89,7 @@ async function onDeleteQuiz() {
 
     router.push("/quizzes")
 }
+const modalShare = useTemplateRef('modal-share');
 
 function onStartEditQuestion(q_idx: number) {
     let q = quiz?.value?.cards.at(q_idx);
