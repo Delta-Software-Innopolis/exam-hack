@@ -6,6 +6,6 @@ from datetime import datetime, timezone
 forks = Table(
     "forks",
     Base.metadata,
-    Column("fork_id", Integer, ForeignKey("packs.id"), primary_key=True, index=True),
-    Column("original_id", Integer, ForeignKey("packs.id"), primary_key=True, index=True)
+    Column("fork_id", Integer, ForeignKey("packs.id", ondelete="CASCADE"), primary_key=True, index=True),
+    Column("original_id", Integer, ForeignKey("packs.id"), onupdate="CASCADE", primary_key=True, index=True)
 )

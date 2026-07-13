@@ -107,7 +107,6 @@ async def get_packs(
         ).order_by(*[desc(column) for column in rank_col], desc(PublishedPackModel.rating).nulls_last())
     else:
         stmt = select(PublishedPackModel).order_by(desc(PublishedPackModel.rating).nulls_last())
-    print("FILTERS" + ("-")* 20, filters)       
     stmt = (
         stmt.join(PublishedPackModel.source)
         .where(*filters)

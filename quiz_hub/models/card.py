@@ -15,7 +15,7 @@ class Card(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True, index=True)
     question: Mapped[str] = mapped_column(Text, nullable=False)
-    pack_id: Mapped[int] = mapped_column(ForeignKey("packs.id"), index=True)
+    pack_id: Mapped[int] = mapped_column(ForeignKey("packs.id", ondelete="CASCADE"), index=True)
     hint: Mapped[str] = mapped_column(Text, nullable=False)
     @property
     def correct(self):
