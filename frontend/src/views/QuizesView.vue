@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import type { QuizItem } from "@/types"
-import type { ComputedRef, Ref } from "vue";
-import { ref, onBeforeMount, onUnmounted, computed, onMounted, onBeforeUpdate} from "vue";
+import type { Ref } from "vue";
+import { ref, onMounted, onBeforeUpdate} from "vue";
 import QuizComponent from "@/components/basic/QuizComponent.vue";
 import { useRouter } from "vue-router";
 import { useNewQuizzesStore } from "@/stores/new-quizzes";
-import BasicButton from "@/components/basic/BasicButton.vue";
 import PlusButton from "@/components/buttons/PlusButton.vue";
 
 const router = useRouter();
