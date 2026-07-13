@@ -15,6 +15,8 @@ import PlusButton from '@/components/buttons/PlusButton.vue';
 import ModalWindow from '@/components/basic/ModalWindow.vue';
 import CopySVG from '@/assets/Copy.svg'
 import CopyCheckSVG from '@/assets/CopyCheck.svg'
+import BasicInput from '@/components/basic/BasicInput.vue';
+import { publishQuizToHub } from '@/hub.ts';
 
 const route = useRoute();
 const router = useRouter();
@@ -23,10 +25,16 @@ const quiz = ref<QuizItem>(quizzesStore.getMyQuizInfo(route.params.quizId));
 const knownQuiz = computed(() => quiz.value.id !== -1);
 const quizLink = computed(() => `${window.location.origin}/invite/${quiz.value.share_code}`)
 
-const hasUnsavedChanges = ref(false);
-const deletedCards = ref<number[]>([]);
-const isSaving = ref(false);
 const copied = ref(false);
+const hasUnsavedChanges = ref(false)
+const deletedCards = ref<number[]>([])
+const isSaving = ref(false)
+const publishData = ref({
+    university: '',
+    subject: '',
+    professor: '',
+    course_book: '',
+})
 
 const activeQuestion = ref<Card>();
 
@@ -59,6 +67,7 @@ async function onDeleteQuiz() {
     router.push("/quizzes")
 }
 const modalShare = useTemplateRef('modal-share');
+const modalPublish = useTemplateRef('modal-publish');
 
 async function onDeleteQuiz() {
     if (!quiz.value) return
@@ -167,6 +176,20 @@ async function copyLink() {
     }, 1500)
 }
 
+async function publishQuiz() {
+    const ok = await publishQuizToHub(
+        quiz.value.id,
+        publishData.value.subject,
+        publishData.value.university,
+        publishData.value.professor,
+        publishData.value.course_book,
+    );
+
+    if (!ok) {
+        alert("Couldn't publish quiz")
+        return
+    }
+}
 </script>
 
 <template>
@@ -211,6 +234,9 @@ async function copyLink() {
                         <BasicButton @click="modalShare?.open()">
                             Share
                         </BasicButton>
+                        <BasicButton @click="modalPublish?.open()">
+                            Publish to QuizHub
+                        </BasicButton>
                     </div>
                     <div class="bottom-buttons">
                         <TrashButton data-testid="delete-quiz" v-if="knownQuiz" variant="red" 
@@ -253,7 +279,22 @@ async function copyLink() {
                         </Transition>
                     </button>
                 </div>
+            </div>
+        </ModalWindow>
+        <ModalWindow ref="modal-publish">
+            <div class="publish-modal">
+                <h2>Publish to QuizHub</h2>
 
+                <div class="publish-form">
+                    <BasicInput placeholder="Enter subject" v-model="publishData.subject"></BasicInput>
+                    <BasicInput placeholder="Enter university" v-model="publishData.university"></BasicInput>
+                    <BasicInput placeholder="Enter professor" v-model="publishData.professor"></BasicInput>
+                    <BasicInput placeholder="Enter course book" v-model="publishData.course_book"></BasicInput>
+                </div>
+                
+                <BasicButton @click="publishQuiz">
+                    Publish
+                </BasicButton>
             </div>
         </ModalWindow>
     </div>
@@ -380,7 +421,6 @@ button a {
     align-items: center;
 }
 
-
 .share-modal {
     display: flex;
     flex-direction: column;
@@ -464,5 +504,17 @@ button a {
 .icon-leave-to {
     opacity: 0;
     transform: scale(.5) rotate(30deg);
+}
+
+.publish-modal {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.publish-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
 }
 </style>
