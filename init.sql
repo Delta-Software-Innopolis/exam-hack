@@ -34,7 +34,8 @@ UPDATE alembic_version SET version_num='471509bc311b' WHERE alembic_version.vers
 
 CREATE TABLE packs (
     id SERIAL NOT NULL, 
-    name VARCHAR(50) NOT NULL, 
+    name VARCHAR(50) NOT NULL,
+    description TEXT,
     creation_date TIMESTAMP WITH TIME ZONE NOT NULL, 
     updating_date TIMESTAMP WITH TIME ZONE, 
     share_code VARCHAR(64) NOT NULL, 

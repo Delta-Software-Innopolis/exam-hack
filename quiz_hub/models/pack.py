@@ -17,6 +17,7 @@ class Pack(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True, index=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String(50), nullable=False, index=True)
+    description: Mapped[str | None] = mapped_column(Text, default=None, nullable=True)
     creation_date: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
     updating_date: Mapped[datetime|None] = mapped_column(DateTime(timezone=True), default=None)
     author_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
