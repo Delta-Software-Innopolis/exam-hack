@@ -17,6 +17,11 @@ class Card(Base):
     question: Mapped[str] = mapped_column(Text, nullable=False)
     pack_id: Mapped[int] = mapped_column(ForeignKey("packs.id"), index=True)
     hint: Mapped[str] = mapped_column(Text, nullable=False)
-
+    @property
+    def correct(self):
+        return [option.id for option in self.options_models if option.is_right]
+    @property
+    def options(self):
+        return [option.content for option in self.options_models]
     pack: Mapped["Pack"] = relationship("Pack", uselist=False, back_populates="cards")
-    options: Mapped[list["Card_option"]] = relationship("Card_option", back_populates="card")
+    options_models: Mapped[list["Card_option"]] = relationship("Card_option", back_populates="card")
