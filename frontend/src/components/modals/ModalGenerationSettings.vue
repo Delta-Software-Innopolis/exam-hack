@@ -3,7 +3,7 @@ import { useTemplateRef } from 'vue';
 import ModalWindow from '@/components/basic/ModalWindow.vue';
 import BasicButton from '@/components/basic/BasicButton.vue';
 
-const numberOfQuestions = defineModel<number>('number-of-questions');
+const numberOfQuestions = defineModel<number>('number-of-questions', { required: true });
 
 const modal = useTemplateRef('modal');
 
