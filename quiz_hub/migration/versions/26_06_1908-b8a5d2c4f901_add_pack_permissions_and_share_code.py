@@ -37,8 +37,8 @@ def upgrade() -> None:
             sa.Column('user_id', sa.Integer(), nullable=False),
             sa.Column('pack_id', sa.Integer(), nullable=False),
             sa.Column('permission', sa.Integer(), nullable=False),
-            sa.ForeignKeyConstraint(['pack_id'], ['packs.id']),
-            sa.ForeignKeyConstraint(['user_id'], ['users.id']),
+            sa.ForeignKeyConstraint(['pack_id'], ['packs.id'], ondelete="CASCADE"),
+            sa.ForeignKeyConstraint(['user_id'], ['users.id'], ondelete="CASCADE"),
             sa.PrimaryKeyConstraint('user_id', 'pack_id'),
 )
     index_names = ["ix_pack_permissions_pack_id", "ix_pack_permissions_user_id", "ix_pack_permissions_permission"]
