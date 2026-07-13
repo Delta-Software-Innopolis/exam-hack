@@ -13,6 +13,7 @@ import QuizCreationView from '@/views/QuizCreationView.vue'
 import QuizHubView from '@/views/QuizHubView.vue'
 import QuizHubItemView from '@/views/QuizHubItemView.vue'
 import WorkingOnView from '@/views/WorkingOnView.vue'
+import ProfileView from '@/views/ProfileView.vue'
 
 
 const router = createRouter({
@@ -91,9 +92,9 @@ const router = createRouter({
         meta: { showSidebar: true},
     },
     {
-      path: '/profile',
+      path: '/profile/:username',
       name: 'profile',
-      component: WorkingOnView,
+      component: ProfileView,
       meta: { showSidebar: true}
     },
     {
