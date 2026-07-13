@@ -50,7 +50,10 @@ const emit = defineEmits<{
                 <h2 class="step-title">Use <span class="ai-text">AI</span> to generate questions</h2>
             </div>
             <div class="actions">
-                <BasicFileUpload @changed="onFilesChanged"></BasicFileUpload>
+                <BasicFileUpload @changed="onFilesChanged"
+                    :allowed-extensions="['.pdf']",
+                    :max-file-size="10 * 1024 * 1024"
+                />
                 <div class="buttons-line">
                     <Transition name="skip-button">
                         <BasicButton v-if="showSkipButton" class="skip-btn" variant="secondary" @click="onClickSkip">
