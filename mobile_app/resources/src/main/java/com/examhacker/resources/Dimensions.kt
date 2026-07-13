@@ -19,11 +19,13 @@ class Dimensions {
         val NavigationIconSize = 34.dp
         val NavigationButtonPadding = 8.dp
         val DefaultCardRadius = 16.dp
+        val SnackBarIconSize = 24.dp
         val ScreenTitleFontSize = 32.sp
         val SubtitleFontSize = 28.sp
         val InputLabelFontSize = 16.sp
         val ButtonLabelFontSize = 16.sp
         val QuestionCardFontSize = 16.sp
+        val SnackBarFontSize = 18.sp
 
         // AppNavigationBar
         val AppNavigationPaddingVertical = 8.dp
