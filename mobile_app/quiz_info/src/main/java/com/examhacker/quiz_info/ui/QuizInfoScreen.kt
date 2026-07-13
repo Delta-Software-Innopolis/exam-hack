@@ -23,7 +23,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
@@ -50,7 +49,6 @@ import com.examhacker.common.data.QuizStatistics
 import com.examhacker.common.ui.AppNavigationBar
 import com.examhacker.common.ui.DeleteButton
 import com.examhacker.common.ui.NavigationTab
-import com.examhacker.common.ui.QuizProgressBar
 import com.examhacker.common.ui.SingleBackButtonTopBar
 import com.examhacker.resources.R
 import com.examhacker.quiz_info.component.IQuizInfoComponent
@@ -201,7 +199,7 @@ private fun QuizDescriptionCard(
 ) {
     Card(
         modifier = modifier,
-        shape = RoundedCornerShape(Dimensions.DialogCardRadius),
+        shape = RoundedCornerShape(Dimensions.DefaultCardRadius),
         colors = CardDefaults.cardColors(
             containerColor = ColorPreset.BackgroundDefaultPrimary,
             contentColor = ColorPreset.SecondaryDimm
@@ -296,7 +294,7 @@ private fun QuizStatisticsCard(
 ) {
     Card(
         modifier = modifier,
-        shape = RoundedCornerShape(Dimensions.DialogCardRadius),
+        shape = RoundedCornerShape(Dimensions.DefaultCardRadius),
         colors = CardDefaults.cardColors(
             containerColor = ColorPreset.BackgroundDefaultPrimary
         )
