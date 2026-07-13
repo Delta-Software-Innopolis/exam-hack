@@ -3,8 +3,9 @@ import { useRoute } from 'vue-router';
 import { useNewQuizzesStore } from '@/stores/new-quizzes';
 import { onBeforeMount, onMounted, onUnmounted, type ComputedRef } from 'vue';
 import BasicButton from '@/components/basic/BasicButton.vue';
+import ModalWindow from '@/components/basic/ModalWindow.vue';
 import type { Card } from '@/types'
-import { ref, computed } from 'vue';
+import { ref, computed, useTemplateRef } from 'vue';
 import router from '@/router';
 
 import LeftArrowSVG from '@/assets/LeftArrow.svg'
@@ -20,6 +21,7 @@ const questionNum = ref(0)
 const card = computed(() => quiz.value ? quiz.value.cards[questionNum.value] : undefined) as ComputedRef<Card>
 const lastClicked = ref<number|null>(null)
 const isHintClicked = ref(false)
+const modalHint = useTemplateRef('modalHint')
 
 console.log("CARD:", card)
 
@@ -29,12 +31,12 @@ const progressWidth = computed(()=> {
     return `${current/total * 100}%` 
 })
 
-const isDisabled = ref(false)
+const questionAnswered = ref(false)
 const styles = ref<string[]>(new Array(4).fill('default'))
-
 
 function nextCard(){
     lastClicked.value = null
+    questionAnswered.value = false
     isHintClicked.value = false
     if (questionNum.value < (quiz.value ? quiz.value.cards.length : 1) - 1) {
         questionNum.value++;
@@ -47,27 +49,22 @@ function nextCard(){
 
 function prevCard(){
     lastClicked.value = null
+    questionAnswered.value = false
     questionNum.value--;
     styles.value = new Array(4).fill('default')
 }
 
-function checkAnswer(index:number) {
+function checkAnswer(index:number){
     lastClicked.value = index
+    questionAnswered.value = true
     const doesInclude = card?.value.correct.includes(index)
-    styles.value[index] = doesInclude ? 'green' : 'red'
-    if (doesInclude) {
-        styles.value[index] = "green"
-        isDisabled.value = true
-        setTimeout(()=> {nextCard(); isDisabled.value=false}, 1000)
-    }
-    else {
-        styles.value[index] = "red"
-        for (let ind of card.value.correct) {
-
+    for (let ind of card?.value.options?.keys()) {
+        if (card.value.correct.includes(ind)) {
             styles.value[ind] = "green"
+        } else {
+            styles.value[ind] = "red"
         }
     }
-
 }
 </script>
 
@@ -75,31 +72,36 @@ function checkAnswer(index:number) {
 <template>
     <div class="container" v-if="knownQuiz">
         <div class="main-container">
-            <div class="progress-bar">
-                <div class="card-num">{{ questionNum + 1}} / {{ quiz.cards.length }}</div>
-                <div class="progress">
-                    <div class="current-progress":style="{ width: progressWidth}"></div>
+            <div>
+                <div class="progress-bar">
+                    <div class="card-num">{{ questionNum + 1}} / {{ quiz.cards.length }}</div>
+                    <div class="progress">
+                        <div class="current-progress":style="{ width: progressWidth}"></div>
+                    </div>
                 </div>
-            </div>
-            <div class="question">
-                <div class="title">{{ card?.question }}</div>
-                <div class="option-container">
-                <BasicButton 
-                class="option"
-                v-for="(option, index) in card?.options"
-                        :key="index"
-                        :variant="styles[index]"
-                        @click="checkAnswer(index)"
-                        :class="{'clicked': lastClicked === index}"
-                        >Option {{`${index}: ${option} `}}</BasicButton>
+                <div class="question">
+                    <div class="title">{{ card?.question }}</div>
+                    <div class="option-container">
+                        <BasicButton 
+                        class="option"
+                        v-for="(option, index) in card?.options"
+                                :key="index"
+                                :variant="styles[index]"
+                                @click="checkAnswer(index)"
+                        >
+                            Option {{`${index}: ${option} `}}
+                        </BasicButton>
+                    </div>
                 </div>
             </div>
             <div class="arrow-container">
-                <button  v-if="questionNum != 0" @click="prevCard" class="arrow left-arrow" :disabled="isDisabled"><LeftArrowSVG/></button>
-                <BasicButton title="Hint from AI" @click="isHintClicked = !isHintClicked" variant="ai" class="hint-button"><HintSVG/></BasicButton>
-                <button v-if="questionNum != quiz.cards.length-1" @click="nextCard" class="arrow right-arrow" :disabled="isDisabled"><RightArrowSVG/></button>
+                <button  v-if="questionNum != 0" @click="prevCard" class="arrow left-arrow"><LeftArrowSVG/></button>
+                <BasicButton title="Hint from AI" @click="modalHint?.open()" variant="ai" class="hint-button"><HintSVG/></BasicButton>
+                <button v-if="questionAnswered" @click="nextCard" class="arrow right-arrow"><RightArrowSVG/></button>
             </div>
-            <div class="hint-wrapper" v-if="isHintClicked"><div>{{ card?.hint }}</div></div>
+            <ModalWindow ref="modalHint">
+                {{ card?.hint }}
+            </ModalWindow>
         </div>
     </div>
     <UnknownView v-else />
@@ -110,10 +112,12 @@ function checkAnswer(index:number) {
     display: flex;
     justify-content: center;
 }
+
 .main-container {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: space-between;
     height: 100%;
     width: 482px;
     box-sizing: border-box;
