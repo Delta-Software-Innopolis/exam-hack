@@ -18,11 +18,17 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarVisuals
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -32,11 +38,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.examhacker.common.ui.AppNavigationBar
 import com.examhacker.common.ui.NavigationTab
+import com.examhacker.common.ui.NotImplementedSnackBarUI
 import com.examhacker.common.ui.ScreenTitle
 import com.examhacker.resources.ColorPreset
 import com.examhacker.resources.Dimensions
 import com.examhacker.resources.R
 import com.examhacker.settings.component.ISettingsComponent
+import kotlinx.coroutines.launch
 
 @Composable
 fun SettingsScreen(component: ISettingsComponent) {
@@ -63,7 +71,23 @@ private fun SettingsUI(
     onQuizListClick: () -> Unit,
     onQuizHubClick: () -> Unit
 ) {
+
+    val snackBarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+
     Scaffold(
+        snackbarHost = {
+            SnackbarHost(
+                hostState = snackBarHostState,
+                snackbar = {
+                    NotImplementedSnackBarUI(
+                        Modifier
+                            .padding(Dimensions.ScreenPadding)
+                            .fillMaxWidth()
+                    )
+                }
+            )
+        },
         topBar = {
             ScreenTitle(
                 text = stringResource(R.string.settings_screen_title),
@@ -101,8 +125,22 @@ private fun SettingsUI(
                 ThemeLanguageSettings(
                     isEnglishLanguage = model.isEnglishLanguage,
                     isLightTheme = model.isLightTheme,
-                    onLanguageToggle = onLanguageToggle,
-                    onThemeToggle = onThemeToggle,
+                    onLanguageToggle = {
+                        scope.launch {
+                            snackBarHostState.showSnackbar(
+                                message = "",
+                                duration = SnackbarDuration.Short
+                            )
+                        }
+                    },
+                    onThemeToggle = {
+                        scope.launch {
+                            snackBarHostState.showSnackbar(
+                                message = "",
+                                duration = SnackbarDuration.Short
+                            )
+                        }
+                    },
                     modifier = Modifier.fillMaxWidth()
                 )
             }
