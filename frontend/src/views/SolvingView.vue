@@ -5,7 +5,7 @@ import { onBeforeMount, onMounted, onUnmounted, type ComputedRef } from 'vue';
 import BasicButton from '@/components/basic/BasicButton.vue';
 import ModalWindow from '@/components/basic/ModalWindow.vue';
 import type { Card } from '@/types'
-import { ref, computed, useTemplateRef } from 'vue';
+import { ref, computed, useTemplateRef, Transition } from 'vue';
 import router from '@/router';
 
 import LeftArrowSVG from '@/assets/LeftArrow.svg'
@@ -72,32 +72,37 @@ function checkAnswer(index:number){
 <template>
     <div class="container" v-if="knownQuiz">
         <div class="main-container">
-            <div>
+            <div class="content">
                 <div class="progress-bar">
                     <div class="card-num">{{ questionNum + 1}} / {{ quiz.cards.length }}</div>
                     <div class="progress">
                         <div class="current-progress":style="{ width: progressWidth}"></div>
                     </div>
                 </div>
-                <div class="question">
-                    <div class="title">{{ card?.question }}</div>
-                    <div class="option-container">
-                        <BasicButton 
-                        class="option"
-                        v-for="(option, index) in card?.options"
-                                :key="index"
-                                :variant="styles[index]"
-                                @click="checkAnswer(index)"
-                        >
-                            Option {{`${index}: ${option} `}}
-                        </BasicButton>
+                <Transition mode="out-in">
+                    <div class="options" :key="questionNum">
+                        <div class="question">
+                            <div class="title">{{ card?.question }}</div>
+                            <div class="option-container">
+                                <BasicButton 
+                                class="option"
+                                v-for="(option, index) in card?.options"
+                                    :key="index"
+                                    :variant="styles[index]"
+                                    :class="{ answered: questionAnswered }"
+                                    @click="checkAnswer(index)"
+                                >
+                                    Option {{`${index}: ${option} `}}
+                                </BasicButton>
+                            </div>
+                        </div>
+                        <div class="arrow-container">
+                            <button  v-if="questionNum != 0" @click="prevCard" class="arrow left-arrow"><LeftArrowSVG/></button>
+                            <BasicButton title="Hint from AI" @click="modalHint?.open()" variant="ai" class="hint-button"><HintSVG/></BasicButton>
+                            <button v-if="questionAnswered" @click="nextCard" class="arrow right-arrow"><RightArrowSVG/></button>
+                        </div>
                     </div>
-                </div>
-            </div>
-            <div class="arrow-container">
-                <button  v-if="questionNum != 0" @click="prevCard" class="arrow left-arrow"><LeftArrowSVG/></button>
-                <BasicButton title="Hint from AI" @click="modalHint?.open()" variant="ai" class="hint-button"><HintSVG/></BasicButton>
-                <button v-if="questionAnswered" @click="nextCard" class="arrow right-arrow"><RightArrowSVG/></button>
+                </Transition>
             </div>
             <ModalWindow ref="modalHint">
                 {{ card?.hint }}
@@ -119,11 +124,15 @@ function checkAnswer(index:number){
     align-items: center;
     justify-content: space-between;
     height: 100%;
-    width: 482px;
+    width: 503px;
     box-sizing: border-box;
-    padding: 32px 16px;
+    padding: 64px 16px;
     gap: 16px;
     align-self: center;
+}
+
+.progress-bar-wrapper {
+    padding: 16px;
 }
 
 .progress-bar {
@@ -147,10 +156,26 @@ function checkAnswer(index:number){
 }
 
 .current-progress {
-    background-color: #AFF4C6;
+    background-color: #00B093;
     height: 100%;
     border-radius: 8px;
+    transition: width 350ms ease-out;
+}
 
+.content {
+    width: 100%;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    padding: 16px;
+}
+
+.options {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
 }
 
 .question {
@@ -158,7 +183,8 @@ function checkAnswer(index:number){
     flex-direction: column;
     gap: 32px;
     width: 100%;
-
+    flex: 1;
+    min-height: 0;
 }
 
 .title {
@@ -168,12 +194,19 @@ function checkAnswer(index:number){
     width: 100%;
     padding: 16px;
     margin: 0;
+    flex-shrink: 0;
 }
 
 .option-container {
+    flex: 1;
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
     gap: 16px;
+    min-height: 0px;
+    scrollbar-gutter: stable;
+    padding-left: 16px;
+    padding-right: 16px;
 }
 
 
@@ -194,11 +227,18 @@ function checkAnswer(index:number){
     background-color: var(--background-light);
 }
 
+.answered {
+    pointer-events: none;
+}
+
 .arrow-container {
     width: 100%;
     position: relative;
     display: flex;
     justify-content: space-evenly;
+    flex-shrink: 0;
+    padding: 16px;
+    padding-top: 64px;
 }
 
 .arrow {
@@ -218,12 +258,12 @@ function checkAnswer(index:number){
 }
 
 .left-arrow {
-    left: 0; 
+    left: 16px; 
     position: absolute;
 }
 
 .right-arrow {
-    right: 0;
+    right: 16px;
     position: absolute;
 }
 
@@ -253,5 +293,21 @@ function checkAnswer(index:number){
     padding: 0;
 }
 
-</style>
+.hint-button:hover {
+}
 
+.v-enter-active,
+.v-leave-active {
+    transition: all .25s ease;
+}
+
+.v-enter-from {
+    opacity: 0;
+    transform: translateX(30px);
+}
+
+.v-leave-to {
+    opacity: 0;
+    transform: translateX(-30px);
+}
+</style>
