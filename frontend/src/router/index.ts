@@ -13,6 +13,7 @@ import QuizCreationView from '@/views/QuizCreationView.vue'
 import QuizHubView from '@/views/QuizHubView.vue'
 import QuizHubItemView from '@/views/QuizHubItemView.vue'
 import WorkingOnView from '@/views/WorkingOnView.vue'
+import QuizInviteView from '@/views/QuizInviteView.vue'
 
 
 const router = createRouter({
@@ -82,25 +83,31 @@ const router = createRouter({
       path: '/quizhub',
       name: 'quizhub',
       component: QuizHubView,
-      meta: { showSidebar: true}
+      meta: { showSidebar: true }
     },
     {
-        path: '/quizhub/:quizId',
-        name: 'quizhubItem',
-        component: QuizHubItemView,
-        meta: { showSidebar: true},
+      path: '/quizhub/:quizId',
+      name: 'quizhubItem',
+      component: QuizHubItemView,
+      meta: { showSidebar: true }
     },
     {
       path: '/profile',
       name: 'profile',
       component: WorkingOnView,
-      meta: { showSidebar: true}
+      meta: { showSidebar: true }
     },
     {
       path: '/settings',
       name: 'settings',
       component: WorkingOnView,
-      meta: { showSidebar: true}
+      meta: { showSidebar: true }
+    },
+    {
+      path: '/invite/:code',
+      name: 'quizInvite',
+      component: QuizInviteView,
+      meta: { showSidebar: true }
     },
     {
       path: '/:pathMatch(.*)*',
