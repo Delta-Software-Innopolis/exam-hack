@@ -12,16 +12,21 @@ import PlayButton from '@/components/buttons/PlayButton.vue';
 import UnknownView from './UnknownView.vue';
 import ModalQuestionAdd from '@/components/modals/ModalQuestionAdd.vue';
 import PlusButton from '@/components/buttons/PlusButton.vue';
+import ModalWindow from '@/components/basic/ModalWindow.vue';
+import CopySVG from '@/assets/Copy.svg'
+import CopyCheckSVG from '@/assets/CopyCheck.svg'
 
 const route = useRoute();
 const router = useRouter();
 const quizzesStore = useNewQuizzesStore();
 const quiz = ref<QuizItem>(quizzesStore.getMyQuizInfo(route.params.quizId));
-const knownQuiz = computed(()=>quiz.value.id !== -1);
+const knownQuiz = computed(() => quiz.value.id !== -1);
+const quizLink = computed(() => `${window.location.origin}/invite/${quiz.value.share_code}`)
 
-const hasUnsavedChanges = ref(false)
-const deletedCards = ref<number[]>([])
-const isSaving = ref(false)
+const hasUnsavedChanges = ref(false);
+const deletedCards = ref<number[]>([]);
+const isSaving = ref(false);
+const copied = ref(false);
 
 const activeQuestion = ref<Card>();
 
@@ -32,7 +37,7 @@ function notImplemented() {
 
 const modalEdit = useTemplateRef('modal-edit');
 const modalAdd = useTemplateRef('modal-add');
-
+const modalShare = useTemplateRef('modal-share');
 
 function onStartEditQuestion(q_idx: number) {
     let q = quiz?.value?.cards.at(q_idx);
@@ -105,6 +110,23 @@ async function submitChanges() {
     await quizzesStore.fetchMyQuizzes()
     isSaving.value = false
 }
+
+let copyTimeout: number | undefined
+
+async function copyLink() {
+    await navigator.clipboard.writeText(quizLink.value)
+
+    copied.value = true
+
+    if (copyTimeout) {
+        clearTimeout(copyTimeout)
+    }
+
+    copyTimeout = setTimeout(() => {
+        copied.value = false
+    }, 1500)
+}
+
 </script>
 
 <template>
@@ -146,6 +168,9 @@ async function submitChanges() {
                         >
                             Attempt
                         </PlayButton>
+                        <BasicButton @click="modalShare?.open()">
+                            Share
+                        </BasicButton>
                     </div>
                     <div class="bottom-buttons">
                         <TrashButton v-if="knownQuiz" variant="red" 
@@ -169,6 +194,28 @@ async function submitChanges() {
                 @click-question-item="onStartEditQuestion"
             />
         </div>
+        <ModalWindow ref="modal-share">
+            <div class="share-modal">
+                <h2 class="share-title">Share quiz</h2>
+
+                <p class="share-description">
+                    Anyone with this link can access the quiz:
+                </p>
+
+                <div class="link-box">
+                    <span class="link">
+                        {{ quizLink }}
+                    </span>
+                    <button class="copy-button" @click="copyLink">
+                        <Transition name="icon" mode="out-in">
+                        <CopyCheckSVG v-if="copied" :key="'check'" />
+                        <CopySVG v-else :key="'copy'" />
+                        </Transition>
+                    </button>
+                </div>
+
+            </div>
+        </ModalWindow>
     </div>
     <UnknownView v-else />
 </template>
@@ -293,4 +340,89 @@ button a {
     align-items: center;
 }
 
+
+.share-modal {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 500px;
+}
+
+.share-title {
+    padding: 0;
+}
+
+.share-description {
+    color: var(--secondary-dimm);
+    padding: 0;
+}
+
+.link-box {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    padding: 12px 16px;
+
+    background: var(--background-light);
+    border-radius: 16px;
+
+    border: 1px solid var(--secondary);
+}
+
+.link {
+    flex: 1;
+
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+
+    font-family: monospace;
+    font-size: 15px;
+}
+
+.copy-button {
+    width: 36px;
+    height: 36px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    border: none;
+    border-radius: 12px;
+
+    background: transparent;
+    cursor: pointer;
+
+    transition: background .2s, transform .1s;
+}
+
+.copy-button:hover {
+    background: rgba(0, 0, 0, 0.06);
+}
+
+.copy-button:active {
+    transform: scale(.9);
+}
+
+.copy-button svg {
+    width: 20px;
+    height: 20px;
+}
+
+.icon-enter-active,
+.icon-leave-active {
+    transition: all .15s ease;
+}
+
+.icon-enter-from {
+    opacity: 0;
+    transform: scale(.5) rotate(-30deg);
+}
+
+.icon-leave-to {
+    opacity: 0;
+    transform: scale(.5) rotate(30deg);
+}
 </style>
