@@ -56,6 +56,9 @@ func UpdatePack(c *gin.Context) {
 	}
 
 	pack.Name = name
+	if req.Description != nil {
+		pack.Description = req.Description
+	}
 	pack.UpdatingDate = &updatingDate
 
 	if err := db.DB.Save(&pack).Error; err != nil {
@@ -66,6 +69,7 @@ func UpdatePack(c *gin.Context) {
 	c.JSON(http.StatusOK, structs.PackResponse{
 		ID:           pack.ID,
 		Name:         pack.Name,
+		Description:  pack.Description,
 		CreationDate: pack.CreationDate,
 		UpdatingDate: pack.UpdatingDate,
 		ShareCode:    pack.ShareCode,
