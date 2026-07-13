@@ -7,6 +7,9 @@ import UserSVG from '@/assets/User.svg'
 import SettingsSVG from '@/assets/Settings.svg'
 import CircleSVG from '@/assets/Circle.svg'
 import ExamHackerHorizontalSVG from '@/assets/ExamHackerHorizontal.svg';
+import { useUserStore } from '@/stores/user'
+
+const userStore = useUserStore()
 
 const route = useRoute()
 
@@ -27,7 +30,7 @@ const route = useRoute()
                 <MagnifyingGlassSVG />
                 <h1>QuizHub</h1>
             </RouterLink>
-            <RouterLink to="/profile" class="nav-button" :class="{active: route.name == 'profile'}">
+            <RouterLink :to="`/profile/${userStore.username}`" class="nav-button" :class="{active: route.name == 'profile'}">
                 <UserSVG />
                 <h1>Profile</h1>
             </RouterLink>
