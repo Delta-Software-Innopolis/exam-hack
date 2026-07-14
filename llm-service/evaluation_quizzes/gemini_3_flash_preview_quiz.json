@@ -1,0 +1,41 @@
+[
+  {
+    "question": "According to the text, what is the primary requirement for a table to transition from 1NF to 2NF?",
+    "options": [
+      "It must eliminate all transitive dependencies.",
+      "It must have no partial dependencies, meaning non-prime attributes depend on the entire primary key.",
+      "It must ensure that every cell contains a single atomic value.",
+      "It must be converted into a single-column primary key format."
+    ],
+    "correct_indices": [
+      1
+    ],
+    "hint": "2NF specifically addresses dependencies on parts of a composite primary key."
+  },
+  {
+    "question": "Which of the following describes a 'transitive dependency' as defined in the context of 3NF?",
+    "options": [
+      "A non-prime attribute depending on another non-prime attribute.",
+      "A non-prime attribute depending on only part of a composite key.",
+      "A column containing multiple values or lists.",
+      "A table having multiple primary keys for the same row."
+    ],
+    "correct_indices": [
+      0
+    ],
+    "hint": "3NF requires that non-prime attributes depend directly on the primary key, not on other non-key columns."
+  },
+  {
+    "question": "What are the mentioned drawbacks of database normalization?",
+    "options": [
+      "Increased data redundancy and higher storage costs.",
+      "Frequent data anomalies and difficulty in maintaining integrity.",
+      "Performance overhead due to table joins and increased schema complexity.",
+      "The inability to use primary keys and restricted data types."
+    ],
+    "correct_indices": [
+      2
+    ],
+    "hint": "Consider how splitting data into many tables affects query speed and developer understanding."
+  }
+]

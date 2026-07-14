@@ -1,0 +1,41 @@
+[
+  {
+    "question": "Who is credited with first proposing database normalization and inventing the relational model?",
+    "options": [
+      "Edgar F. Codd",
+      "Tim Berners-Lee",
+      "Donald Chamberlin",
+      "Raymond Boyce"
+    ],
+    "correct_indices": [
+      0
+    ],
+    "hint": "His initials are E.F.C. and the phrase 'so help me Codd' appears in the document."
+  },
+  {
+    "question": "According to the document, what is a partial dependency in the context of Second Normal Form (2NF)?",
+    "options": [
+      "A non-key column depends on the entire primary key",
+      "A non-key column depends on only part of a composite primary key",
+      "A non-prime attribute depends on another non-prime attribute",
+      "A column contains multiple values in a single cell"
+    ],
+    "correct_indices": [
+      1
+    ],
+    "hint": "It specifically relates to composite primary keys, not single-column ones."
+  },
+  {
+    "question": "Which of the following is a drawback of database normalization mentioned in the document?",
+    "options": [
+      "It eliminates data redundancy completely",
+      "It prevents the use of composite primary keys",
+      "It can lead to performance overhead due to joining multiple tables",
+      "It requires all tables to be in Third Normal Form"
+    ],
+    "correct_indices": [
+      2
+    ],
+    "hint": "Think about what happens when you need to retrieve data from a highly normalized schema."
+  }
+]

@@ -1,41 +1,41 @@
 [
   {
-    "question": "What is the main goal of database normalization?",
+    "question": "What is the primary purpose of database normalization?",
     "options": [
-      "Increase data redundancy and improve query speed",
-      "Eliminate redundant data and ensure data dependencies make sense",
-      "Create multiple copies of data for backup purposes",
-      "Simplify table structures by allowing multiple values in a cell"
+      "To increase data redundancy",
+      "To reduce redundancy and improve data integrity",
+      "To make queries faster",
+      "To simplify the database schema"
     ],
     "correct_indices": [
       1
     ],
-    "hint": "Think about the primary purpose of normalization as described in the first paragraph."
+    "hint": "Think about the main goals mentioned at the start of the text."
   },
   {
     "question": "Which condition must a table satisfy to be in Second Normal Form (2NF)?",
     "options": [
+      "It must have a composite primary key",
       "It must have no transitive dependencies",
       "It must be in 1NF and have no partial dependencies",
-      "It must have a composite primary key",
-      "It must have all non-prime attributes depend on other non-prime attributes"
-    ],
-    "correct_indices": [
-      1
-    ],
-    "hint": "Review the requirements for 2NF, especially the relationship with 1NF and partial dependencies."
-  },
-  {
-    "question": "What is a potential drawback of database normalization?",
-    "options": [
-      "It increases data redundancy",
-      "It causes data anomalies during insert, update, and delete operations",
-      "It can lead to performance overhead due to multiple table joins",
-      "It makes the database schema simpler and easier to understand"
+      "It must have a single-column primary key"
     ],
     "correct_indices": [
       2
     ],
-    "hint": "Consider the trade-offs mentioned in the 'Drawbacks of Normalization' section."
+    "hint": "2NF builds on 1NF and addresses partial dependencies."
+  },
+  {
+    "question": "What is a drawback of normalization mentioned in the text?",
+    "options": [
+      "It increases data redundancy",
+      "It causes data anomalies",
+      "It can lead to performance overhead due to joins",
+      "It makes the database schema simpler"
+    ],
+    "correct_indices": [
+      2
+    ],
+    "hint": "Look at the 'Drawbacks of Normalization' section."
   }
 ]

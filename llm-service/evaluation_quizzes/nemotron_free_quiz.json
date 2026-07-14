@@ -1,0 +1,41 @@
+[
+  {
+    "question": "Which of the following is a requirement for a table to be in First Normal Form (1NF)?",
+    "options": [
+      "Each table cell must contain a single atomic value.",
+      "The table must have a composite primary key.",
+      "Non-prime attributes must depend on the whole primary key.",
+      "There must be no transitive dependencies."
+    ],
+    "correct_indices": [
+      0
+    ],
+    "hint": "Think about atomic values and primary keys."
+  },
+  {
+    "question": "What condition must be met for a table to be in Second Normal Form (2NF)?",
+    "options": [
+      "The table must be in 1NF and have no partial dependencies.",
+      "The table must have a single-column primary key.",
+      "All non-prime attributes must depend on other non-prime attributes.",
+      "The table must have no transitive dependencies."
+    ],
+    "correct_indices": [
+      0
+    ],
+    "hint": "2NF builds on 1NF and addresses partial dependencies."
+  },
+  {
+    "question": "According to the text, what is a transitive dependency in the context of Third Normal Form (3NF)?",
+    "options": [
+      "A non-prime attribute depends on another non-prime attribute.",
+      "A non-prime attribute depends on only part of a composite primary key.",
+      "The primary key consists of multiple columns.",
+      "Data is stored in multiple tables."
+    ],
+    "correct_indices": [
+      0
+    ],
+    "hint": "3NF eliminates transitive dependencies where non-key attributes depend on other non-key attributes."
+  }
+]
