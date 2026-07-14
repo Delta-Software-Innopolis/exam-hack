@@ -14,6 +14,7 @@ import QuizHubView from '@/views/QuizHubView.vue'
 import QuizHubItemView from '@/views/QuizHubItemView.vue'
 import WorkingOnView from '@/views/WorkingOnView.vue'
 import QuizInviteView from '@/views/QuizInviteView.vue'
+import ProfileView from '@/views/ProfileView.vue'
 
 
 const router = createRouter({
@@ -29,7 +30,7 @@ const router = createRouter({
       path: '/welcome',
       name: 'welcome',
       component: WelcomeView,
-      meta: { showSidebar: false }
+      meta: { showSidebar: false}
     },
     {
       path: '/auth/signup',
@@ -53,31 +54,31 @@ const router = createRouter({
       path: "/quizzes/:quizId",
       name: "quiz",
       component: QuizInfoView,
-      meta: { showSidebar: true }
+      meta: { showSidebar: true, withAnimation: true  }
     },
     {
       path: "/quizzes/:quizId/solving",
       name: "solving",
       component: SolvingView,
-      meta: { showSidebar: true }
+      meta: { showSidebar: true, withAnimation: true  }
     },
     {
       path: "/quizzes",
       name: "quizzes",
       component: QuizesView,
-      meta: { showSidebar: true }
+      meta: { showSidebar: true, withAnimation: true  }
     },
     {
       path: '/quizzes/new',
       name: 'quizzes-new',
       component: QuizCreationView,
-      meta: { showSidebar: true }
+      meta: { showSidebar: true, withAnimation: true  }
     },
     {
       path: '/showcase',
       name: 'showcase',
       component: ShowcaseView,
-      meta: { showSidebar: true }
+      meta: { showSidebar: true, withAnimation: true  }
     },
     {
       path: '/quizhub',
@@ -89,13 +90,19 @@ const router = createRouter({
       path: '/quizhub/:quizId',
       name: 'quizhubItem',
       component: QuizHubItemView,
-      meta: { showSidebar: true }
+      meta: { showSidebar: true, withAnimation: true }
     },
     {
-      path: '/profile',
+        path: '/quizhub/:quizId',
+        name: 'quizhubItem',
+        component: QuizHubItemView,
+        meta: { showSidebar: true, withAnimation: true },
+    },
+    {
+      path: '/profile/:username',
       name: 'profile',
-      component: WorkingOnView,
-      meta: { showSidebar: true }
+      component: ProfileView,
+      meta: { showSidebar: true, withAnimation: true }
     },
     {
       path: '/settings',
@@ -107,19 +114,19 @@ const router = createRouter({
       path: '/invite/:code',
       name: 'quizInvite',
       component: QuizInviteView,
-      meta: { showSidebar: true }
+      meta: { showSidebar: true, withAnimation: true }
     },
     {
       path: '/:pathMatch(.*)*',
       name: 'unknown',
       component: UnknownView,
-      meta: { showSidebar: true }
+      meta: { showSidebar: true, withAnimation: true }
     },
     {
       path: '/void',
       name: 'void',
       component: UnknownView,
-      meta: { showSidebar: true }
+      meta: { showSidebar: true, withAnimation: true }
     }
   ],
 })
