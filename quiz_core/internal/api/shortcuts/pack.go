@@ -66,10 +66,10 @@ func CurrentUserResponse(c *gin.Context, userID uint) structs.UserResponse {
 	}
 }
 
-func CreatePackWithOwnerPermission(tx *gorm.DB, name string, authorID uint) (models.Pack, error) {
+func CreatePackWithOwnerPermission(tx *gorm.DB, name string, description *string, authorID uint) (models.Pack, error) {
 	// Needed for tests
 	if tx.Dialector.Name() != "postgres" {
-		return createPackWithOwnerPermissionPortable(tx, name, authorID)
+		return createPackWithOwnerPermissionPortable(tx, name, description, authorID)
 	}
 
 	var packID uint
@@ -79,6 +79,7 @@ func CreatePackWithOwnerPermission(tx *gorm.DB, name string, authorID uint) (mod
 	pack := models.Pack{
 		ID:           packID,
 		Name:         name,
+		Description:  description,
 		CreationDate: time.Now(),
 		ShareCode:    packShareCode(packID),
 		AuthorID:     authorID,
@@ -102,9 +103,10 @@ func CreatePackWithOwnerPermission(tx *gorm.DB, name string, authorID uint) (mod
 }
 
 // Needed for tests
-func createPackWithOwnerPermissionPortable(tx *gorm.DB, name string, authorID uint) (models.Pack, error) {
+func createPackWithOwnerPermissionPortable(tx *gorm.DB, name string, description *string, authorID uint) (models.Pack, error) {
 	pack := models.Pack{
 		Name:         name,
+		Description:  description,
 		CreationDate: time.Now(),
 		ShareCode:    "pending",
 		AuthorID:     authorID,
@@ -136,6 +138,7 @@ func PackWithCardsResponse(pack models.Pack) structs.PackWithCardsResponse {
 	return structs.PackWithCardsResponse{
 		ID:           pack.ID,
 		Name:         pack.Name,
+		Description:  pack.Description,
 		CreationDate: pack.CreationDate,
 		UpdatingDate: pack.UpdatingDate,
 		ShareCode:    pack.ShareCode,

@@ -42,6 +42,7 @@ async function __createPack(
             method: 'POST',
             body: JSON.stringify({
                 name: title,
+                description: description,
                 cards: cards
             }),
         })

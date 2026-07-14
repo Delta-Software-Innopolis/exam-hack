@@ -41,7 +41,7 @@ func CreatePack(c *gin.Context) {
 	var createdCards []models.Card
 
 	if err := db.DB.Transaction(func(tx *gorm.DB) error {
-		createdPack, err := sc.CreatePackWithOwnerPermission(tx, name, authorID)
+		createdPack, err := sc.CreatePackWithOwnerPermission(tx, name, req.Description, authorID)
 		if err != nil {
 			return err
 		}
@@ -64,6 +64,7 @@ func CreatePack(c *gin.Context) {
 	c.JSON(http.StatusCreated, structs.PackWithCardsResponse{
 		ID:           pack.ID,
 		Name:         pack.Name,
+		Description:  pack.Description,
 		CreationDate: pack.CreationDate,
 		ShareCode:    pack.ShareCode,
 		Author:       sc.CurrentUserResponse(c, authorID),
