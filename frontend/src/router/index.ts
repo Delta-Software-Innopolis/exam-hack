@@ -14,6 +14,7 @@ import QuizHubView from '@/views/QuizHubView.vue'
 import QuizHubItemView from '@/views/QuizHubItemView.vue'
 import WorkingOnView from '@/views/WorkingOnView.vue'
 import ProfileView from '@/views/ProfileView.vue'
+import QuizInviteView from '@/views/QuizInviteView.vue'
 
 
 const router = createRouter({
@@ -83,6 +84,15 @@ const router = createRouter({
       path: '/quizhub',
       name: 'quizhub',
       component: QuizHubView,
+<<<<<<< HEAD
+=======
+      meta: { showSidebar: true }
+    },
+    {
+      path: '/quizhub/:quizId',
+      name: 'quizhubItem',
+      component: QuizHubItemView,
+>>>>>>> feat/181-share-quiz-by-link
       meta: { showSidebar: true, withAnimation: true }
     },
     {
@@ -92,6 +102,15 @@ const router = createRouter({
         meta: { showSidebar: true, withAnimation: true },
     },
     {
+<<<<<<< HEAD
+=======
+      path: '/quizhub/:quizId',
+      name: 'quizhubItem',
+      component: QuizHubItemView,
+      meta: { showSidebar: true }
+    },
+    {
+>>>>>>> feat/181-share-quiz-by-link
       path: '/profile/:username',
       name: 'profile',
       component: ProfileView,
@@ -102,6 +121,18 @@ const router = createRouter({
       name: 'settings',
       component: WorkingOnView,
       meta: { showSidebar: true, withAnimation: true }
+    },
+    {
+      path: '/invite/:code',
+      name: 'quizInvite',
+      component: QuizInviteView,
+      meta: { showSidebar: true, withAnimation: true }
+    },
+    {
+      path: '/invite/:code',
+      name: 'quizInvite',
+      component: QuizInviteView,
+      meta: { showSidebar: true }
     },
     {
       path: '/:pathMatch(.*)*',
