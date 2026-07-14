@@ -44,6 +44,9 @@ fun QuizEditScreen(component: IQuizEditComponent) {
         slot = slot,
         onEditQuestionClick = component::onEditQuestionClick,
         onAddQuestion = component::onAddQuestionClick,
+        onQuizHubClick = component::goToQuizHub,
+        onProfileClick = component::goToProfile,
+        onSettingsClick = component::goToSettings,
         onCloseClick = component::onCloseClick
     )
 }
@@ -54,6 +57,9 @@ private fun QuizEditUI(
     slot: ChildSlot<*, IQuizEditComponent.Child>?,
     onEditQuestionClick: (Int, Question) -> Unit,
     onAddQuestion: () -> Unit,
+    onQuizHubClick: () -> Unit,
+    onProfileClick: () -> Unit,
+    onSettingsClick: () -> Unit,
     onCloseClick: () -> Unit
 ) {
     Scaffold(
@@ -69,9 +75,9 @@ private fun QuizEditUI(
             AppNavigationBar(
                 selectedTab = NavigationTab.QUIZ_LIST,
                 onQuizListClick = {},
-                onQuizHubClick = {},
-                onProfileClick = {},
-                onSettingsClick = {},
+                onQuizHubClick = onQuizHubClick,
+                onProfileClick = onProfileClick,
+                onSettingsClick = onSettingsClick,
                 modifier = Modifier
                     .fillMaxWidth()
                     .navigationBarsPadding()
@@ -83,6 +89,7 @@ private fun QuizEditUI(
         modifier = Modifier.fillMaxSize(),
         containerColor = ColorPreset.BackgroundVariant
     ) { contentPadding ->
+
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween,
@@ -147,6 +154,9 @@ private fun PreviewQuizEditScreen() {
             slot = null,
             onEditQuestionClick = {_, _ ->},
             onAddQuestion = {},
+            onQuizHubClick = {},
+            onProfileClick = {},
+            onSettingsClick = {},
             onCloseClick = {}
         )
     }

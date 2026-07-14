@@ -53,8 +53,10 @@ internal fun QuizNameScreen(
         model = model,
         onNameChange = component::onNameChange,
         onDescriptionChange = component::onDescriptionChange,
-        isNextEnabled = model.nextEnabled,
-        onNextClick = component::onNextClick
+        onNextClick = component::onNextClick,
+        onQuizHubClick = component::goToQuizHub,
+        onProfileClick = component::goToProfile,
+        onSettingsClick = component::goToSettings
     )
 }
 
@@ -63,8 +65,10 @@ private fun QuizNameUI(
     model: IQuizNameComponent.Model,
     onNameChange: (String) -> Unit,
     onDescriptionChange: (String) -> Unit,
-    isNextEnabled: Boolean,
-    onNextClick: () -> Unit
+    onNextClick: () -> Unit,
+    onQuizHubClick: () -> Unit,
+    onProfileClick: () -> Unit,
+    onSettingsClick: () -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -82,9 +86,9 @@ private fun QuizNameUI(
             AppNavigationBar(
                 selectedTab = NavigationTab.QUIZ_LIST,
                 onQuizListClick = {},
-                onQuizHubClick = {},
-                onProfileClick = {},
-                onSettingsClick = {},
+                onQuizHubClick = onQuizHubClick,
+                onProfileClick = onProfileClick,
+                onSettingsClick = onSettingsClick,
                 modifier = Modifier
                     .fillMaxWidth()
                     .navigationBarsPadding()
@@ -114,7 +118,7 @@ private fun QuizNameUI(
                 onNameChange = onNameChange,
                 onDescriptionChange = onDescriptionChange,
                 onNextClick = onNextClick,
-                isNextEnabled = isNextEnabled,
+                isNextEnabled = model.nextEnabled,
                 modifier = Modifier.fillMaxWidth()
             )
         }
@@ -251,7 +255,9 @@ private fun QuizNameScreenPreview() {
         model = IQuizNameComponent.Model(),
         onNameChange = {},
         onDescriptionChange = {},
-        isNextEnabled = false,
-        onNextClick = {}
+        onNextClick = {},
+        onQuizHubClick = {},
+        onProfileClick = {},
+        onSettingsClick = {}
     )
 }

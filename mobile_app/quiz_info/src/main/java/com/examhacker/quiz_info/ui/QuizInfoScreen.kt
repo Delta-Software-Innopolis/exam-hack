@@ -64,6 +64,9 @@ fun QuizInfoScreen(component: IQuizInfoComponent) {
         onAttemptQuizClick = component::attemptQuiz,
         onViewQuestionsClick = component::viewQuestions,
         onDeleteQuizClick = component::onDeleteQuiz,
+        onQuizHubClick = component::goToQuizHub,
+        onProfileClick = component::goToProfile,
+        onSettingsClick = component::goToSettings,
         onBackClick = component::goBack
     )
 }
@@ -74,6 +77,9 @@ private fun QuizInfoUI(
     onAttemptQuizClick: () -> Unit,
     onViewQuestionsClick: () -> Unit,
     onDeleteQuizClick: () -> Unit,
+    onQuizHubClick: () -> Unit,
+    onProfileClick: () -> Unit,
+    onSettingsClick: () -> Unit,
     onBackClick: () -> Unit
 ) {
     Scaffold(
@@ -89,9 +95,9 @@ private fun QuizInfoUI(
             AppNavigationBar(
                 selectedTab = NavigationTab.QUIZ_LIST,
                 onQuizListClick = {},
-                onQuizHubClick = {},
-                onProfileClick = {},
-                onSettingsClick = {},
+                onQuizHubClick = onQuizHubClick,
+                onProfileClick = onProfileClick,
+                onSettingsClick = onSettingsClick,
                 modifier = Modifier
                     .fillMaxWidth()
                     .navigationBarsPadding()
@@ -456,6 +462,9 @@ private fun QuizInfoScreenPreview() {
         onAttemptQuizClick = {},
         onViewQuestionsClick = {},
         onDeleteQuizClick = {},
+        onQuizHubClick = {},
+        onProfileClick = {},
+        onSettingsClick = {},
         onBackClick = {}
     )
 }

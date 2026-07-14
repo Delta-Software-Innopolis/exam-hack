@@ -5,7 +5,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -83,13 +85,18 @@ private fun QuizHubUI(
                 selectedTab = NavigationTab.QUIZ_HUB,
                 onQuizListClick = onQuizClick,
                 onProfileClick = onProfileClick,
-                onSettingsClick = onSettingsClick
+                onSettingsClick = onSettingsClick,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .navigationBarsPadding()
             )
         },
         snackbarHost = {
             SnackbarHost(
                 hostState = snackBarHostState,
-                modifier = Modifier.padding(Dimensions.ScreenPadding),
+                modifier = Modifier
+                    .safeContentPadding()
+                    .padding(horizontal = Dimensions.ScreenPadding),
                 snackbar = {
                     NotImplementedSnackBarUI(Modifier.fillMaxWidth())
                 }

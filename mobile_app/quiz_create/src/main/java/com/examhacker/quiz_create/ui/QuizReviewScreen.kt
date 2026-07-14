@@ -55,6 +55,9 @@ internal fun QuizReviewScreen(component: IQuizReviewComponent) {
         onEditQuestionClick = component::onEditQuestionClick,
         onAddQuestion = component::onAddQuestionClick,
         onSaveQuizClick = component::onSaveQuizClick,
+        onQuizHubClick = component::goToQuizHub,
+        onProfileClick = component::goToProfile,
+        onSettingsClick = component::goToSettings,
         goBack = component::goBack
     )
 }
@@ -66,6 +69,9 @@ private fun QuizReviewUI(
     onEditQuestionClick: (Int, Question) -> Unit,
     onAddQuestion: () -> Unit,
     onSaveQuizClick: () -> Unit,
+    onQuizHubClick: () -> Unit,
+    onProfileClick: () -> Unit,
+    onSettingsClick: () -> Unit,
     goBack: () -> Unit
 ) {
     Scaffold(
@@ -84,9 +90,9 @@ private fun QuizReviewUI(
             AppNavigationBar(
                 selectedTab = NavigationTab.QUIZ_LIST,
                 onQuizListClick = {},
-                onQuizHubClick = {},
-                onProfileClick = {},
-                onSettingsClick = {},
+                onQuizHubClick = onQuizHubClick,
+                onProfileClick = onProfileClick,
+                onSettingsClick = onSettingsClick,
                 modifier = Modifier
                     .fillMaxWidth()
                     .navigationBarsPadding()
@@ -226,6 +232,9 @@ private fun PreviewQuizReviewScreen() {
             onEditQuestionClick = {_, _ ->},
             onAddQuestion = {},
             onSaveQuizClick = {},
+            onQuizHubClick = {},
+            onProfileClick = {},
+            onSettingsClick = {},
             goBack = {}
         )
     }

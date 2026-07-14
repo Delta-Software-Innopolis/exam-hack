@@ -18,6 +18,9 @@ interface IQuizInfoComponent {
     fun attemptQuiz()
     fun viewQuestions()
     fun onDeleteQuiz()
+    fun goToQuizHub()
+    fun goToProfile()
+    fun goToSettings()
     fun goBack()
 }
 
@@ -27,6 +30,9 @@ class QuizInfoComponent(
     private val toSolve: () -> Unit,
     private val toEdit: () -> Unit,
     private val deleteQuiz: () -> Unit,
+    private val toQuizHub: () -> Unit,
+    private val toProfile: () -> Unit,
+    private val toSettings: () -> Unit,
     private val back: () -> Unit
 ) : IQuizInfoComponent, ComponentContext by componentContext {
 
@@ -52,6 +58,18 @@ class QuizInfoComponent(
 
     override fun onDeleteQuiz() {
         deleteQuiz()
+    }
+
+    override fun goToQuizHub() {
+        toQuizHub()
+    }
+
+    override fun goToProfile() {
+        toProfile()
+    }
+
+    override fun goToSettings() {
+        toSettings()
     }
 
     override fun goBack() {
