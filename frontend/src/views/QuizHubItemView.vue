@@ -42,7 +42,6 @@ async function getQuiz() {
             throw new Error(`Failed to get quiz: ${response.status}`)
         }
         const result = await response.json()
-        result.cards = []
         return result
     } catch (error) {
         console.error('Could not add quiz to collection:', error)
@@ -97,14 +96,15 @@ const modalQuestionView = useTemplateRef('modal-question-view');
                     by <a href="#">{{ quiz.author.name || 'Someone'}}</a>
                 </span>
             </div>
-            <div class="description">
-                {{ quiz?.description || "This quiz has no description..." }}
-            </div>
-            <div class="stats-n-actions">
-                <div class="stats">
-                    <ul class="tags-container">
-                        <li v-for="(value, key) in quiz">{{key}}: {{ value }}</li>
-                    </ul>
+            <div class="wrappre">
+                <div class="tags">
+                    <div class="tag"> {{ quiz.subject }} </div>
+                    <div class="tag"> {{ quiz.university }} </div>
+                    <div class="tag"> {{ quiz.professor }} </div>
+                    <div class="tag"> {{ quiz.course_book }} </div>
+                </div>
+                <div class="description">
+                    {{ quiz?.description || "This quiz has no description..." }}
                 </div>
                 <div class="actions">
                     <div class="top-buttons">
@@ -117,7 +117,9 @@ const modalQuestionView = useTemplateRef('modal-question-view');
             <div class="top-action-bar">
                 <h2>Questions</h2>
             </div>
-            <QuizQuestionsList :cards="quiz.cards" variant="view" />
+            <QuizQuestionsList :cards="quiz.cards" variant="view" 
+                @click-question-item="(idx) => modalQuestionView?.open(quiz?.cards[idx])"
+            />
         </div>
     </div>
     <UnknownView v-else />
@@ -125,6 +127,33 @@ const modalQuestionView = useTemplateRef('modal-question-view');
 
 
 <style scoped>
+.wrappre {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.tags {
+    display: flex;
+    width: 100%;
+    height: fit-content;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.tag {
+    font-size: 12px;
+    color: var(--primary-dimm);
+    display: flex;
+    justify-content: center;
+    width: fit-content;
+    background-color: var(--primary-light);
+    border: 1px solid var(--primary);
+    outline: 1px solid var(--primary-light);
+    border-radius: 16px;
+    padding: 4px 12px 4px 12px;
+}
+
 .main-container {
     padding: 64px;
     gap: 32px;
@@ -339,11 +368,12 @@ button a {
 
 .actions {
     display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    flex-direction: row;
+    justify-content: end;
     width: fit-content;
     box-sizing: border-box;
     text-wrap-mode: nowrap;
+    width: 100%;
 }
 
 .top-buttons, .bottom-buttons {
