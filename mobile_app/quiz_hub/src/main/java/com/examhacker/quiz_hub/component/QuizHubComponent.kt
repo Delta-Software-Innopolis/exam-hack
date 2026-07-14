@@ -18,15 +18,13 @@ interface IQuizHubComponent {
     fun goToQuizList()
     fun goToProfile()
     fun goToSettings()
-    fun goBack()
 }
 
 class QuizHubComponent(
     componentContext: ComponentContext,
     private val toQuizList: () -> Unit,
     private val toProfile: () -> Unit,
-    private val toSettings: () -> Unit,
-    private val back: () -> Unit
+    private val toSettings: () -> Unit
 ) : IQuizHubComponent, ComponentContext by componentContext {
 
     private val _model = MutableValue(IQuizHubComponent.Model())
@@ -50,9 +48,5 @@ class QuizHubComponent(
 
     override fun goToSettings() {
         toSettings()
-    }
-
-    override fun goBack() {
-        back()
     }
 }

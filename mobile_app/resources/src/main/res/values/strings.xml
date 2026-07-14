@@ -100,4 +100,9 @@
 	<string name="quiz_hub_screen_title">QuizHub</string>
 	<string name="search_bar_label">Search</string>
 	<string name="not_used_in_mvp">WILL NOT BE USED IN MVP</string>
+	
+	<!-- Profile -->
+	<string name="profile_screen_title">Your Profile</string>
+	<string name="username_placeholder">upconett</string>
+	<string name="logout_button_label">Logout</string>
 </resources>
