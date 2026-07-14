@@ -22,7 +22,7 @@ export const MOCK_QUIZZES: QuizItem[] = [
       {
         id: 2,
         question: "What is the result of typeof null?",
-        options: ["null", "object", "undefined", "boolean"],
+        options: ["null", "object", "undefined", "boolean", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"],
         correct: [1],
         hint: "This is a historical JavaScript quirk.",
         explanation: "typeof null returns 'object'."
