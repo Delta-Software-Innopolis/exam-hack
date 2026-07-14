@@ -67,6 +67,8 @@ class Dimensions {
         val AuthorNameFontSize = 16.sp
 
         // Quiz List
+        val QuizListItemSpacing = 16.dp
+        val QuizItemAuthorFontSize = 16.sp
         val QuizItemTitleFontSize = 24.sp
 
         // Quiz Solve

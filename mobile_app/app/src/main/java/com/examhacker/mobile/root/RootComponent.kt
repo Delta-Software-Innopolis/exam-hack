@@ -98,7 +98,8 @@ class RootComponent(
                 IRootComponent.Child.QuizList(
                     QuizListComponent(
                         componentContext,
-                        toQuizCreation = ::navigateToQuizCreate,
+                        quizzes = createMockQuizList(),
+                        toQuizCreate = ::navigateToQuizCreate,
                         toQuizInfo = {
                             navigateToQuizInfo(
                                 Quiz(
@@ -229,6 +230,25 @@ class RootComponent(
     private fun back() {
         navigation.pop()
     }
+
+    private fun createMockQuizList(): List<Quiz> =
+        List(8) { index ->
+            Quiz(
+                id = index,
+                authorName = "User",
+                name = "Quiz name",
+                description = "Quiz description",
+                questions = List(5) {
+                    Question(
+                        description = "What is the name of your Practicum Project TA?",
+                        variants = listOf(
+                            AnswerVariant("Andrei Markov", true),
+                            AnswerVariant("other", false)
+                        )
+                    )
+                }
+            )
+        }
 
     @Serializable
     sealed class Config {
