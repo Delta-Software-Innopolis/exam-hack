@@ -139,3 +139,18 @@ export async function deleteCards(cardIds: number[]): Promise<boolean> {
         return false
     }
 }
+
+export async function deletePack(packId: number): Promise<boolean> {
+    const nm = useNetworkManager()
+
+    try {
+        const response = await nm.fetch_core(`/core/pack/${packId}`, {
+            method: "DELETE"
+        })
+
+        return response.ok
+    } catch (err) {
+        console.error(err)
+        return false
+    }
+}
