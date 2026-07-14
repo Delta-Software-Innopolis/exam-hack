@@ -74,3 +74,18 @@ export async function validate(): Promise<boolean> {
         return false
     }
 }
+
+export async function logout(): Promise<void> {
+    const nm = useNetworkManager()
+
+    const request = await nm.fetch_auth('/auth/logout', {
+        method: 'POST',
+        credentials: 'include',
+    })
+
+    if (!request.ok) {
+        const response = await request.json()
+        console.error(response)
+        throw response.error
+    }
+}

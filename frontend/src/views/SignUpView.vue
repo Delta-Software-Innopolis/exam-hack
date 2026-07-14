@@ -73,7 +73,7 @@ onUnmounted(()=>{
       </div>
     </div>
     <div class="backbone">
-      <img src="/pretty_img_here_soon.png" alt="pretty_img_here_soon">
+      <!-- <img src="/pretty_img_here_soon.png" alt="pretty_img_here_soon"> -->
     </div>
   </div>
 </template>
@@ -86,7 +86,10 @@ onUnmounted(()=>{
   height: 100vh;
   box-sizing: border-box;
   justify-content: space-evenly;
-  background-color: var(--background-blueish);
+  /* background-color: var(--background-blueish); */
+  background-image: url("/beautiful-image.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 .sidebar {
@@ -97,7 +100,7 @@ onUnmounted(()=>{
   justify-content: center;
   align-items: center;
   background-color: white;
-  box-shadow: none;
+  /* box-shadow: none; */
   animation: bounce 1s;
 }
 
