@@ -19,7 +19,7 @@ class PublishedQuiz(BaseModel):
     university: str
     professor: str
     course_book: str
-    description: str
+    description: str|None
     forks: list[Fork]
     model_config = ConfigDict(from_attributes=True)
 
