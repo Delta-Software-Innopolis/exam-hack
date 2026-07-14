@@ -55,7 +55,7 @@ const emit = defineEmits<{
                 @click-question-item="(idx)=>modalQuestionEdit?.open(cards.at(idx))"
             />
             <div class="buttons-line">
-                <PlusButton variant="secondary" @click="modalQuestionAdd?.open()">
+                <PlusButton data-testid="open-add-question" variant="secondary" @click="modalQuestionAdd?.open()">
                     Add Question
                 </PlusButton>
                 <BasicButton variant="primary" @click="emit('click-finish')">

@@ -76,7 +76,7 @@ const emit = defineEmits<{
                 </div>
             </div>
             <div class="buttons">
-                <PlusButton variant="primary" @click="clickAdd">Add Question</PlusButton>
+                <PlusButton data-testid="confirm-add-question" variant="primary" @click="clickAdd">Add Question</PlusButton>
             </div>
         </div>
         <div v-else>

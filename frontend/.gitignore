@@ -39,3 +39,10 @@ __screenshots__/
 *.timestamp-*-*.mjs
 .vscode
 .env.production
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
