@@ -78,6 +78,7 @@ async function onFinishCreation() {
         questions.value
     )
     if (ok) {
+        hasUnsavedProgress.value = false;
         router.push('/quizzes')
     } else {
         alert('Something went wrong, and we could not create your quiz, sorry!')
