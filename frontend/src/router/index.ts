@@ -15,6 +15,7 @@ import QuizHubItemView from '@/views/QuizHubItemView.vue'
 import WorkingOnView from '@/views/WorkingOnView.vue'
 import ProfileView from '@/views/ProfileView.vue'
 import QuizInviteView from '@/views/QuizInviteView.vue'
+import ProfileView from '@/views/ProfileView.vue'
 
 
 const router = createRouter({
@@ -114,7 +115,7 @@ const router = createRouter({
       path: '/invite/:code',
       name: 'quizInvite',
       component: QuizInviteView,
-      meta: { showSidebar: true }
+      meta: { showSidebar: true, withAnimation: true }
     },
     {
       path: '/:pathMatch(.*)*',
