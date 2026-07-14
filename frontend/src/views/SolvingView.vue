@@ -70,7 +70,8 @@ function checkAnswer(index:number){
     lastClicked.value = index
     answered.value[questionNum.value] = true
     const doesInclude = card?.value.correct.includes(index)
-    correct.value[index] = doesInclude
+    console.log(card.value.correct, index)
+    correct.value[questionNum.value] = doesInclude
     updateButtonStyles()
 }
 </script>
