@@ -54,6 +54,7 @@ async function logout() {
 <style scoped>
 .main-wrapper {
     padding: 64px;
+    image-rendering: crisp-edges;
 }
 
 .profile-wrapper {
