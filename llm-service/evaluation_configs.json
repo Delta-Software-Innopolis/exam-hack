@@ -1,0 +1,26 @@
+[
+  {
+    "name": "deepseek_standard",
+    "provider": "deepseek",
+    "model": "deepseek-chat",
+    "prompt": "PRIMARY OBJECTIVE:\nGenerate exactly {count} multiple-choice questions based on the provided text.\n\nOUTPUT CONTRACT:\nReturn a JSON object with an \"items\" array.\nEach item must have:\n- \"question\": string\n- \"options\": exactly 4 strings, no prefixes like A), B), 1), etc.\n- \"correct_indices\": 0-based indices of correct options, e.g. [0] for single choice\n- \"hint\": short helpful hint"
+  },
+  {
+    "name": "deepseek_strict",
+    "provider": "deepseek",
+    "model": "deepseek-chat",
+    "prompt": "You are an expert teacher designing exam questions.\nGenerate exactly {count} multiple-choice questions from the source text.\n\nCRITICAL FORMAT RULES:\n1. Each question must have exactly one correct answer.\n2. The options must be exactly 4 strings.\n3. All options must be approximately the same length and format.\n4. Do NOT use checkboxes or questions requiring selecting multiple answers (e.g. \"Select all that apply\" or \"Which of these is NOT true\").\n\nOUTPUT CONTRACT:\nReturn a JSON object with an \"items\" array. Each item has:\n- \"question\": string\n- \"options\": array of 4 strings\n- \"correct_indices\": array with exactly 1 integer (the index of the correct option)\n- \"hint\": string"
+  },
+  {
+    "name": "openrouter_gemini_flash",
+    "provider": "openrouter",
+    "model": "google/gemini-2.5-flash",
+    "prompt": "PRIMARY OBJECTIVE:\nGenerate exactly {count} multiple-choice questions based on the provided text.\n\nOUTPUT CONTRACT:\nReturn a JSON object with an \"items\" array.\nEach item must have:\n- \"question\": string\n- \"options\": exactly 4 strings, no prefixes like A), B), 1), etc.\n- \"correct_indices\": 0-based indices of correct options, e.g. [0] for single choice\n- \"hint\": short helpful hint"
+  },
+  {
+    "name": "openrouter_gpt_mini",
+    "provider": "openrouter",
+    "model": "openai/gpt-4o-mini",
+    "prompt": "You are a university professor creating multiple-choice questions for a midterm exam.\nBased on the text, create exactly {count} questions.\nFor each question:\n- Provide exactly 4 options.\n- The correct option must be clear.\n- All distractors must be plausible and equal in length.\n- Output MUST be valid JSON with an \"items\" key."
+  }
+]

@@ -1,0 +1,41 @@
+[
+  {
+    "question": "What is the main goal of database normalization?",
+    "options": [
+      "Increase data redundancy and improve query speed",
+      "Eliminate redundant data and ensure data dependencies make sense",
+      "Create multiple copies of data for backup purposes",
+      "Simplify table structures by allowing multiple values in a cell"
+    ],
+    "correct_indices": [
+      1
+    ],
+    "hint": "Think about the primary purpose of normalization as described in the first paragraph."
+  },
+  {
+    "question": "Which condition must a table satisfy to be in Second Normal Form (2NF)?",
+    "options": [
+      "It must have no transitive dependencies",
+      "It must be in 1NF and have no partial dependencies",
+      "It must have a composite primary key",
+      "It must have all non-prime attributes depend on other non-prime attributes"
+    ],
+    "correct_indices": [
+      1
+    ],
+    "hint": "Review the requirements for 2NF, especially the relationship with 1NF and partial dependencies."
+  },
+  {
+    "question": "What is a potential drawback of database normalization?",
+    "options": [
+      "It increases data redundancy",
+      "It causes data anomalies during insert, update, and delete operations",
+      "It can lead to performance overhead due to multiple table joins",
+      "It makes the database schema simpler and easier to understand"
+    ],
+    "correct_indices": [
+      2
+    ],
+    "hint": "Consider the trade-offs mentioned in the 'Drawbacks of Normalization' section."
+  }
+]

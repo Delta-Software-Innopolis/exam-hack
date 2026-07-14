@@ -1,0 +1,41 @@
+[
+  {
+    "question": "What is the primary purpose of database normalization?",
+    "options": [
+      "To increase data redundancy and improve query speed",
+      "To reduce redundancy and improve data integrity",
+      "To simplify table structures and reduce joins",
+      "To eliminate all foreign keys from the database"
+    ],
+    "correct_indices": [
+      1
+    ],
+    "hint": "Normalization focuses on organizing data to minimize duplication and maintain accuracy."
+  },
+  {
+    "question": "Which condition must a table satisfy to be in Second Normal Form (2NF)?",
+    "options": [
+      "It must have no transitive dependencies among non-key attributes",
+      "It must be in 1NF and have no partial dependencies",
+      "It must have a composite primary key with no duplicates",
+      "It must have all columns functionally dependent on a single key"
+    ],
+    "correct_indices": [
+      1
+    ],
+    "hint": "2NF builds on 1NF by eliminating partial dependencies, especially in tables with composite keys."
+  },
+  {
+    "question": "What is a common drawback of high-level normalization?",
+    "options": [
+      "Increased data redundancy and update anomalies",
+      "Simpler schema but slower insert operations",
+      "Performance overhead due to more table joins",
+      "Loss of data integrity and consistency"
+    ],
+    "correct_indices": [
+      2
+    ],
+    "hint": "While normalization reduces redundancy, it often requires splitting data into many tables, leading to more joins."
+  }
+]

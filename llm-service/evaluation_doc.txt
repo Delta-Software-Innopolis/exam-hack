@@ -1,0 +1,33 @@
+Database Normalization and Normal Forms
+
+Database normalization is the process of organizing data in a relational database to reduce redundancy and improve data integrity. It was first proposed by Edgar F. Codd, the inventor of the relational model. The main goals of normalization are to eliminate redundant data (for example, storing the same data in more than one table) and ensure data dependencies make sense (only storing related data in a table).
+
+There are several levels of normalization, known as normal forms (NF). Each level builds on the previous one.
+
+1. First Normal Form (1NF)
+For a table to be in First Normal Form, it must meet the following criteria:
+- Each table cell must contain a single (atomic) value. Multiple values or lists are not allowed in a single cell.
+- All entries in any column must be of the same data type.
+- Each column must have a unique name.
+- The order in which data is stored does not matter.
+- The table must have a primary key to uniquely identify each row.
+
+2. Second Normal Form (2NF)
+To reach Second Normal Form, a table must:
+- Already be in First Normal Form (1NF).
+- Have no partial dependencies. This means that all non-prime attributes (columns that are not part of the primary key) must be fully functionally dependent on the entire primary key.
+- Partial dependency occurs when a non-key column depends on only part of a composite primary key. Therefore, if a table has a single-column primary key, it is automatically in 2NF once it is in 1NF.
+
+3. Third Normal Form (3NF)
+A table is in Third Normal Form if it:
+- Is already in Second Normal Form (2NF).
+- Has no transitive dependencies. This means that non-prime attributes must not depend on other non-prime attributes. Every non-prime attribute must depend directly on the primary key, and only the primary key. A common phrasing is: "Every attribute must depend on the key, the whole key, and nothing but the key, so help me Codd."
+
+Benefits of Normalization:
+- Minimizes data redundancy.
+- Reduces data anomalies (Insert, Update, and Delete anomalies).
+- Simplifies database maintenance.
+
+Drawbacks of Normalization:
+- Can lead to performance overhead because queries require joining multiple tables.
+- Can make the database schema more complex and harder to understand for developers.
