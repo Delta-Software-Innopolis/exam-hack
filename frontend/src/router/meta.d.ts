@@ -5,5 +5,6 @@ declare module 'vue-router' {
     showSidebar?: boolean = false
     headerInfo?: string
     headerClass?: string
+    withAnimation?: boolean = false
   }
 }

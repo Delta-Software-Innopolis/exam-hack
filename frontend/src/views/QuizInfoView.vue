@@ -3,10 +3,10 @@ import { ref, watch, useTemplateRef, computed } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import BasicButton from '@/components/basic/BasicButton.vue';
 import type { Card, QuizItem } from '@/types';
-import { updateCards, createCards, deleteCards } from '@/core'
 import { useNewQuizzesStore } from '@/stores/new-quizzes';
 import QuizQuestionsList from '@/components/quiz/QuizQuestionsList.vue';
 import ModalQuestionEdit from '@/components/modals/ModalQuestionEdit.vue';
+import { updateCards, createCards, deleteCards, deletePack } from '@/core'
 import TrashButton from '@/components/buttons/TrashButton.vue';
 import PlayButton from '@/components/buttons/PlayButton.vue';
 import UnknownView from './UnknownView.vue';
@@ -33,6 +33,26 @@ function notImplemented() {
 const modalEdit = useTemplateRef('modal-edit');
 const modalAdd = useTemplateRef('modal-add');
 
+async function onDeleteQuiz() {
+    if (!quiz.value) return
+
+    const confirmed = confirm(
+        `Delete quiz "${quiz.value.name}"?\n\nThis action cannot be undone.`
+    )
+
+    if (!confirmed) return
+
+    const ok = await deletePack(quiz.value.id)
+
+    if (!ok) {
+        alert("Couldn't delete quiz")
+        return
+    }
+
+    await quizzesStore.fetchMyQuizzes()
+
+    router.push("/quizzes")
+}
 
 function onStartEditQuestion(q_idx: number) {
     let q = quiz?.value?.cards.at(q_idx);
@@ -149,7 +169,7 @@ async function submitChanges() {
                     </div>
                     <div class="bottom-buttons">
                         <TrashButton v-if="knownQuiz" variant="red" 
-                            @click="notImplemented"
+                            @click="onDeleteQuiz"
                         >
                             Delete
                         </TrashButton>

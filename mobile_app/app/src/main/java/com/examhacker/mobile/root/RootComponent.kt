@@ -1,11 +1,13 @@
 package com.examhacker.mobile.root
 
+import android.util.Log
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.pop
+import com.arkivanov.decompose.router.stack.popWhile
 import com.arkivanov.decompose.router.stack.pushNew
 import com.arkivanov.decompose.router.stack.replaceCurrent
 import com.arkivanov.decompose.router.stack.pushToFront
@@ -132,6 +134,9 @@ class RootComponent(
                         componentContext = componentContext,
                         questions = config.quiz.questions,
                         saveQuiz = { },
+                        toQuizHub = ::fromDeepQuizListToQuizHub,
+                        toProfile = ::fromDeepQuizListToProfile,
+                        toSettings = ::fromDeepQuizListToSettings,
                         back = ::back,
                     )
                 )
@@ -141,6 +146,9 @@ class RootComponent(
                     QuizCreateComponent(
                         componentContext,
                         filePicker = filePicker,
+                        toQuizHub = ::fromDeepQuizListToQuizHub,
+                        toProfile = ::fromDeepQuizListToProfile,
+                        toSettings = ::fromDeepQuizListToSettings,
                         back = ::back
                     )
                 )
@@ -153,13 +161,21 @@ class RootComponent(
                         toSolve = { navigateToQuizSolve(config.quiz) },
                         toEdit = { navigateToQuizEdit(config.quiz) },
                         deleteQuiz = { back() },
+                        toQuizHub = ::fromDeepQuizListToQuizHub,
+                        toProfile = ::fromDeepQuizListToProfile,
+                        toSettings = ::fromDeepQuizListToSettings,
                         back = ::back,
                     )
                 )
 
             is Config.QuizHub        ->
                 IRootComponent.Child.QuizHub(
-                    QuizHubComponent(componentContext)
+                    QuizHubComponent(
+                        componentContext = componentContext,
+                        toQuizList = ::navigateToQuizList,
+                        toProfile = ::navigateToProfile,
+                        toSettings = ::navigateToSettings
+                    )
                 )
 
             is Config.QuizSolve      ->
@@ -173,7 +189,12 @@ class RootComponent(
 
             is Config.Profile        ->
                 IRootComponent.Child.Profile(
-                    ProfileComponent(componentContext)
+                    ProfileComponent(
+                        componentContext = componentContext,
+                        toQuizHub = ::navigateToQuizHub,
+                        toQuizList = ::navigateToQuizList,
+                        toSettings = ::navigateToSettings
+                    )
                 )
 
             is Config.Settings       ->
@@ -225,6 +246,21 @@ class RootComponent(
 
     private fun navigateToQuizInfo(quiz: Quiz) {
         navigation.pushNew(Config.QuizInfo(quiz))
+    }
+
+    private fun fromDeepQuizListToQuizHub() {
+        navigation.popWhile { it !is Config.QuizList }
+        navigateToQuizHub()
+    }
+
+    private fun fromDeepQuizListToProfile() {
+        navigation.popWhile { it !is Config.QuizList }
+        navigateToProfile()
+    }
+
+    private fun fromDeepQuizListToSettings() {
+        navigation.popWhile { it !is Config.QuizList }
+        navigateToSettings()
     }
 
     private fun back() {

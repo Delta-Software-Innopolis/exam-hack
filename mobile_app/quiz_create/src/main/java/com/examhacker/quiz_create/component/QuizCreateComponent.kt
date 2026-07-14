@@ -6,6 +6,7 @@ import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.items
 import com.arkivanov.decompose.router.stack.pop
+import com.arkivanov.decompose.router.stack.popToFirst
 import com.arkivanov.decompose.router.stack.pushNew
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
@@ -34,6 +35,9 @@ interface IQuizCreateComponent {
 class QuizCreateComponent(
     componentContext: ComponentContext,
     private val filePicker: FilePicker,
+    private val toQuizHub: () -> Unit,
+    private val toProfile: () -> Unit,
+    private val toSettings: () -> Unit,
     private val back: () -> Unit
 ) : IQuizCreateComponent, ComponentContext by componentContext {
 
@@ -56,9 +60,12 @@ class QuizCreateComponent(
                 IQuizCreateComponent.Child.Name(
                     QuizNameComponent(
                         componentContext = componentContext,
-                        goToGenerate = ::navigateToGenerate,
                         updateName = ::updateQuizName,
-                        updateDescription = ::updateQuizDescription
+                        updateDescription = ::updateQuizDescription,
+                        goToGenerate = ::navigateToGenerate,
+                        toQuizHub = ::navigateToQuizHub,
+                        toProfile = ::navigateToProfile,
+                        toSettings = ::navigateToSettings
                     )
                 )
 
@@ -69,6 +76,9 @@ class QuizCreateComponent(
                         filePicker = filePicker,
                         saveQuestions = ::updateQuestions,
                         toReview = ::navigateToReview,
+                        toQuizHub = ::navigateToQuizHub,
+                        toProfile = ::navigateToProfile,
+                        toSettings = ::navigateToSettings,
                         back = ::goBack
                     )
                 )
@@ -79,6 +89,9 @@ class QuizCreateComponent(
                         componentContext = componentContext,
                         questions = createMockQuestions(),
                         saveQuiz = ::saveQuiz,
+                        toQuizHub = ::navigateToQuizHub,
+                        toProfile = ::navigateToProfile,
+                        toSettings = ::navigateToSettings,
                         back = ::goBack
                     )
                 )
@@ -106,6 +119,21 @@ class QuizCreateComponent(
 
     private fun navigateToReview() {
         navigation.pushNew(Config.Review)
+    }
+
+    private fun navigateToQuizHub() {
+        navigation.popToFirst()
+        toQuizHub()
+    }
+
+    private fun navigateToProfile() {
+        navigation.popToFirst()
+        toProfile()
+    }
+
+    private fun navigateToSettings() {
+        navigation.popToFirst()
+        toSettings()
     }
 
     private fun goBack() {

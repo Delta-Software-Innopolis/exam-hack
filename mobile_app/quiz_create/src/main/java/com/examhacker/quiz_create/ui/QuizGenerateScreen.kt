@@ -65,6 +65,9 @@ internal fun QuizGenerateScreen(component: IQuizGenerateComponent) {
         onRemoveFileClick = component::onRemoveFileClick,
         onSkipClick = component::onSkipClick,
         onGenerateClick = component::onGenerateClick,
+        onQuizHubClick = component::goToQuizHub,
+        onProfileClick = component::goToProfile,
+        onSettingsClick = component::goToSettings,
         goBack = component::goBack
     )
 }
@@ -76,6 +79,9 @@ private fun QuizGenerateUI(
     onRemoveFileClick: (PickedFile) -> Unit,
     onSkipClick: () -> Unit,
     onGenerateClick: () -> Unit,
+    onQuizHubClick: () -> Unit,
+    onProfileClick: () -> Unit,
+    onSettingsClick: () -> Unit,
     goBack: () -> Unit
 ) {
     Scaffold(
@@ -94,9 +100,9 @@ private fun QuizGenerateUI(
             AppNavigationBar(
                 selectedTab = NavigationTab.QUIZ_LIST,
                 onQuizListClick = {},
-                onQuizHubClick = {},
-                onProfileClick = {},
-                onSettingsClick = {},
+                onQuizHubClick = onQuizHubClick,
+                onProfileClick = onProfileClick,
+                onSettingsClick = onSettingsClick,
                 modifier = Modifier
                     .fillMaxWidth()
                     .navigationBarsPadding()
@@ -319,7 +325,7 @@ private fun AIGenerationScreenTitle(
 
         Text(
             text = stringResource(R.string.quiz_generate_title_lower_part),
-            fontSize = Dimensions.SubTitleFontSize,
+            fontSize = Dimensions.SubtitleFontSize,
             fontWeight = FontWeight.Bold,
             color = ColorPreset.Black,
             textAlign = TextAlign.Start
@@ -446,6 +452,9 @@ private fun QuizGenerateScreenPreview() {
         onRemoveFileClick = {},
         onSkipClick = {},
         onGenerateClick = {},
+        onQuizHubClick = {},
+        onProfileClick = {},
+        onSettingsClick = {},
         goBack = {}
     )
 }

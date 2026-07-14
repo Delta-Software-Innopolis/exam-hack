@@ -15,7 +15,7 @@ const router = useRouter();
       </div>
     </div>
     <div class="backbone">
-      <img src="/pretty_img_here_soon.png" alt="pretty_img_here_soon">
+      <!-- <img src="/pretty_img_here_soon.png" alt="pretty_img_here_soon"> -->
     </div>
   </div>
 </template>
@@ -28,7 +28,10 @@ const router = useRouter();
   height: 100vh;
   box-sizing: border-box;
   justify-content: space-evenly;
-  background-color: var(--background-blueish);
+  /* background-color: var(--background-blueish); */
+  background-image: url("/beautiful-image.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 .sidebar {
@@ -39,7 +42,7 @@ const router = useRouter();
   justify-content: center;
   align-items: center;
   background-color: white;
-  box-shadow: none;
+  /* box-shadow: none; */
   /* box-shadow: 0px 0px 16px 4px rgba(0,0,0,0.25); */
   animation: bounce 1s;
 }

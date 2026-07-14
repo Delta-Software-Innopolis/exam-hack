@@ -17,7 +17,7 @@ class ColorPreset {
         val BackgroundFocus = Color(0xFFE7FFFF)
         val BackgroundPositiveSecondary = Color(0xFFCFF7D3)
         val BackgroundDangerSecondary = Color(0xFFFFBDBD)
-        val BackgroundWarningSecondary = Color(0xFFFFF1C2)
+        val BackgroundWarningSecondary = Color(0xFFFFCA47)
 
         val BorderDefault = Color(0xFFD9D9D9)
         val BorderSecondary = Color(0xFFAAAAAA)
@@ -30,6 +30,8 @@ class ColorPreset {
         val TextWarningTertiary = Color(0xFFBF6A02)
         val IconPositiveTertiary = Color(0xFF14AE5C)
 
+        val NotImplementedPrimary = Color(0xFFFFEC5A)
+        val NotImplementedSecondary = Color(0xFFFF0000)
         val ErrorPrimary = Color(0xFFFF4F4F)
         val PositivePrimary = Color(0xFF00B093)
         val PositiveSecondary = Color(0xFFA1E3D8)
