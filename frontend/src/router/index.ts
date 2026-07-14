@@ -15,8 +15,6 @@ import QuizHubItemView from '@/views/QuizHubItemView.vue'
 import WorkingOnView from '@/views/WorkingOnView.vue'
 import ProfileView from '@/views/ProfileView.vue'
 import QuizInviteView from '@/views/QuizInviteView.vue'
-import ProfileView from '@/views/ProfileView.vue'
-import QuizInviteView from '@/views/QuizInviteView.vue'
 
 
 const router = createRouter({
