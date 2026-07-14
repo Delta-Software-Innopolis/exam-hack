@@ -39,7 +39,7 @@ fun NotImplementedSnackBarUI(
            painter = painterResource(R.drawable.ic_info),
            contentDescription = "",
            tint = ColorPreset.BackgroundVariant,
-           modifier = Modifier.size(Dimensions.SnackBarIconSize)
+           modifier = Modifier.size(Dimensions.MediumIconSize)
         )
 
         Text(

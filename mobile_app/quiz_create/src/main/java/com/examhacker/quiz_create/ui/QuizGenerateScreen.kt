@@ -319,7 +319,7 @@ private fun AIGenerationScreenTitle(
 
         Text(
             text = stringResource(R.string.quiz_generate_title_lower_part),
-            fontSize = Dimensions.SubTitleFontSize,
+            fontSize = Dimensions.SubtitleFontSize,
             fontWeight = FontWeight.Bold,
             color = ColorPreset.Black,
             textAlign = TextAlign.Start
