@@ -23,48 +23,55 @@ const lastClicked = ref<number|null>(null)
 const isHintClicked = ref(false)
 const modalHint = useTemplateRef('modalHint')
 
+const transitionDirection = ref<'right'|'left'>('right');
+
 console.log("CARD:", card)
 
 const progressWidth = computed(()=> {
     const total = (quiz.value ? quiz.value.cards.length : 1) || 1
-    const current = questionNum.value + 1
+    const current = (questionNum.value+1 < quiz.value.cards.length) ? (questionNum.value + 1) : quiz.value.cards.length
     return `${current/total * 100}%` 
 })
 
-const questionAnswered = ref(false)
+const answered = ref<boolean[]>(Array(quiz.value.cards.length).fill(false))
+const correct = ref<boolean[]>(Array(quiz.value.cards.length).fill(false))
 const styles = ref<string[]>(new Array(4).fill('default'))
 
 function nextCard(){
+    transitionDirection.value = 'right';
     lastClicked.value = null
-    questionAnswered.value = false
     isHintClicked.value = false
-    if (questionNum.value < (quiz.value ? quiz.value.cards.length : 1) - 1) {
-        questionNum.value++;
-        styles.value = new Array(4).fill('default')
-        return
-    }
-    router.push({name: "quizzes"})
-
+    questionNum.value++;
+    updateButtonStyles()
 }
 
 function prevCard(){
+    transitionDirection.value = 'left';
     lastClicked.value = null
-    questionAnswered.value = false
-    questionNum.value--;
-    styles.value = new Array(4).fill('default')
+    questionNum.value--
+    updateButtonStyles()
+}
+
+function updateButtonStyles() {
+    for (let idx of card?.value.options?.keys()) {
+        let style = 'default'
+        if (answered.value[questionNum.value]) {
+            if (card.value.correct.includes(idx)) {
+                style = "green"
+            } else {
+                style = "quizred"
+            }
+        }
+        styles.value[idx] = style
+    }
 }
 
 function checkAnswer(index:number){
     lastClicked.value = index
-    questionAnswered.value = true
+    answered.value[questionNum.value] = true
     const doesInclude = card?.value.correct.includes(index)
-    for (let ind of card?.value.options?.keys()) {
-        if (card.value.correct.includes(ind)) {
-            styles.value[ind] = "green"
-        } else {
-            styles.value[ind] = "quizred"
-        }
-    }
+    correct.value[index] = doesInclude
+    updateButtonStyles()
 }
 </script>
 
@@ -74,33 +81,52 @@ function checkAnswer(index:number){
         <div class="main-container">
             <div class="content">
                 <div class="progress-bar">
-                    <div class="card-num">{{ questionNum + 1}} / {{ quiz.cards.length }}</div>
+                    <div class="card-num">{{ questionNum+1 < quiz.cards.length ? questionNum + 1 : quiz.cards.length }} / {{ quiz.cards.length }}</div>
                     <div class="progress">
-                        <div class="current-progress":style="{ width: progressWidth}"></div>
+                        <div class="current-progress":style="{width: progressWidth}"></div>
                     </div>
                 </div>
-                <Transition name="question" mode="out-in">
-                    <div class="options" :key="questionNum">
-                        <div class="question">
-                            <div class="title">{{ card?.question }}</div>
-                            <div class="option-container">
-                                <BasicButton 
-                                class="option"
-                                v-for="(option, index) in card?.options"
-                                    :key="index"
-                                    :variant="styles[index]"
-                                    :class="{ answered: questionAnswered }"
-                                    @click="checkAnswer(index)"
-                                >
-                                <span class="option-index">{{ index }}.</span>{{ option }}
-                                </BasicButton>
+                <Transition name="fade">
+                    <div class="quiz-itself" v-if="questionNum < quiz.cards.length">
+                        <Transition :name="transitionDirection" mode="out-in">
+                            <div class="options" :key="questionNum">
+                                <div class="question">
+                                    <div class="title">{{ card?.question }}</div>
+                                    <div class="option-container">
+                                        <BasicButton 
+                                        class="option"
+                                        v-for="(option, index) in card?.options"
+                                            :key="index"
+                                            :variant="styles[index]"
+                                            :class="{ answered: answered[questionNum] }"
+                                            @click="checkAnswer(index)"
+                                        >
+                                        <span class="option-index">{{ index }}.</span>{{ option }}
+                                        </BasicButton>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="arrow-container">
-                            <button  v-if="questionNum != 0" @click="prevCard" class="arrow left-arrow"><LeftArrowSVG/></button>
-                            <BasicButton title="Hint from AI" @click="modalHint?.open()" variant="ai" class="hint-button"><HintSVG/></BasicButton>
-                            <button v-if="questionAnswered" @click="nextCard" class="arrow right-arrow"><RightArrowSVG/></button>
-                        </div>
+                        </Transition>
+                            <div class="arrow-container">
+                                <Transition name="fade">
+                                    <button  v-if="questionNum != 0" @click="prevCard" class="arrow left-arrow"><LeftArrowSVG/></button>
+                                </Transition>
+                                    <BasicButton title="Hint from AI" @click="modalHint?.open()" variant="ai" class="hint-button"><HintSVG/></BasicButton>
+                                <Transition name="fade">
+                                    <button v-if="answered[questionNum]" @click="nextCard" class="arrow right-arrow"><RightArrowSVG/></button>
+                                </Transition>
+                            </div>
+                    </div>
+                </Transition>
+                <Transition name="fade-congrat">
+                    <div class="quiz-congrat" v-if="questionNum >= quiz.cards.length">
+                        <h3>
+                            👏 Congrats, you're back on track!
+                        </h3>
+                        <p>
+                            {{ correct.filter(answer => answer === true).length }}/{{ quiz.cards.length }} correct answers
+                        </p>
+                        <BasicButton @click="router.push({name: 'quizzes'})">Go home</BasicButton>
                     </div>
                 </Transition>
             </div>
@@ -116,6 +142,15 @@ function checkAnswer(index:number){
 .container {
     display: flex;
     justify-content: center;
+}
+
+.quiz-congrat {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 80%;
+    gap: 16px;
 }
 
 .main-container {
@@ -198,7 +233,6 @@ function checkAnswer(index:number){
 }
 
 .option-container {
-    flex: 1;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
@@ -207,6 +241,9 @@ function checkAnswer(index:number){
     scrollbar-gutter: stable;
     padding-left: 16px;
     padding-right: 16px;
+    overflow-y: scroll;
+    overflow: hidden;
+    /* height: 100%; */
 }
 
 
@@ -299,21 +336,55 @@ function checkAnswer(index:number){
     padding: 0;
 }
 
-.hint-button:hover {
-}
 
-.question-enter-active,
-.question-leave-active {
+.right-enter-active,
+.right-leave-active {
     transition: all .25s ease;
 }
 
-.question-enter-from {
+.right-enter-from {
     opacity: 0;
     transform: translateX(30px);
 }
 
-.question-leave-to {
+.right-leave-to {
     opacity: 0;
     transform: translateX(-30px);
+}
+
+.left-enter-active,
+.left-leave-active {
+    transition: all .25s ease;
+}
+
+.left-enter-from {
+    opacity: 0;
+    transform: translateX(-30px);
+}
+
+.left-leave-to {
+    opacity: 0;
+    transform: translateX(30px);
+}
+
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 0.2s;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+    opacity: 0;
+}
+
+.fade-congrat-enter-active,
+.fade-congrat-leave-active {
+    transition: opacity 0.5s;
+    transition-delay: 0.2s;
+}
+
+.fade-congrat-enter-from,
+.fade-congrat-leave-to {
+    opacity: 0;
 }
 </style>
