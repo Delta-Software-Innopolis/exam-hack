@@ -24,6 +24,9 @@ internal interface IQuizGenerateComponent {
     fun onRemoveFileClick(file: PickedFile)
     fun onSkipClick()
     fun onGenerateClick()
+    fun goToQuizHub()
+    fun goToProfile()
+    fun goToSettings()
     fun goBack()
 }
 
@@ -31,8 +34,11 @@ internal class QuizGenerateComponent(
     componentContext: ComponentContext,
     private val filePicker: FilePicker,
     private val saveQuestions: (List<Question>) -> Unit,
-    private val back: () -> Unit,
-    private val toReview: () -> Unit
+    private val toReview: () -> Unit,
+    private val toQuizHub: () -> Unit,
+    private val toProfile: () -> Unit,
+    private val toSettings: () -> Unit,
+    private val back: () -> Unit
 ) : IQuizGenerateComponent, ComponentContext by componentContext {
 
     private val _model = MutableValue(IQuizGenerateComponent.Model())
@@ -79,6 +85,18 @@ internal class QuizGenerateComponent(
                 toReview()
             }
         }
+    }
+
+    override fun goToQuizHub() {
+        toQuizHub()
+    }
+
+    override fun goToProfile() {
+        toProfile()
+    }
+
+    override fun goToSettings() {
+        toSettings()
     }
 
     override fun goBack() {
