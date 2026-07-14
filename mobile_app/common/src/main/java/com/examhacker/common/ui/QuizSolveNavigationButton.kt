@@ -1,6 +1,7 @@
 package com.examhacker.common.ui
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -21,17 +22,16 @@ fun QuizSolveNavigationButton(
 ) {
     Button(
         onClick = onClick,
-        shape = RoundedCornerShape(Dimensions.NavigationButtonRadius),
+        shape = RoundedCornerShape(Dimensions.ButtonRadius),
         colors = ButtonDefaults.buttonColors(
             containerColor = ColorPreset.BackgroundDefaultPrimary
         ),
         border = borderStroke,
         contentPadding = PaddingValues(Dimensions.NavigationButtonPadding)
     ) {
-        Icon(
+        Image(
             painter = icon,
-            contentDescription = "",
-            modifier = iconModifier
+            contentDescription = ""
         )
     }
 }

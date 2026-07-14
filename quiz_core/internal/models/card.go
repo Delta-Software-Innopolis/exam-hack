@@ -6,8 +6,8 @@ type Card struct {
 	PackID   uint   `gorm:"column:pack_id;not null;index:ix_cards_pack_id" json:"pack_id"`
 	Hint     string `gorm:"column:hint;type:text;not null" json:"hint"`
 
-	Pack    Pack         `gorm:"foreignKey:PackID;references:ID" json:"pack,omitempty"`
-	Options []CardOption `gorm:"foreignKey:CardID;references:ID" json:"options,omitempty"`
+	Pack    Pack         `gorm:"foreignKey:PackID;references:ID;constraint:OnDelete:CASCADE" json:"pack,omitempty"`
+	Options []CardOption `gorm:"foreignKey:CardID;references:ID;constraint:OnDelete:CASCADE" json:"options,omitempty"`
 }
 
 func (Card) TableName() string {

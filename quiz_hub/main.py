@@ -1,12 +1,23 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
-
+from routers.pack import router as pack_router
+from routers.suggestion import router as suggestion_router
 app = FastAPI()
 
 origins = [
-    "http://localhost:5173"
+    "http://localhost:5173",
+    "http://examhacker.ru",
+    "http://111.88.118.254",
+    "http://core.examhacker.ru",
+    "https://111.88.118.254:8081",
+    "https://examhacker.ru",
+    "https://core.examhacker.ru",
+    "http://www.examhacker.ru"
 ]
+
+app.include_router(pack_router)
+app.include_router(suggestion_router)
 
 app.add_middleware(
     CORSMiddleware,
@@ -21,4 +32,4 @@ def main():
     return "pong"
 
 if __name__== "__main__":
-    uvicorn.run(app, port=8000, host="0.0.0.0")
+    uvicorn.run(app, port=8067, host="0.0.0.0")

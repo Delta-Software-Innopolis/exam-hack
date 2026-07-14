@@ -2,17 +2,17 @@ import EndOfDemo0View from '@/views/EndOfDemo0View.vue'
 import LoginView from '@/views/LoginView.vue'
 import SignUpView from '@/views/SignUpView.vue'
 import WelcomeView from '@/views/WelcomeView.vue'
-import GenerateQuizView from '@/views/GenerateQuizView.vue'
 import QuizInfoView from '@/views/QuizInfoView.vue'
 import QuizesView from '@/views/QuizesView.vue'
 import SolvingView from '@/views/SolvingView.vue'
 import ShowcaseView from '@/views/ShowcaseView.vue'
 import { createRouter, createWebHistory } from 'vue-router'
-import { useAttrs } from 'vue'
 import { useUserStore } from '@/stores/user'
 import UnknownView from '@/views/UnknownView.vue'
 import QuizCreationView from '@/views/QuizCreationView.vue'
-
+import QuizHubView from '@/views/QuizHubView.vue'
+import QuizHubItemView from '@/views/QuizHubItemView.vue'
+import WorkingOnView from '@/views/WorkingOnView.vue'
 
 
 const router = createRouter({
@@ -81,19 +81,25 @@ const router = createRouter({
     {
       path: '/quizhub',
       name: 'quizhub',
-      component: UnknownView,
+      component: QuizHubView,
       meta: { showSidebar: true}
+    },
+    {
+        path: '/quizhub/:quizId',
+        name: 'quizhubItem',
+        component: QuizHubItemView,
+        meta: { showSidebar: true},
     },
     {
       path: '/profile',
       name: 'profile',
-      component: UnknownView,
+      component: WorkingOnView,
       meta: { showSidebar: true}
     },
     {
       path: '/settings',
       name: 'settings',
-      component: UnknownView,
+      component: WorkingOnView,
       meta: { showSidebar: true}
     },
     {
@@ -102,6 +108,12 @@ const router = createRouter({
       component: UnknownView,
       meta: { showSidebar: true }
     },
+    {
+      path: '/void',
+      name: 'void',
+      component: UnknownView,
+      meta: { showSidebar: true }
+    }
   ],
 })
 

@@ -2,6 +2,7 @@
 <resources>
 	<!-- Common -->
 	<string name="app_name">ExamHacker</string>
+	<string name="not_implemented_text">Feature is not implemented</string>
 
 	<!-- Authentication -->
 	<string name="register_screen_title">Sign up to ExamHacker</string>
@@ -16,4 +17,82 @@
 	<string name="login">Login</string>
 	<string name="switch_to_register_label">I don’t have an account yet</string>
 	<string name="demo_end_button_label">Sit back, and wait</string>
+
+	<!-- App Navigation Bar -->
+	<string name="quiz_hub_navigation_label">QuizHub</string>
+	<string name="quiz_list_navigation_label">Quizzes</string>
+	<string name="profile_navigation_label">Profile</string>
+	<string name="settings_navigation_label">Settings</string>
+
+	<!-- Quiz List -->
+	<string name="quiz_list_screen_title">Your Quizzes</string>
+
+	<!-- Quiz Create -->
+	<string name="step">Step</string>
+	<string name="quiz_name_title">Create new Quiz</string>
+	<string name="quiz_name_input_placeholder">Enter Quiz name</string>
+	<string name="quiz_description_input_placeholder">Enter Quiz description</string>
+	<string name="next_button_label">Next</string>
+	<string name="use">Use</string>
+	<string name="ai">AI</string>
+	<string name="quiz_generate_title_lower_part">to generate questions</string>
+	<string name="quiz_generate_instruction_first">1. Upload files (presentations, books, notes)</string>
+	<string name="quiz_generate_instruction_second">2. AI will generate questions</string>
+	<string name="quiz_generate_instruction_third">3. Edit them as you want (on the next screen)</string>
+	<string name="file_input_label">Uploaded files</string>
+	<string name="file_input_placeholder">Nothing here yet</string>
+	<string name="add_file_button_label">Add files</string>
+	<string name="manual_creation_button_label">Skip</string>
+	<string name="ai_generation_button_label">Generate Questions</string>
+	<string name="generation_progress_dialog_title">Generating Questions</string>
+	<string name="generation_progress_dialog_subtitle_1">Analyzing sources…</string>
+	<string name="generation_progress_dialog_subtitle_2">Identifying core topics…</string>
+	<string name="generation_progress_dialog_subtitle_3">Laying preparation strategy…</string>
+	<string name="generation_progress_dialog_subtitle_4">Finishing up…</string>
+	<string name="quiz_review_title">Review generated questions</string>
+	<string name="quiz_save_button_label">Save Quiz</string>
+
+	<!-- Question Edit and Add Dialogs -->
+	<string name="edit_dialog_title">Edit Question</string>
+	<string name="description_field_placeholder">Enter question description</string>
+	<string name="variants_section_title">Options</string>
+	<string name="show_variants_button_label">Show Options</string>
+	<string name="variant_description_field_placeholder">Enter option description</string>
+	<string name="add_variant_button_label">Add option</string>
+	<string name="delete_question_button_label">Delete</string>
+	<string name="save_changed_question_button_label">Save</string>
+	<string name="add_dialog_title">Add Question</string>
+	<string name="add_question_button_label">Add Question</string>
+
+	<!-- Quiz Info -->
+	<string name="by">by</string>
+	<string name="solve_quiz_button_label">Attempt</string>
+	<string name="view_questions_button_label">Questions</string>
+	<string name="quiz_progress_title">Completion</string>
+	<string name="quiz_statistics_title">Statistics</string>
+	<string name="quiz_statistics_attempts_number">Attempts:</string>
+	<string name="quiz_statistics_rw_ratio">R/W ratio:</string>
+
+	<!-- Quiz Edit -->
+	<string name="quiz_edit_screen_title">Questions</string>
+
+	<!-- Quiz Result -->
+	<string name="quiz_result_screen_title">Congrats, you’re back on track 👏</string>
+	<string name="quiz_result_correct_answers">Correct answers</string>
+	<string name="quit_solving_button_label">Take a break</string>
+
+	<!-- AI Chat -->
+	<string name="chat_with">Chat with</string>
+	<string name="hint_proposal_text">Give me a hint 💡</string>
+	<string name="input_field_label">Enter your question</string>
+
+	<!-- Settings -->
+	<string name="settings_screen_title">Settings</string>
+	<string name="theme_setting_label">Theme</string>
+	<string name="theme_light_label">Light</string>
+	<string name="theme_dark_label">Dark</string>
+	<string name="language_setting_label">Language</string>
+	<string name="language_english_label">EN</string>
+	<string name="language_russian_label">RU</string>
+	<string name="unlock_feature_setting_label">Show Quiz on phone unlock</string>
 </resources>

@@ -22,4 +22,10 @@ class Comment(Base):
 
     author: Mapped["User"] = relationship("User", uselist=False, back_populates="comments")
     pack: Mapped["Pack"] = relationship("Pack", back_populates="comments", uselist=False)
-    replies: Mapped[list["Comment"]] = relationship("Comment", secondary=replies)
+    replies = relationship(
+        "Comment",
+        secondary=replies,
+        primaryjoin="Comment.id == replies.c.initial_id",
+        secondaryjoin="Comment.id == replies.c.reply_id",
+        lazy="noload",
+    )

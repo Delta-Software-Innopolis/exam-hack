@@ -3,17 +3,15 @@ package cards_handlers
 import (
 	"errors"
 	"net/http"
+	sc "quiz_core/internal/api/shortcuts"
+	structs "quiz_core/internal/api/structures"
 	"quiz_core/internal/db"
 	"quiz_core/internal/models"
-	structs "quiz_core/internal/api/structures"
-	sc "quiz_core/internal/api/shortcuts"
 	"strconv"
-	"strings"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
-
 
 func CreateCards(c *gin.Context) {
 	packID, err := strconv.ParseUint(c.Param("pack_id"), 10, 0)
@@ -55,40 +53,13 @@ func CreateCards(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to create cards"})
 		return
 	}
-	
-	createdCards := make([]models.Card, 0, len(req.Cards))
+
+	var createdCards []models.Card
 
 	err = db.DB.Transaction(func(tx *gorm.DB) error {
-		for _, cardReq := range req.Cards {
-			card := models.Card{
-				Question: strings.TrimSpace(cardReq.Question),
-				Hint:     strings.TrimSpace(cardReq.Hint),
-				PackID:   uint(packID),
-			}
-
-			if err := tx.Create(&card).Error; err != nil {
-				return err
-			}
-
-			correct := sc.CorrectIndexSet(cardReq.Correct)
-			options := make([]models.CardOption, 0, len(cardReq.Options))
-			for i, option := range cardReq.Options {
-				options = append(options, models.CardOption{
-					Content: strings.TrimSpace(option),
-					IsRight: correct[i],
-					CardID:  card.ID,
-				})
-			}
-
-			if err := tx.Create(&options).Error; err != nil {
-				return err
-			}
-
-			card.Options = options
-			createdCards = append(createdCards, card)
-		}
-
-		return nil
+		var err error
+		createdCards, err = sc.CreateCardsForPack(tx, uint(packID), req.Cards)
+		return err
 	})
 
 	if err != nil {
@@ -98,4 +69,3 @@ func CreateCards(c *gin.Context) {
 
 	c.JSON(http.StatusOK, structs.CardsResponse{Cards: sc.CardResponses(createdCards)})
 }
-

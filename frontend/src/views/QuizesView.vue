@@ -1,20 +1,20 @@
 <script setup lang="ts">
 import type { QuizItem } from "@/types"
-import type { ComputedRef, Ref } from "vue";
-import { ref, onBeforeMount, onUnmounted, computed, onMounted, onBeforeUpdate} from "vue";
-import QuizComponent from "@/components/newBasic/QuizComponent.vue";
+import type { Ref } from "vue";
+import { ref, onMounted, onBeforeUpdate} from "vue";
+import QuizComponent from "@/components/basic/QuizComponent.vue";
 import { useRouter } from "vue-router";
 import { useNewQuizzesStore } from "@/stores/new-quizzes";
-import BasicButton from "@/components/newBasic/BasicButton.vue";
+import PlusButton from "@/components/buttons/PlusButton.vue";
 
 const router = useRouter();
 const quizzesStore = useNewQuizzesStore()
-const quizzes = ref(quizzesStore.getAllQuizzesInfo()) as Ref<QuizItem[]>;
+const quizzes = ref(quizzesStore.getAllMyQuizzesInfo()) as Ref<QuizItem[]>;
 const isLoading = ref(true);
 
 onMounted(async ()=> {
   try {
-    await quizzesStore.fetchQuizzes();
+    await quizzesStore.fetchMyQuizzes();
   } catch (error) {
     console.error("Error", error);
   } finally {
@@ -22,7 +22,7 @@ onMounted(async ()=> {
   }
 })
 onBeforeUpdate(()=>{
-    quizzes.value = quizzesStore.getAllQuizzesInfo()
+    quizzes.value = quizzesStore.getAllMyQuizzesInfo()
 })
 </script>
 
@@ -31,7 +31,9 @@ onBeforeUpdate(()=>{
     <div class="top-container">
       <h1>Saved Quizzes</h1>
       <div class="actions-wrapper">
-        <BasicButton variant="primary" @click="router.push({name: 'quizzes-new'})">Create New</BasicButton>
+        <PlusButton variant="primary" @click="router.push({name: 'quizzes-new'})">
+            Create New
+        </PlusButton>
       </div>
     </div>
     <div class="Quiz-Container">
@@ -40,12 +42,12 @@ onBeforeUpdate(()=>{
         :mock="quiz.mock"
         :id="quiz.id"
         :name="quiz.name"
-        :author="quiz.author.username"
+        :author="quiz.author.name"
         :description="quiz.description"
       </QuizComponent>
     </div>
   </div>
-  <div v-else>Loading</div>
+  <div v-else>Loading...</div>
 </template>
 
 <style scoped>

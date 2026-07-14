@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import BasicButton from '@/components/newBasic/BasicButton.vue'
+import BasicButton from '@/components/basic/BasicButton.vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
@@ -8,8 +8,8 @@ const router = useRouter()
 
 <template>
 <div class="unknown">
-    <div class="unknown-wrapper">
-        <h3>🛠️ We developing this screen, come back later ⚠️</h3>
+    <div class="wrapper">
+        <h3>4️⃣0️⃣4️⃣ There is nothing on this page</h3>
         <BasicButton @click="router.push('/')">Go back</BasicButton>
     </div>
 </div>
@@ -26,7 +26,7 @@ const router = useRouter()
     height: 100%;
 }
 
-.unknown-wrapper { 
+.wrapper { 
     width: max-content;
     display: flex;
     flex-direction: column;
@@ -35,7 +35,7 @@ const router = useRouter()
     justify-content: center;
 }
 
-.unknown-wrapper button {
+.wrapper button {
     width: 16em;
 }
 </style>

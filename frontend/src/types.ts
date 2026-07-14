@@ -9,7 +9,7 @@ export interface Card {
 
 export interface Author {
     id: number,
-    username: string
+    name: string
 }
 
 export interface QuizItem {
@@ -22,6 +22,21 @@ export interface QuizItem {
     description?: string,
     cards: Card[],
     mock?: boolean
+}
+
+
+export interface QuizHubItem {
+    id: number,
+    name: string,
+    description?: string,
+    forked_from?: number,
+    author: Author,
+    cards: Card[],
+    raiting: number|null,
+    subject: string,
+    university: string,
+    professor: string,
+    course_book: string
 }
 
 

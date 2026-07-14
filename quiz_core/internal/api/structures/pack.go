@@ -3,12 +3,15 @@ package api_structures
 import "time"
 
 type CreatePackRequest struct {
-	Name string `json:"name" binding:"required"`
+	Name        string              `json:"name" binding:"required"`
+	Description *string             `json:"description"`
+	Cards       []CreateCardRequest `json:"cards"`
 }
 
 type PackResponse struct {
 	ID           uint         `json:"id"`
 	Name         string       `json:"name"`
+	Description  *string      `json:"description,omitempty"`
 	CreationDate time.Time    `json:"creation_date"`
 	UpdatingDate *time.Time   `json:"updating_date,omitempty"`
 	ShareCode    string       `json:"share_code"`
@@ -22,6 +25,7 @@ type PacksResponse struct {
 type PackWithCardsResponse struct {
 	ID           uint           `json:"id"`
 	Name         string         `json:"name"`
+	Description  *string        `json:"description,omitempty"`
 	CreationDate time.Time      `json:"creation_date"`
 	UpdatingDate *time.Time     `json:"updating_date,omitempty"`
 	ShareCode    string         `json:"share_code"`

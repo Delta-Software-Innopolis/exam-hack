@@ -1,24 +1,30 @@
 <script setup lang="ts">
 import { useRoute } from 'vue-router';
 import { useNewQuizzesStore } from '@/stores/new-quizzes';
-import { onBeforeMount, onUnmounted, type ComputedRef } from 'vue';
-import BasicButton from '@/components/newBasic/BasicButton.vue';
+import { onBeforeMount, onMounted, onUnmounted, type ComputedRef } from 'vue';
+import BasicButton from '@/components/basic/BasicButton.vue';
 import type { Card } from '@/types'
 import { ref, computed } from 'vue';
 import router from '@/router';
 
 import LeftArrowSVG from '@/assets/LeftArrow.svg'
 import RightArrowSVG from '@/assets/RightArrow.svg'
+import HintSVG from '@/assets/Hint.svg'
+import UnknownView from './UnknownView.vue';
 
 const route = useRoute();
 const quizzesStore = useNewQuizzesStore()
-const quiz = ref(quizzesStore.getQuizInfo(route.params.quizId))
+const quiz = ref(quizzesStore.getMyQuizInfo(route.params.quizId))
+const knownQuiz = computed(()=>quiz.value.id !== -1);
 const questionNum = ref(0)
-const card = computed(() => quiz.value.cards[questionNum.value]) as ComputedRef<Card>
+const card = computed(() => quiz.value ? quiz.value.cards[questionNum.value] : undefined) as ComputedRef<Card>
 const lastClicked = ref<number|null>(null)
+const isHintClicked = ref(false)
+
+console.log("CARD:", card)
 
 const progressWidth = computed(()=> {
-    const total = quiz.value.cards.length || 1
+    const total = (quiz.value ? quiz.value.cards.length : 1) || 1
     const current = questionNum.value + 1
     return `${current/total * 100}%` 
 })
@@ -29,7 +35,8 @@ const styles = ref<string[]>(new Array(4).fill('default'))
 
 function nextCard(){
     lastClicked.value = null
-    if (questionNum.value < quiz.value.cards.length - 1) {
+    isHintClicked.value = false
+    if (questionNum.value < (quiz.value ? quiz.value.cards.length : 1) - 1) {
         questionNum.value++;
         styles.value = new Array(4).fill('default')
         return
@@ -63,8 +70,10 @@ function checkAnswer(index:number) {
 
 }
 </script>
+
+
 <template>
-    <div class="container">
+    <div class="container" v-if="knownQuiz">
         <div class="main-container">
             <div class="progress-bar">
                 <div class="card-num">{{ questionNum + 1}} / {{ quiz.cards.length }}</div>
@@ -73,11 +82,11 @@ function checkAnswer(index:number) {
                 </div>
             </div>
             <div class="question">
-                <div class="title">{{ card.question }}</div>
+                <div class="title">{{ card?.question }}</div>
                 <div class="option-container">
                 <BasicButton 
                 class="option"
-                v-for="(option, index) in card.options"
+                v-for="(option, index) in card?.options"
                         :key="index"
                         :variant="styles[index]"
                         @click="checkAnswer(index)"
@@ -86,11 +95,14 @@ function checkAnswer(index:number) {
                 </div>
             </div>
             <div class="arrow-container">
-                <button  v-if="questionNum != 0" @click="prevCard" class="arrow" :disabled="isDisabled"><LeftArrowSVG/></button>
-                <button v-if="questionNum != quiz.cards.length-1" @click="nextCard" class="arrow" :disabled="isDisabled" style="right: 0; position: absolute;"><RightArrowSVG/></button>
+                <button  v-if="questionNum != 0" @click="prevCard" class="arrow left-arrow" :disabled="isDisabled"><LeftArrowSVG/></button>
+                <BasicButton title="Hint from AI" @click="isHintClicked = !isHintClicked" variant="ai" class="hint-button"><HintSVG/></BasicButton>
+                <button v-if="questionNum != quiz.cards.length-1" @click="nextCard" class="arrow right-arrow" :disabled="isDisabled"><RightArrowSVG/></button>
             </div>
+            <div class="hint-wrapper" v-if="isHintClicked"><div>{{ card?.hint }}</div></div>
         </div>
     </div>
+    <UnknownView v-else />
 </template>
 
 <style scoped>
@@ -182,6 +194,7 @@ function checkAnswer(index:number) {
     width: 100%;
     position: relative;
     display: flex;
+    justify-content: space-evenly;
 }
 
 .arrow {
@@ -215,6 +228,25 @@ function checkAnswer(index:number) {
     display: block;
     width: 32px;
     height: 32px;
+}
+
+.hint-wrapper {
+    width: 100%;
+    background-color: white;
+    font-size: 18px;
+    border-radius: 16px;
+    justify-content: left;
+    align-items: center;
+    padding: 16px;
+}
+
+.hint-button {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
 }
 
 </style>

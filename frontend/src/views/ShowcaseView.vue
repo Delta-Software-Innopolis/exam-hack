@@ -1,18 +1,40 @@
 <script setup lang="ts">
-  import BasicButton from '@/components/newBasic/BasicButton.vue';
-  import BasicInput from '@/components/newBasic/BasicInput.vue';
-  import QuizComponent from '@/components/newBasic/QuizComponent.vue';
-  import QuestionOption from '@/components/newBasic/QuestionOption.vue';
-  import QuizOption from '@/components/newBasic/QuizOption.vue';
-  import EditQuestion from '@/components/newBasic/EditQuestion.vue';
-  import NavigationSidebar from '@/components/NavigationSidebar.vue';
-  import { ref } from 'vue';
-import SettingsDialog from '@/components/SettingsDialog.vue';
+import BasicButton from '@/components/basic/BasicButton.vue';
+import BasicInput from '@/components/basic/BasicInput.vue';
+import QuizComponent from '@/components/basic/QuizComponent.vue';
+import QuestionOption from '@/components/basic/QuestionOption.vue';
+import QuizOption from '@/components/basic/QuizOption.vue';
+import EditQuestion from '@/components/basic/EditQuestion.vue';
+import { ref, useTemplateRef } from 'vue';
+import ModalWindow from '@/components/basic/ModalWindow.vue';
+import ModalQuestionView from '@/components/modals/ModalQuestionView.vue';
+import { MOCK_QUIZZES } from '@/stores/mock-quizzes';
+import ModalQuestionEdit from '@/components/modals/ModalQuestionEdit.vue';
+import ModalGenerationLoading from '@/components/modals/ModalGenerationLoading.vue';
+import ModalGenerationSettings from '@/components/modals/ModalGenerationSettings.vue';
 
-  const quiz = ref({ id: 1, name: "Quiz Name", author: "User", variant: "white" });
-  const option1 = ref({ option: "Option 1", isCorrect: false });
-  const option2 = ref({ option: "Option 2", isCorrect: true });
-  const question = ref({ index: 1, text: "what is Vue.js?" })
+const quiz = ref({ id: 1, name: "Quiz Name", author: "User", variant: "white", cards: [{}] });
+const mock_quiz = MOCK_QUIZZES[0];
+const option1 = ref({ option: "Option 1", isCorrect: false });
+const option2 = ref({ option: "Option 2", isCorrect: true });
+const question = ref({ index: 1, text: "what is Vue.js?" })
+
+const numberOfQuestions = ref(10);
+
+function _alert(...any: unknown[]) { alert(...any); }
+
+const modalView = useTemplateRef('modalView');
+const modalEdit = useTemplateRef('modalEdit');
+const modalHint = useTemplateRef('modalHint');
+const modalLoading = useTemplateRef('modalLoading');
+const modalSettings = useTemplateRef('modalSettings');
+
+function openModalLoading() {
+    modalLoading?.value?.open();
+    setTimeout(()=>{
+        modalLoading?.value?.close();
+    }, 20_000)
+}
 </script>
 
 <template>
@@ -37,6 +59,28 @@ import SettingsDialog from '@/components/SettingsDialog.vue';
     <QuizOption variant="red">Option 3: option description</QuizOption>
     <EditQuestion :index="question.index" :question="question.text"></EditQuestion>
     <SettingsDialog></SettingsDialog>
+    <BasicButton @click="modalView?.open(mock_quiz?.cards[0])">Open modalView</BasicButton>
+    <BasicButton @click="modalEdit?.open(mock_quiz?.cards[0])">Open modalEdit</BasicButton>
+    <ModalQuestionView ref="modalView"/>
+    <ModalQuestionEdit ref="modalEdit"
+        @click-delete="(q)=>_alert(`clicked delete on ${q}`)"
+    />
+
+
+    <ModalWindow ref="modalHint">
+        Hint cool hint etc...
+    </ModalWindow>
+
+    <BasicButton @click="modalHint?.open()">Open modal hint</BasicButton>
+
+    <ModalGenerationLoading ref="modalLoading"/>
+    <BasicButton @click="openModalLoading">Open modal loading</BasicButton>
+
+    <ModalGenerationSettings ref="modalSettings"
+        v-model:number-of-questions="numberOfQuestions"
+        @click-generate="_alert(`clicked generate ${numberOfQuestions}`)"
+    />
+    <BasicButton @click="modalSettings?.open()">Open modal settings</BasicButton>
   </div>
 </template>
 

@@ -15,20 +15,19 @@ textarea {
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 1px solid #D9D9D9;
+  border: 1px solid var(--secondary);
 
   padding: 16px;
-  padding-top: 8px;
-  padding-bottom: 8px;
+  padding-top: 12px;
+  padding-bottom: 12px;
   
   font-size: 16px;
 
   border-radius: 16px;
 
-  background-color: white;
-  color: #757575;
-
-  resize: none;
+  background-color: var(--white);
+  color: var(--secondary);
+  resize: vertical;
 }
 
 textarea::placeholder {
@@ -36,10 +35,19 @@ textarea::placeholder {
 }
 
 textarea:hover {
-  filter: brightness(0.95);
+  background-color: var(--background-light);
 }
 
-textarea:active {
-  filter: brightness(0.8);
+textarea:focus {
+  border: 1px solid var(--secondary-dimm);
+  background-color: var(--white);
+  color: var(--secondary-dimm);
+  outline: none;
+}
+
+textarea:disabled {
+  border: 1px dashed var(--secondary);
+  background-color: var(--background-light);
+  color: var(--secondary);
 }
 </style>

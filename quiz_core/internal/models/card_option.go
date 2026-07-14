@@ -6,7 +6,7 @@ type CardOption struct {
 	IsRight bool   `gorm:"column:is_right;not null" json:"is_right"`
 	CardID  uint   `gorm:"column:card_id;not null" json:"card_id"`
 
-	Card Card `gorm:"foreignKey:CardID;references:ID" json:"card,omitempty"`
+	Card Card `gorm:"foreignKey:CardID;references:ID;constraint:OnDelete:CASCADE" json:"card,omitempty"`
 }
 
 func (CardOption) TableName() string {

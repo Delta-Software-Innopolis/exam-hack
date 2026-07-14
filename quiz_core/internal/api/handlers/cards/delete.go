@@ -7,12 +7,10 @@ import (
 	sc "quiz_core/internal/api/shortcuts"
 	structs "quiz_core/internal/api/structures"
 	"quiz_core/internal/db"
-	"quiz_core/internal/models"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
-
 
 func DeleteCard(c *gin.Context) {
 	var req structs.DeleteCardsRequest
@@ -26,7 +24,6 @@ func DeleteCard(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "cards are required"})
 		return
 	}
-
 
 	authorID, ok := sc.CurrentUserID(c)
 
@@ -42,12 +39,8 @@ func DeleteCard(c *gin.Context) {
 				return err
 			}
 
-			if err := tx.Where("card_id = ?", card.ID).Delete(&models.CardOption{}).Error; err != nil {
-				return err
-			}
-
 			if err := tx.Delete(&card).Error; err != nil {
-				return err;
+				return err
 			}
 		}
 

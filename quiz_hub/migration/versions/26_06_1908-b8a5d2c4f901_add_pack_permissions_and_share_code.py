@@ -9,7 +9,7 @@ from typing import Sequence, Union
 
 from alembic import op
 import sqlalchemy as sa
-
+from sqlalchemy.engine.reflection import Inspector
 
 # revision identifiers, used by Alembic.
 revision: str = 'b8a5d2c4f901'
@@ -20,25 +20,34 @@ depends_on: Union[str, Sequence[str], None] = None
 
 def upgrade() -> None:
     """Upgrade schema."""
-    op.add_column('packs', sa.Column('share_code', sa.String(length=64), nullable=True))
+    bind = op.get_bind()
+    inspector = Inspector.from_engine(bind)
+
+    op.alter_column('packs', 'share_code', nullable=True)
+    op.drop_index("ix_packs_share_code", 'packs')
     op.create_index('ix_packs_share_code', 'packs', ['share_code'], unique=False)
     op.execute("UPDATE packs SET share_code = 'mock_code_lol'|| id")
     op.drop_index("ix_packs_share_code", 'packs')
     op.create_index('ix_packs_share_code', 'packs', ['share_code'], unique=True)
     op.alter_column('packs', 'share_code', nullable=False)
 
-    op.create_table(
-        'pack_permissions',
-        sa.Column('user_id', sa.Integer(), nullable=False),
-        sa.Column('pack_id', sa.Integer(), nullable=False),
-        sa.Column('permission', sa.Integer(), nullable=False),
-        sa.ForeignKeyConstraint(['pack_id'], ['packs.id']),
-        sa.ForeignKeyConstraint(['user_id'], ['users.id']),
-        sa.PrimaryKeyConstraint('user_id', 'pack_id'),
-    )
-    op.create_index(op.f('ix_pack_permissions_user_id'), 'pack_permissions', ['user_id'], unique=False)
-    op.create_index(op.f('ix_pack_permissions_pack_id'), 'pack_permissions', ['pack_id'], unique=False)
-    op.create_index(op.f('ix_pack_permissions_permission'), 'pack_permissions', ['permission'], unique=False)
+    if not inspector.has_table("pack_permissions"):
+        op.create_table(
+            'pack_permissions',
+            sa.Column('user_id', sa.Integer(), nullable=False),
+            sa.Column('pack_id', sa.Integer(), nullable=False),
+            sa.Column('permission', sa.Integer(), nullable=False),
+            sa.ForeignKeyConstraint(['pack_id'], ['packs.id'], ondelete="CASCADE"),
+            sa.ForeignKeyConstraint(['user_id'], ['users.id'], ondelete="CASCADE"),
+            sa.PrimaryKeyConstraint('user_id', 'pack_id'),
+)
+    index_names = ["ix_pack_permissions_pack_id", "ix_pack_permissions_user_id", "ix_pack_permissions_permission"]
+    for index_name in index_names:
+        indexes = {ix["name"] for ix in inspector.get_indexes("pack_permissions")}
+        if index_name not in indexes:
+            op.create_index(op.f('ix_pack_permissions_user_id'), 'pack_permissions', ['user_id'], unique=False)
+            op.create_index(op.f('ix_pack_permissions_pack_id'), 'pack_permissions', ['pack_id'], unique=False)
+            op.create_index(op.f('ix_pack_permissions_permission'), 'pack_permissions', ['permission'], unique=False)
 
 
 def downgrade() -> None:

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import BasicButton from '@/components/newBasic/BasicButton.vue';
+import BasicButton from '@/components/basic/BasicButton.vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();

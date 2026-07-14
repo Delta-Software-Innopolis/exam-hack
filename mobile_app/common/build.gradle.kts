@@ -37,10 +37,16 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.material3)
 
     // Kotlinx
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
+
+    // Navigation
+    implementation(libs.decompose.core)
+    implementation(libs.decompose.compose)
+    implementation(libs.decompose.experimental)
 
     // Project
     implementation(project(":resources"))

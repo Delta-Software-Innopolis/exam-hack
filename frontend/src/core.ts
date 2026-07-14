@@ -14,14 +14,12 @@ export async function fetchCreateQuiz(
 ): Promise<boolean> {
     const nm = useNetworkManager()
     try {
-        let quiz_id = await __createPack(title, description)
-        await __createCards(quiz_id, questions)
+        let quiz_id = await __createPack(title, description, questions);
         return true
     } catch (err) {
         try {
             let response = await nm.validate_token()  // this refreshes token
-            let quiz_id = await __createPack(title, description)
-            await __createCards(quiz_id, questions)
+            let quiz_id = await __createPack(title, description, questions);
             return true
         } catch (err) {
             console.log(err)
@@ -35,13 +33,18 @@ export async function fetchCreateQuiz(
 async function __createPack(
     title: string,
     description: string,
+    cards: Card[]
 ): Promise<number> {
     const nm = useNetworkManager()
     const tokenStore = useTokenStore()
     try {
         const response = await nm.fetch_core('/core/pack', {
             method: 'POST',
-            body: JSON.stringify({ name: title }),
+            body: JSON.stringify({
+                name: title,
+                description: description,
+                cards: cards
+            }),
         })
         if (!response.ok) {
             console.error(response)

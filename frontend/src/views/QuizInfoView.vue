@@ -1,125 +1,68 @@
 <script setup lang="ts">
-import { ref, watch, onUnmounted, useTemplateRef, type Ref, onMounted } from 'vue';
+import { ref, watch, useTemplateRef, computed } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
-import BasicButton from '@/components/newBasic/BasicButton.vue';
-import EditQuestion from '@/components/newBasic/EditQuestion.vue';
-import type { Card, CardType } from '@/types';
-import BasicInput from '@/components/newBasic/BasicInput.vue';
-import CrossSVG from '@/assets/Cross.svg'
-import CheckSVG from '@/assets/Check.svg'
+import BasicButton from '@/components/basic/BasicButton.vue';
+import type { Card, QuizItem } from '@/types';
 import { updateCards, createCards, deleteCards } from '@/core'
 import { useNewQuizzesStore } from '@/stores/new-quizzes';
+import QuizQuestionsList from '@/components/quiz/QuizQuestionsList.vue';
+import ModalQuestionEdit from '@/components/modals/ModalQuestionEdit.vue';
+import TrashButton from '@/components/buttons/TrashButton.vue';
+import PlayButton from '@/components/buttons/PlayButton.vue';
+import UnknownView from './UnknownView.vue';
+import ModalQuestionAdd from '@/components/modals/ModalQuestionAdd.vue';
+import PlusButton from '@/components/buttons/PlusButton.vue';
 
-const route = useRoute()
-const router = useRouter()
-const quizzesStore = useNewQuizzesStore()
-const quiz = ref(quizzesStore.getQuizInfo(route.params.quizId))
+const route = useRoute();
+const router = useRouter();
+const quizzesStore = useNewQuizzesStore();
+const quiz = ref<QuizItem>(quizzesStore.getMyQuizInfo(route.params.quizId));
+const knownQuiz = computed(()=>quiz.value.id !== -1);
 
 const hasUnsavedChanges = ref(false)
 const deletedCards = ref<number[]>([])
 const isSaving = ref(false)
+
+const activeQuestion = ref<Card>();
 
 
 function notImplemented() {
     alert('Thank you for trying!\nThis will be implemented later 🫡')
 }
 
-const NEW_QUESTION = { 
-    id: -1,
-    question: 'new question',
-    options: [
-        'opt 1',
-        'opt 2',
-        'opt 3',
-        'opt 4',
-    ],
-    correct: [1],
-    hint: 'some hint here',
-    explanation: 'some explanation here',
-}
-
-const overlayClass = ref({'hidden-overlay': true})
-const showOverlay = ref(false)
-const activeQuestion: Ref<Card> = ref(structuredClone(NEW_QUESTION))
-const activeQuestionId = ref(-1)
-const newQuestion = ref(true)
-const overlayRef = useTemplateRef('overlay')
+const modalEdit = useTemplateRef('modal-edit');
+const modalAdd = useTemplateRef('modal-add');
 
 
-function closeOverlay() {
-    overlayClass.value['hidden-overlay'] = true;
-    setTimeout(()=>{ showOverlay.value = false; }, 180)
-    activeQuestionId.value = -1
+function onStartEditQuestion(q_idx: number) {
+    let q = quiz?.value?.cards.at(q_idx);
+    modalEdit.value?.open(q);
 }
 
 
-function onmousedown(event: MouseEvent) {
-    if (overlayRef.value && event.target === overlayRef.value) {
-        closeOverlay()
-    }
-}
-
-
-function openOverlay() {
-    overlayClass.value['hidden-overlay'] = false;
-    showOverlay.value = true;
-}
-
-
-function onStartAddNewQuestion() {
-    if (!newQuestion.value) {
-        newQuestion.value = true
-        activeQuestion.value = structuredClone(NEW_QUESTION)
-    }
-    activeQuestionId.value = quiz.value.cards.length + 1
-    openOverlay()
-}
-
-function onStartEditQuestion(q_id: number) {
-    let q = quiz.value.cards[q_id]
-    if (q) {
-        newQuestion.value = false
-        activeQuestion.value = q 
-        activeQuestionId.value = q_id
-        
-
-        openOverlay()
-    }
-}
-
-function chooseCorrectOption(i: number) {
-    activeQuestion.value.correct = [i]
-    hasUnsavedChanges.value = true
-}
-
-
-onMounted(()=>{
-    window.addEventListener('mousedown', onmousedown)
-})
-
-onUnmounted(()=>{
-    window.removeEventListener('mousedown', onmousedown)
-})
-
-function onAddQuestion() {
-    quiz.value.cards.push(activeQuestion.value)
-    activeQuestion.value = structuredClone(NEW_QUESTION)
-    hasUnsavedChanges.value = true
-    closeOverlay()
-}
-
-function onDeleteQuestion() {
-    const card = quiz.value.cards[activeQuestionId.value]
+function onDeleteQuestion(q: Card) {
+    if (quiz.value === undefined) { return; }
+    const cardIdx = quiz.value.cards.indexOf(q);
+    if (cardIdx === -1) { return; }
+    const card = quiz.value.cards.at(cardIdx);
+    if (card === undefined) { return; }
 
     if (card.id > 0) {
         deletedCards.value.push(card.id)
     }
 
-    quiz.value.cards.splice(activeQuestionId.value, 1)
-    // for (const [i, card] of quiz.value.cards.entries()) { card.id = i+1 }  // fix the ids
-    activeQuestion.value = structuredClone(NEW_QUESTION)
+    activeQuestion.value = undefined;
+    quiz.value.cards.splice(cardIdx, 1)
     hasUnsavedChanges.value = true
-    closeOverlay()
+    modalEdit?.value?.close();
+}
+
+
+function onAddQuestion(q: Card) {
+    if (quiz.value === undefined) { return; }
+    quiz.value.cards.push(q);
+    hasUnsavedChanges.value = true;
+    modalAdd?.value?.close();
 }
 
 watch(
@@ -133,6 +76,7 @@ watch(
 )
 
 async function submitChanges() {
+    if (quiz.value === undefined) { return }
     isSaving.value = true
 
     const updatedCards = quiz.value.cards.filter((card: Card) => card.id > 0)
@@ -158,42 +102,20 @@ async function submitChanges() {
     deletedCards.value = []
     hasUnsavedChanges.value = false
 
-    await quizzesStore.fetchQuizzes()
+    await quizzesStore.fetchMyQuizzes()
     isSaving.value = false
 }
-
-
 </script>
 
 <template>
-    <div class="main-container">
-        <div ref="overlay" class="overlay" v-if="showOverlay" :class="overlayClass">
-
-            <div class="question-edit-window" v-if="activeQuestion">
-                <div class="top-line">
-                    <h3 v-if="newQuestion">Add {{ activeQuestionId }}th Question</h3>
-                    <h3 v-else>Edit Question {{ activeQuestionId }}</h3>
-                    <CrossSVG @click="closeOverlay"/>
-                </div>
-                <BasicInput v-model="activeQuestion.question"/>
-                <h4>Options</h4>
-                <div class="options-wrapper">
-                    <div class="option-item" v-for="i in activeQuestion.options.length">
-                        <input v-model="activeQuestion.options[i-1]"></input>
-                        <CheckSVG v-if="activeQuestion.correct[0] == i-1" class="option-check"/>
-                        <CrossSVG v-else class="option-cross" @click="chooseCorrectOption(i-1)"/>
-                    </div>
-                </div>
-                <BasicButton variant="primary" v-if="newQuestion" @click="onAddQuestion">Add Question</BasicButton>
-                <BasicButton variant="primary" v-else class="red-button" @click="onDeleteQuestion">Delete Question</BasicButton>
-            </div>
-
-        </div>
+    <div class="main-container" v-if="knownQuiz">
+        <ModalQuestionEdit ref="modal-edit" @click-delete="onDeleteQuestion"/>
+        <ModalQuestionAdd ref="modal-add" @click-add="onAddQuestion" />
         <div class="left-side">
             <div class="title">
-                <h1>{{ quiz.name }}</h1>
+                <h1>{{ quiz.name || 'Unknown Quiz' }}</h1>
                 <span class="author">
-                    by <a href="#">{{ quiz.author.username || 'You'}}</a>
+                    by <a href="#">{{ quiz.author.name || 'You'}}</a>
                 </span>
             </div>
             <div class="description">
@@ -219,11 +141,18 @@ async function submitChanges() {
                 </div>
                 <div class="actions">
                     <div class="top-buttons">
-                        <BasicButton variant="primary" @click="router.push(`/quizzes/${quiz.id}/solving`)">Attempt</BasicButton>
-                        <BasicButton variant="secondary" @click="notImplemented">To favourites</BasicButton>
+                        <PlayButton v-if="knownQuiz" variant="primary" 
+                            @click="router.push(`/quizzes/${route.params.quizId}/solving`)"
+                        >
+                            Attempt
+                        </PlayButton>
                     </div>
                     <div class="bottom-buttons">
-                        <BasicButton variant="primary" class="red-button" @click="notImplemented">Delete</BasicButton>
+                        <TrashButton v-if="knownQuiz" variant="red" 
+                            @click="notImplemented"
+                        >
+                            Delete
+                        </TrashButton>
                     </div>
                 </div>
             </div>
@@ -232,15 +161,16 @@ async function submitChanges() {
             <div class="top-action-bar">
                 <h2>Questions</h2>
                 <div class="edit-quiz-buttons">
-                    <BasicButton variant="secondary" @click="onStartAddNewQuestion()">Add</BasicButton>
+                    <PlusButton variant="secondary" @click="modalAdd?.open()">Add</PlusButton>
                     <BasicButton v-if="hasUnsavedChanges" variant="primary" @click="submitChanges">Submit changes</BasicButton>
                 </div>
             </div>
-            <div class="questions-wrapper">
-                <EditQuestion @click="onStartEditQuestion(i)" :index="i+1" :question="q.question" v-for="[i, q] in quiz.cards.entries()"/>
-            </div>
+            <QuizQuestionsList :cards="quiz.cards" variant="edit" 
+                @click-question-item="onStartEditQuestion"
+            />
         </div>
     </div>
+    <UnknownView v-else />
 </template>
 
 
@@ -250,129 +180,6 @@ async function submitChanges() {
     gap: 32px;
     display: flex;
     flex-wrap: wrap;
-}
-
-.question-edit-window {
-    background-color: var(--white);
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    border-radius: 16px;
-    min-width: 26em;
-
-    --icon-width: 12px;
-    --icon-height: 12px;
-}
-
-.question-edit-window .top-line {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: top;
-}
-
-.question-edit-window input {
-    border-radius: 8px !important;
-}
-
-.question-edit-window h3, .question-edit-window h4 {
-    font-weight: bold;
-    font-size: 16px;
-}
-
-.question-edit-window h4 {
-    color: var(--secondary)
-}
-
-.options-wrapper {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    gap: 8px;
-}
-
-.options-wrapper svg {
-    border: 1px solid black;
-    border-radius: 4px;
-    background-color: var(--white);
-    cursor: pointer;
-}
-
-.option-item {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    width: 100%;
-    background-color: var(--background-blueish);
-    padding: 8px;
-    border-radius: 8px;
-}
-
-.option-item input {
-    width: 100%;
-    background: none;
-    border: none;
-    padding-left: 4px;
-}
-
-.option-item input:focus{
-    outline: none;
-    border: none;
-}
-
-.option-cross {
-    --icon-stroke: var(--raddish);
-    padding: 5px;
-    --icon-stroke-width: 2.5px;
-    --icon-width: 24px;
-    --icon-height: 24px;
-}
-
-.option-check {
-    --icon-stroke: var(--primary);
-    padding: 1px;
-    --icon-stroke-width: 2.2px;
-    --icon-width: 24px;
-    --icon-height: 24px;
-}
-
-.question-edit-window .top-line svg {
-    cursor: pointer;
-}
-
-.overlay {
-  z-index: 999;
-  box-sizing: border-box;
-  position: fixed;
-  top: 0;
-  left: 0;
-  padding: 0;
-  background-color: rgba(0,0,0,0.25);
-  margin: 0;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  width: 100vw;
-  height: 100vh;
-  box-sizing: border-box;
-  opacity: 1;
-  animation: appear 0.2s
-}
-
-.hidden-overlay {
-    animation: disappear 0.2s;
-}
-
-@keyframes disappear {
-    0% { opacity: 1; }
-    100% { opacity: 0;}
-}
-
-@keyframes appear {
-    0% { opacity: 0; }
-    100% { opacity: 1;}
 }
 
 button a {
@@ -478,18 +285,6 @@ button a {
 }
 .red-button:hover {
     background-color: var(--raddish-dimm);
-}
-
-
-.questions-wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    background-color: var(--white);
-    padding: 16px;
-    border-radius: 16px;
-    height: 100%;
-    overflow-y: auto;
 }
 
 .edit-quiz-buttons {

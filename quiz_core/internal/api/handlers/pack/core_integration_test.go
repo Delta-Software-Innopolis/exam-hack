@@ -34,21 +34,23 @@ type coreTestApp struct {
 }
 
 type coreResponse struct {
-	ID        uint                `json:"id"`
-	Name      string              `json:"name"`
-	ShareCode string              `json:"share_code"`
-	Author    userResponse        `json:"author"`
-	Packs     []packWithCardsBody `json:"packs"`
-	Cards     []cardBody          `json:"cards"`
-	Error     string              `json:"error"`
+	ID          uint                `json:"id"`
+	Name        string              `json:"name"`
+	Description *string             `json:"description"`
+	ShareCode   string              `json:"share_code"`
+	Author      userResponse        `json:"author"`
+	Packs       []packWithCardsBody `json:"packs"`
+	Cards       []cardBody          `json:"cards"`
+	Error       string              `json:"error"`
 }
 
 type packWithCardsBody struct {
-	ID        uint         `json:"id"`
-	Name      string       `json:"name"`
-	ShareCode string       `json:"share_code"`
-	Author    userResponse `json:"author"`
-	Cards     []cardBody   `json:"cards"`
+	ID          uint         `json:"id"`
+	Name        string       `json:"name"`
+	Description *string      `json:"description"`
+	ShareCode   string       `json:"share_code"`
+	Author      userResponse `json:"author"`
+	Cards       []cardBody   `json:"cards"`
 }
 
 type userResponse struct {
@@ -80,6 +82,10 @@ func newCoreTestApp(t *testing.T) *coreTestApp {
 		t.Fatalf("get sql db: %v", err)
 	}
 	sqlDB.SetMaxOpenConns(1)
+
+	if err := testDB.Exec("PRAGMA foreign_keys = ON").Error; err != nil {
+		t.Fatalf("enable foreign keys: %v", err)
+	}
 
 	createTestSchema(t, testDB)
 	db.DB = testDB
@@ -114,7 +120,7 @@ func newCoreTestApp(t *testing.T) *coreTestApp {
 	protected.POST("/pack/:share_code", AddSharedPack)
 	protected.POST("/cards/:pack_id", cards.CreateCards)
 	protected.PATCH("/cards", cards.UpdateCards)
-	protected.DELETE("/cards/:card_id", cards.DeleteCard)
+	protected.DELETE("/cards", cards.DeleteCard)
 	protected.GET("/cards/:pack_id", cards.GetCards)
 
 	app.router = router
@@ -136,28 +142,34 @@ func createTestSchema(t *testing.T, testDB *gorm.DB) {
 		`CREATE TABLE packs (
 			id integer PRIMARY KEY AUTOINCREMENT,
 			name varchar(50) NOT NULL,
+			description text,
 			creation_date datetime NOT NULL,
 			updating_date datetime,
 			share_code varchar(64) NOT NULL UNIQUE,
-			author_id integer NOT NULL
+			author_id integer NOT NULL,
+			FOREIGN KEY (author_id) REFERENCES users(id)
 		)`,
 		`CREATE TABLE pack_permissions (
 			user_id integer NOT NULL,
 			pack_id integer NOT NULL,
 			permission integer NOT NULL,
-			PRIMARY KEY (user_id, pack_id)
+			PRIMARY KEY (user_id, pack_id),
+			FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+			FOREIGN KEY (pack_id) REFERENCES packs(id) ON DELETE CASCADE
 		)`,
 		`CREATE TABLE cards (
 			id integer PRIMARY KEY AUTOINCREMENT,
 			question text NOT NULL,
 			pack_id integer NOT NULL,
-			hint text NOT NULL
+			hint text NOT NULL,
+			FOREIGN KEY (pack_id) REFERENCES packs(id) ON DELETE CASCADE
 		)`,
 		`CREATE TABLE card_options (
 			id integer PRIMARY KEY AUTOINCREMENT,
 			content text NOT NULL,
 			is_right boolean NOT NULL,
-			card_id integer NOT NULL
+			card_id integer NOT NULL,
+			FOREIGN KEY (card_id) REFERENCES cards(id) ON DELETE CASCADE
 		)`,
 		`CREATE TABLE forks (
 			fork_id integer NOT NULL,
@@ -198,6 +210,7 @@ func createTestSchema(t *testing.T, testDB *gorm.DB) {
 func Test_CoreHandlersIntegration(t *testing.T) {
 	testData := map[string][]string{
 		"create pack grants owner permission": {"owner", "Biology"},
+		"create pack with cards":              {"owner", "Physics", "Mechanics basics"},
 		"create and get cards":                {"owner", "Biology"},
 		"update card":                         {"owner", "Biology", "Updated question"},
 		"get packs by permission":             {"owner", "guest", "Shared"},
@@ -210,6 +223,7 @@ func Test_CoreHandlersIntegration(t *testing.T) {
 
 	expectedData := map[string][]string{
 		"create pack grants owner permission": {"1"},
+		"create pack with cards":              {"1", "2"},
 		"create and get cards":                {"1"},
 		"update card":                         {"Updated question"},
 		"get packs by permission":             {"1"},
@@ -237,6 +251,45 @@ func Test_CoreHandlersIntegration(t *testing.T) {
 				}
 				if permission.Permission != 1 {
 					t.Fatalf("expected permission 1, got %d", permission.Permission)
+				}
+			},
+		},
+		{
+			name: "create pack with cards",
+			verifyResult: func(t *testing.T, p *coreTestApp, testName string) {
+				payload := cardsPayload()
+				payload["name"] = testData[testName][1]
+				payload["description"] = testData[testName][2]
+
+				resp, body := p.postJSON(t, "/core/pack", payload, "owner")
+				assertStatus(t, resp, http.StatusCreated)
+
+				if body.Description == nil || *body.Description != testData[testName][2] {
+					t.Fatalf("expected description %q, got %#v", testData[testName][2], body.Description)
+				}
+				if len(body.Cards) != mustAtoi(t, expectedData[testName][0]) {
+					t.Fatalf("expected one created card, got %#v", body.Cards)
+				}
+				if body.Cards[0].ID == 0 {
+					t.Fatal("expected created card id")
+				}
+				if len(body.Cards[0].Options) != mustAtoi(t, expectedData[testName][1]) {
+					t.Fatalf("expected two options, got %#v", body.Cards[0].Options)
+				}
+				if len(body.Cards[0].Correct) != 1 || body.Cards[0].Correct[0] != 1 {
+					t.Fatalf("unexpected correct indexes: %#v", body.Cards[0].Correct)
+				}
+
+				var cardsCount int64
+				p.db.Model(&models.Card{}).Where("pack_id = ?", body.ID).Count(&cardsCount)
+				if cardsCount != int64(mustAtoi(t, expectedData[testName][0])) {
+					t.Fatalf("expected one persisted card, got %d", cardsCount)
+				}
+
+				var optionsCount int64
+				p.db.Model(&models.CardOption{}).Where("card_id = ?", body.Cards[0].ID).Count(&optionsCount)
+				if optionsCount != int64(mustAtoi(t, expectedData[testName][1])) {
+					t.Fatalf("expected two persisted options, got %d", optionsCount)
 				}
 			},
 		},
@@ -353,7 +406,7 @@ func Test_CoreHandlersIntegration(t *testing.T) {
 				p.cards["main"] = p.createCard(p.t, p.packs["main"].ID)
 			},
 			verifyResult: func(t *testing.T, p *coreTestApp, testName string) {
-				resp, _ := p.delete(t, "/core/cards/"+itoa(p.cards["main"].ID), "owner")
+				resp, _ := p.deleteJSON(t, "/core/cards", map[string]any{"cards": []uint{p.cards["main"].ID}}, "owner")
 				assertStatus(t, resp, http.StatusOK)
 
 				var count int64
@@ -423,7 +476,7 @@ func (p *coreTestApp) createPack(t *testing.T, name string, username string) mod
 	var pack models.Pack
 	if err := p.db.Transaction(func(tx *gorm.DB) error {
 		var err error
-		pack, err = sc.CreatePackWithOwnerPermission(tx, name, p.users[username].ID)
+		pack, err = sc.CreatePackWithOwnerPermission(tx, name, nil, p.users[username].ID)
 		return err
 	}); err != nil {
 		t.Fatalf("create pack: %v", err)
@@ -496,6 +549,11 @@ func (p *coreTestApp) get(t *testing.T, path string, username string) (*httptest
 func (p *coreTestApp) delete(t *testing.T, path string, username string) (*httptest.ResponseRecorder, coreResponse) {
 	t.Helper()
 	return p.requestJSON(t, http.MethodDelete, path, nil, username)
+}
+
+func (p *coreTestApp) deleteJSON(t *testing.T, path string, body any, username string) (*httptest.ResponseRecorder, coreResponse) {
+	t.Helper()
+	return p.requestJSON(t, http.MethodDelete, path, body, username)
 }
 
 func (p *coreTestApp) requestJSON(t *testing.T, method string, path string, body any, username string) (*httptest.ResponseRecorder, coreResponse) {
