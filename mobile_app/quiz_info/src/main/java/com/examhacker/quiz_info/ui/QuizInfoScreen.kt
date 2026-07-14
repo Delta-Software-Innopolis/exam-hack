@@ -168,7 +168,7 @@ private fun QuizNameWithAuthor(
     ) {
         Text(
             text = quizName,
-            fontSize = Dimensions.SubtitleFontSize,
+            fontSize = Dimensions.TitleSmallFontSize,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Start
         )

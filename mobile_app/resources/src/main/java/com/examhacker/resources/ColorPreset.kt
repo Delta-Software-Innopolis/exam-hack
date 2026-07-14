@@ -30,6 +30,7 @@ class ColorPreset {
         val TextWarningTertiary = Color(0xFFBF6A02)
         val IconPositiveTertiary = Color(0xFF14AE5C)
 
+        val NotImplementedSecondary = Color(0xFFFF0000)
         val ErrorPrimary = Color(0xFFFF4F4F)
         val PositivePrimary = Color(0xFF00B093)
         val PositiveSecondary = Color(0xFFA1E3D8)
