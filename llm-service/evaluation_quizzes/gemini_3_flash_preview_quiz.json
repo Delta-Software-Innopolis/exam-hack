@@ -1,41 +1,41 @@
 [
   {
-    "question": "According to the text, what is the primary requirement for a table to be in First Normal Form (1NF)?",
+    "question": "According to the text, what is the primary requirement for a table to transition from 1NF to 2NF?",
     "options": [
-      "It must have no transitive dependencies.",
-      "Each table cell must contain a single atomic value.",
-      "It must have a composite primary key.",
-      "All non-prime attributes must depend on other non-prime attributes."
+      "It must eliminate all transitive dependencies.",
+      "It must eliminate all partial dependencies, ensuring non-prime attributes depend on the entire primary key.",
+      "It must ensure that every cell contains only atomic values.",
+      "It must be converted into a single-column primary key format."
     ],
     "correct_indices": [
       1
     ],
-    "hint": "1NF focuses on the structure of individual cells and the uniqueness of rows."
+    "hint": "2NF focuses on the relationship between non-key columns and composite primary keys."
   },
   {
-    "question": "Under what specific condition is a table automatically in Second Normal Form (2NF) once it has achieved 1NF?",
+    "question": "Which normal form is specifically concerned with removing transitive dependencies, where non-prime attributes depend on other non-prime attributes?",
     "options": [
-      "When the table contains no foreign keys.",
-      "When the table has a single-column primary key.",
-      "When all columns are of the same data type.",
-      "When the table has more than three columns."
-    ],
-    "correct_indices": [
-      1
-    ],
-    "hint": "Partial dependency can only occur if the primary key consists of more than one column."
-  },
-  {
-    "question": "Which of the following is identified as a potential drawback of database normalization?",
-    "options": [
-      "Increased data redundancy.",
-      "Higher risk of data anomalies.",
-      "Performance overhead due to joining multiple tables.",
-      "Inconsistent data types within columns."
+      "First Normal Form (1NF)",
+      "Second Normal Form (2NF)",
+      "Third Normal Form (3NF)",
+      "Boyce-Codd Normal Form (BCNF)"
     ],
     "correct_indices": [
       2
     ],
-    "hint": "Think about how splitting data into many tables affects the speed of retrieving that data."
+    "hint": "This form is often summarized by the phrase: 'Every attribute must depend on the key, the whole key, and nothing but the key'."
+  },
+  {
+    "question": "What is a cited drawback of applying high levels of normalization to a database?",
+    "options": [
+      "Increased data redundancy across multiple tables.",
+      "Higher risk of data anomalies during update operations.",
+      "Performance overhead due to the need for joining multiple tables in queries.",
+      "Inability to use primary keys for row identification."
+    ],
+    "correct_indices": [
+      3
+    ],
+    "hint": "Consider how splitting data into many tables affects the complexity of retrieving that data."
   }
 ]

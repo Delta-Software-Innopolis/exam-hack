@@ -2,40 +2,40 @@
   {
     "question": "Which of the following is a requirement for a table to be in First Normal Form (1NF)?",
     "options": [
-      "All non-prime attributes must be fully functionally dependent on the entire primary key",
-      "Each table cell must contain a single (atomic) value",
-      "There must be no transitive dependencies among non-prime attributes",
-      "The table must have a composite primary key"
+      "Each table cell must contain a single (atomic) value.",
+      "The table must have no transitive dependencies.",
+      "All non-prime attributes must be fully functionally dependent on the primary key.",
+      "The table must have a composite primary key."
     ],
     "correct_indices": [
-      1
+      0
     ],
-    "hint": "1NF focuses on atomicity of values and basic table structure."
+    "hint": "1NF focuses on atomic values and the presence of a primary key."
   },
   {
-    "question": "When is a table automatically in Second Normal Form (2NF) once it is in 1NF?",
+    "question": "What condition must be met for a table to be in Second Normal Form (2NF)?",
     "options": [
-      "When it has a composite primary key",
-      "When it has no non-prime attributes",
-      "When it has a single-column primary key",
-      "When all attributes are part of the primary key"
+      "The table must be in 1NF and have no partial dependencies.",
+      "The table must have no transitive dependencies.",
+      "The table must have a single-column primary key.",
+      "The table must be in 3NF."
     ],
     "correct_indices": [
-      2
+      0
     ],
-    "hint": "Partial dependencies only exist with composite primary keys."
+    "hint": "2NF builds on 1NF and addresses partial dependencies on composite keys."
   },
   {
-    "question": "What is a potential drawback of database normalization?",
+    "question": "According to the text, what is a transitive dependency in the context of Third Normal Form (3NF)?",
     "options": [
-      "Increased data redundancy",
-      "Higher risk of update anomalies",
-      "Performance overhead due to joining multiple tables",
-      "Simplified database schema"
+      "A non-prime attribute depends on another non-prime attribute.",
+      "A non-prime attribute depends on only part of a composite primary key.",
+      "A non-prime attribute depends on the entire primary key.",
+      "The primary key consists of multiple columns."
     ],
     "correct_indices": [
-      2
+      0
     ],
-    "hint": "Normalization reduces redundancy but can increase query complexity."
+    "hint": "3NF eliminates transitive dependencies where non-key attributes depend on other non-key attributes."
   }
 ]

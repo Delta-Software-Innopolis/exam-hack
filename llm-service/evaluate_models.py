@@ -101,6 +101,7 @@ def main():
     parser.add_argument("--configs", type=str, default="llm-service/evaluation_configs.json", help="Path to configs JSON file")
     parser.add_argument("--output", type=str, default="llm-service/evaluation_report.md", help="Path to output report file")
     parser.add_argument("--count", type=int, default=5, help="Number of questions to generate per run")
+    parser.add_argument("--save-json", type=str, default=None, help="Path to save raw results in JSON format")
     args = parser.parse_args()
 
     # Resolve paths
@@ -345,6 +346,12 @@ def main():
     with open(output_path, "w", encoding="utf-8") as rf:
         rf.write(report_md)
     print(f"\nReport successfully saved to: {output_path}")
+    
+    # Save raw JSON results if requested
+    if args.save_json:
+        with open(args.save_json, "w", encoding="utf-8") as jf:
+            json.dump(results, jf, indent=2, ensure_ascii=False)
+        print(f"Raw results successfully saved to: {args.save_json}")
     
     # Print the report to stdout
     print("\n=== FINAL COMPARISON REPORT ===")

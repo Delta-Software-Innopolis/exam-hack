@@ -1,41 +1,41 @@
 [
   {
-    "question": "Which of the following is a requirement for a table to be in First Normal Form (1NF)?",
+    "question": "What are the requirements for a table to be in First Normal Form (1NF)?",
     "options": [
-      "Each table cell must contain a single atomic value",
-      "Each table cell may contain a list of related values",
-      "Columns within a table may have different data types",
-      "The table must not have a primary key"
+      "Each table cell must contain a single (atomic) value, all entries in a column must be of the same data type, each column must have a unique name, and the table must have a primary key.",
+      "The table must have no partial dependencies, and all non-prime attributes must depend on the entire primary key.",
+      "The table must have no transitive dependencies, meaning non-prime attributes must not depend on other non-prime attributes.",
+      "The table must already be in Third Normal Form and have all data stored in a single table without any joins."
     ],
     "correct_indices": [
       0
     ],
-    "hint": "1NF focuses on eliminating repeating groups and ensuring each cell holds only one value."
+    "hint": "1NF is the most basic level of normalization and deals with atomicity, unique column names, and primary keys."
   },
   {
-    "question": "A table is already in 1NF and has a single-column primary key. Which normal form is it automatically in?",
+    "question": "According to the document, who first proposed database normalization?",
     "options": [
-      "It remains only in 1NF",
-      "Second Normal Form (2NF)",
-      "Third Normal Form (3NF)",
-      "Boyce-Codd Normal Form (BCNF)"
+      "Bill Gates",
+      "Charles Bachman",
+      "Edgar F. Codd",
+      "Tim Berners-Lee"
     ],
     "correct_indices": [
-      1
+      2
     ],
-    "hint": "Partial dependencies can only occur with composite primary keys, so a single-column key avoids this issue."
+    "hint": "Normalization was proposed by the same person who invented the relational model."
   },
   {
-    "question": "Third Normal Form (3NF) specifically eliminates which type of dependency?",
+    "question": "Which of the following are listed as drawbacks of database normalization?",
     "options": [
-      "Partial dependencies on a composite key",
-      "Dependencies between non-prime attributes (transitive dependencies)",
-      "Dependencies on the primary key",
-      "Dependencies between rows in the same table"
+      "Increased data redundancy and higher storage costs.",
+      "Loss of data integrity and inability to use primary keys.",
+      "Inability to enforce data types and lack of atomic values in cells.",
+      "Performance overhead due to joining multiple tables and increased schema complexity."
     ],
     "correct_indices": [
-      1
+      3
     ],
-    "hint": "Remember the classic phrase: 'Every attribute must depend on the key, the whole key, and nothing but the key.'"
+    "hint": "Normalization reduces redundancy but may have trade-offs in query performance and schema understandability."
   }
 ]

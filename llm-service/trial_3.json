@@ -1,0 +1,341 @@
+[
+  {
+    "name": "minimax_m3",
+    "provider": "openrouter",
+    "model": "minimax/minimax-m3",
+    "prompt": "PRIMARY OBJECTIVE:\nGenerate exactly {count} multiple-choice questions based on the provided text.\n\nOUTPUT CONTRACT:\nReturn a JSON object with an \"items\" array.\nEach item must have:\n- \"question\": string\n- \"options\": exactly 4 strings, no prefixes like A), B), 1), etc.\n- \"correct_indices\": 0-based indices of correct options, e.g. [0] for single choice\n- \"hint\": short helpful hint",
+    "latency_seconds": 7.45,
+    "response_char_len": 1850,
+    "parsing_success": true,
+    "deterministic_issues_count": 1,
+    "deterministic_issues_details": [
+      "Correct answer avg length (184 chars) vs distractors avg (114 chars). Ratio: 1.61"
+    ],
+    "scores": {
+      "document_alignment": 10,
+      "exam_prep_help": 9,
+      "balanced_difficulty": 8,
+      "format_compliance": 10
+    },
+    "explanations": {
+      "document_alignment": "All questions are directly based on the source document. Question 1 correctly lists 1NF requirements, question 2 asks about the proposer (Edgar F. Codd), and question 3 accurately identifies drawbacks mentioned in the text.",
+      "exam_prep_help": "The questions cover key concepts: 1NF requirements, the originator of normalization, and drawbacks. These are important for exam preparation. However, it could include more on 2NF and 3NF to be more comprehensive.",
+      "balanced_difficulty": "The difficulty is balanced: question 1 is straightforward recall, question 2 is easy, and question 3 requires understanding of trade-offs. No trivial or overly detailed questions.",
+      "format_compliance": "Each question has exactly 4 options, with a single correct answer indicated by correct_indices array. The format is valid and follows the required structure."
+    },
+    "total_score": 37,
+    "quiz": [
+      {
+        "question": "What are the requirements for a table to be in First Normal Form (1NF)?",
+        "options": [
+          "Each table cell must contain a single (atomic) value, all entries in a column must be of the same data type, each column must have a unique name, and the table must have a primary key.",
+          "The table must have no partial dependencies, and all non-prime attributes must depend on the entire primary key.",
+          "The table must have no transitive dependencies, meaning non-prime attributes must not depend on other non-prime attributes.",
+          "The table must already be in Third Normal Form and have all data stored in a single table without any joins."
+        ],
+        "correct_indices": [
+          0
+        ],
+        "hint": "1NF is the most basic level of normalization and deals with atomicity, unique column names, and primary keys."
+      },
+      {
+        "question": "According to the document, who first proposed database normalization?",
+        "options": [
+          "Bill Gates",
+          "Charles Bachman",
+          "Edgar F. Codd",
+          "Tim Berners-Lee"
+        ],
+        "correct_indices": [
+          2
+        ],
+        "hint": "Normalization was proposed by the same person who invented the relational model."
+      },
+      {
+        "question": "Which of the following are listed as drawbacks of database normalization?",
+        "options": [
+          "Increased data redundancy and higher storage costs.",
+          "Loss of data integrity and inability to use primary keys.",
+          "Inability to enforce data types and lack of atomic values in cells.",
+          "Performance overhead due to joining multiple tables and increased schema complexity."
+        ],
+        "correct_indices": [
+          3
+        ],
+        "hint": "Normalization reduces redundancy but may have trade-offs in query performance and schema understandability."
+      }
+    ]
+  },
+  {
+    "name": "nemotron_free",
+    "provider": "openrouter",
+    "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+    "prompt": "PRIMARY OBJECTIVE:\nGenerate exactly {count} multiple-choice questions based on the provided text.\n\nOUTPUT CONTRACT:\nReturn a JSON object with an \"items\" array.\nEach item must have:\n- \"question\": string\n- \"options\": exactly 4 strings, no prefixes like A), B), 1), etc.\n- \"correct_indices\": 0-based indices of correct options, e.g. [0] for single choice\n- \"hint\": short helpful hint",
+    "latency_seconds": 6.54,
+    "response_char_len": 1613,
+    "parsing_success": true,
+    "deterministic_issues_count": 2,
+    "deterministic_issues_details": [
+      "High word overlap between options 0 and 1: {'must', 'dependencies.', 'have', 'no', 'table', 'the'}",
+      "High word overlap between options 0 and 1: {'non-prime', 'on', 'a', 'attribute', 'depends'}"
+    ],
+    "scores": {
+      "document_alignment": 10,
+      "exam_prep_help": 9,
+      "balanced_difficulty": 8,
+      "format_compliance": 10
+    },
+    "explanations": {
+      "document_alignment": "All questions are directly based on the source document, testing key concepts of 1NF, 2NF, and 3NF with factually correct answers.",
+      "exam_prep_help": "The questions cover essential normalization concepts that are fundamental for exam preparation, though they focus only on normal forms and could include benefits/drawbacks for broader coverage.",
+      "balanced_difficulty": "The questions are appropriately challenging, avoiding trivial details or excessive complexity, but the set could benefit from a mix of easier and harder questions.",
+      "format_compliance": "Each question has exactly 4 options, single correct answer indicated by correct_indices array, and proper structure."
+    },
+    "total_score": 37,
+    "quiz": [
+      {
+        "question": "Which of the following is a requirement for a table to be in First Normal Form (1NF)?",
+        "options": [
+          "Each table cell must contain a single (atomic) value.",
+          "The table must have no transitive dependencies.",
+          "All non-prime attributes must be fully functionally dependent on the primary key.",
+          "The table must have a composite primary key."
+        ],
+        "correct_indices": [
+          0
+        ],
+        "hint": "1NF focuses on atomic values and the presence of a primary key."
+      },
+      {
+        "question": "What condition must be met for a table to be in Second Normal Form (2NF)?",
+        "options": [
+          "The table must be in 1NF and have no partial dependencies.",
+          "The table must have no transitive dependencies.",
+          "The table must have a single-column primary key.",
+          "The table must be in 3NF."
+        ],
+        "correct_indices": [
+          0
+        ],
+        "hint": "2NF builds on 1NF and addresses partial dependencies on composite keys."
+      },
+      {
+        "question": "According to the text, what is a transitive dependency in the context of Third Normal Form (3NF)?",
+        "options": [
+          "A non-prime attribute depends on another non-prime attribute.",
+          "A non-prime attribute depends on only part of a composite primary key.",
+          "A non-prime attribute depends on the entire primary key.",
+          "The primary key consists of multiple columns."
+        ],
+        "correct_indices": [
+          0
+        ],
+        "hint": "3NF eliminates transitive dependencies where non-key attributes depend on other non-key attributes."
+      }
+    ]
+  },
+  {
+    "name": "gemini_3_flash_preview",
+    "provider": "openrouter",
+    "model": "google/gemini-3-flash-preview",
+    "prompt": "PRIMARY OBJECTIVE:\nGenerate exactly {count} multiple-choice questions based on the provided text.\n\nOUTPUT CONTRACT:\nReturn a JSON object with an \"items\" array.\nEach item must have:\n- \"question\": string\n- \"options\": exactly 4 strings, no prefixes like A), B), 1), etc.\n- \"correct_indices\": 0-based indices of correct options, e.g. [0] for single choice\n- \"hint\": short helpful hint",
+    "latency_seconds": 4.47,
+    "response_char_len": 1780,
+    "parsing_success": true,
+    "deterministic_issues_count": 1,
+    "deterministic_issues_details": [
+      "Correct answer avg length (107 chars) vs distractors avg (55 chars). Ratio: 1.93"
+    ],
+    "scores": {
+      "document_alignment": 10,
+      "exam_prep_help": 9,
+      "balanced_difficulty": 8,
+      "format_compliance": 10
+    },
+    "explanations": {
+      "document_alignment": "All questions are directly based on the source text, testing key concepts like partial dependencies, transitive dependencies, and drawbacks of normalization. Answers are factually correct.",
+      "exam_prep_help": "Questions cover essential normalization concepts (1NF to 3NF, dependencies, benefits/drawbacks) that are typical exam topics. The hint about 'nothing but the key' is particularly helpful. Slight deduction for not testing 1NF criteria explicitly.",
+      "balanced_difficulty": "Questions range from moderate (definition of 2NF) to slightly more challenging (drawbacks). No trivial or overly detailed questions. However, the quiz could include a question on 1NF to balance difficulty further.",
+      "format_compliance": "Each question has exactly 4 options, correct_indices is a single-element list, and no multiple correct answers. Format is valid."
+    },
+    "total_score": 37,
+    "quiz": [
+      {
+        "question": "According to the text, what is the primary requirement for a table to transition from 1NF to 2NF?",
+        "options": [
+          "It must eliminate all transitive dependencies.",
+          "It must eliminate all partial dependencies, ensuring non-prime attributes depend on the entire primary key.",
+          "It must ensure that every cell contains only atomic values.",
+          "It must be converted into a single-column primary key format."
+        ],
+        "correct_indices": [
+          1
+        ],
+        "hint": "2NF focuses on the relationship between non-key columns and composite primary keys."
+      },
+      {
+        "question": "Which normal form is specifically concerned with removing transitive dependencies, where non-prime attributes depend on other non-prime attributes?",
+        "options": [
+          "First Normal Form (1NF)",
+          "Second Normal Form (2NF)",
+          "Third Normal Form (3NF)",
+          "Boyce-Codd Normal Form (BCNF)"
+        ],
+        "correct_indices": [
+          2
+        ],
+        "hint": "This form is often summarized by the phrase: 'Every attribute must depend on the key, the whole key, and nothing but the key'."
+      },
+      {
+        "question": "What is a cited drawback of applying high levels of normalization to a database?",
+        "options": [
+          "Increased data redundancy across multiple tables.",
+          "Higher risk of data anomalies during update operations.",
+          "Performance overhead due to the need for joining multiple tables in queries.",
+          "Inability to use primary keys for row identification."
+        ],
+        "correct_indices": [
+          3
+        ],
+        "hint": "Consider how splitting data into many tables affects the complexity of retrieving that data."
+      }
+    ]
+  },
+  {
+    "name": "deepseek_standard",
+    "provider": "deepseek",
+    "model": "deepseek-chat",
+    "prompt": "PRIMARY OBJECTIVE:\nGenerate exactly {count} multiple-choice questions based on the provided text.\n\nOUTPUT CONTRACT:\nReturn a JSON object with an \"items\" array.\nEach item must have:\n- \"question\": string\n- \"options\": exactly 4 strings, no prefixes like A), B), 1), etc.\n- \"correct_indices\": 0-based indices of correct options, e.g. [0] for single choice\n- \"hint\": short helpful hint",
+    "latency_seconds": 4.7,
+    "response_char_len": 1375,
+    "parsing_success": true,
+    "deterministic_issues_count": 4,
+    "deterministic_issues_details": [
+      "Correct answer avg length (52 chars) vs distractors avg (26 chars). Ratio: 2.03",
+      "High word overlap between options 0 and 1: {'redundancy', 'to', 'data'}",
+      "High word overlap between options 0 and 1: {'it', 'must', 'have', 'no', 'dependencies'}",
+      "High word overlap between options 0 and 1: {'non-prime', 'on', 'a', 'attribute', 'depends'}"
+    ],
+    "scores": {
+      "document_alignment": 10,
+      "exam_prep_help": 9,
+      "balanced_difficulty": 8,
+      "format_compliance": 10
+    },
+    "explanations": {
+      "document_alignment": "All questions are directly based on the source document, testing key concepts like the purpose of normalization, conditions for 2NF, and transitive dependencies. Answers are factually correct.",
+      "exam_prep_help": "The questions cover fundamental concepts essential for exam preparation, such as the goals of normalization and the definitions of normal forms. However, they could include more depth or application-based questions.",
+      "balanced_difficulty": "The questions range from basic (purpose) to intermediate (2NF conditions, transitive dependency). They avoid trivial or overly detailed minutiae, but could include a slightly harder question to improve balance.",
+      "format_compliance": "Each question has exactly 4 options, with a single correct answer indicated by correct_indices array. No multiple correct answers or invalid formats."
+    },
+    "total_score": 37,
+    "quiz": [
+      {
+        "question": "What is the primary purpose of database normalization?",
+        "options": [
+          "To increase data redundancy",
+          "To reduce data redundancy and improve data integrity",
+          "To make queries faster",
+          "To simplify table structures"
+        ],
+        "correct_indices": [
+          1
+        ],
+        "hint": "Think about the main goals mentioned at the beginning of the text."
+      },
+      {
+        "question": "Which condition must a table satisfy to be in Second Normal Form (2NF)?",
+        "options": [
+          "It must have no transitive dependencies",
+          "It must be in 1NF and have no partial dependencies",
+          "It must have a composite primary key",
+          "It must have all non-prime attributes depend on the primary key"
+        ],
+        "correct_indices": [
+          1
+        ],
+        "hint": "Review the requirements for 2NF, which build on 1NF."
+      },
+      {
+        "question": "What is a transitive dependency in the context of Third Normal Form (3NF)?",
+        "options": [
+          "A non-prime attribute depends on another non-prime attribute",
+          "A non-prime attribute depends on part of a composite primary key",
+          "A column contains multiple values",
+          "A table has no primary key"
+        ],
+        "correct_indices": [
+          0
+        ],
+        "hint": "Recall the definition of transitive dependency from the 3NF section."
+      }
+    ]
+  },
+  {
+    "name": "deepseek_strict",
+    "provider": "deepseek",
+    "model": "deepseek-chat",
+    "prompt": "You are an expert teacher designing exam questions.\nGenerate exactly {count} multiple-choice questions from the source text.\n\nCRITICAL FORMAT RULES:\n1. Each question must have exactly one correct answer.\n2. The options must be exactly 4 strings.\n3. All options must be approximately the same length and format.\n4. Do NOT use checkboxes or questions requiring selecting multiple answers (e.g. \"Select all that apply\" or \"Which of these is NOT true\").\n\nOUTPUT CONTRACT:\nReturn a JSON object with an \"items\" array. Each item has:\n- \"question\": string\n- \"options\": array of 4 strings\n- \"correct_indices\": array with exactly 1 integer (the index of the correct option)\n- \"hint\": string",
+    "latency_seconds": 4.32,
+    "response_char_len": 1469,
+    "parsing_success": true,
+    "deterministic_issues_count": 1,
+    "deterministic_issues_details": [
+      "High word overlap between options 0 and 2: {'it', 'must', 'have', 'no', 'dependencies'}"
+    ],
+    "scores": {
+      "document_alignment": 10,
+      "exam_prep_help": 9,
+      "balanced_difficulty": 8,
+      "format_compliance": 10
+    },
+    "explanations": {
+      "document_alignment": "All questions are directly based on the source document, testing key concepts such as the goal of normalization, conditions for 2NF, and drawbacks. The answers are factually correct according to the text.",
+      "exam_prep_help": "The questions cover important topics (goals, normal forms, drawbacks) that are essential for exam preparation. However, they could include more depth on 3NF or partial dependencies to fully test understanding.",
+      "balanced_difficulty": "The questions range from basic (goal of normalization) to intermediate (2NF conditions, drawbacks). They avoid trivial or overly detailed aspects, but the set is short and could benefit from a more challenging question on transitive dependencies.",
+      "format_compliance": "Each question has exactly 4 options, with correct_indices as a list of integers. No multiple correct answers unless marked, and the format is consistent with the required structure."
+    },
+    "total_score": 37,
+    "quiz": [
+      {
+        "question": "What is the primary goal of database normalization?",
+        "options": [
+          "To increase data redundancy for backup purposes",
+          "To reduce redundancy and improve data integrity",
+          "To simplify database schema complexity",
+          "To improve query performance by reducing joins"
+        ],
+        "correct_indices": [
+          1
+        ],
+        "hint": "The text states that normalization aims to reduce redundancy and improve data integrity."
+      },
+      {
+        "question": "Which condition must a table satisfy to be in Second Normal Form (2NF)?",
+        "options": [
+          "It must have no transitive dependencies",
+          "It must have a composite primary key",
+          "It must be in 1NF and have no partial dependencies",
+          "It must have all non-prime attributes depend on the key"
+        ],
+        "correct_indices": [
+          2
+        ],
+        "hint": "2NF requires being in 1NF and eliminating partial dependencies on the primary key."
+      },
+      {
+        "question": "What is a common drawback of database normalization?",
+        "options": [
+          "Increased data redundancy and anomalies",
+          "Simpler database schema for developers",
+          "Performance overhead due to more table joins",
+          "Reduced data integrity and consistency"
+        ],
+        "correct_indices": [
+          2
+        ],
+        "hint": "The text mentions that normalization can lead to performance overhead because queries require joining multiple tables."
+      }
+    ]
+  }
+]

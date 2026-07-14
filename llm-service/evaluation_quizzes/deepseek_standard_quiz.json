@@ -4,38 +4,38 @@
     "options": [
       "To increase data redundancy",
       "To reduce data redundancy and improve data integrity",
-      "To make queries faster by avoiding joins",
-      "To simplify the database schema"
+      "To make queries faster",
+      "To simplify table structures"
     ],
     "correct_indices": [
       1
     ],
-    "hint": "Think about the main goals mentioned in the text."
+    "hint": "Think about the main goals mentioned at the beginning of the text."
   },
   {
     "question": "Which condition must a table satisfy to be in Second Normal Form (2NF)?",
     "options": [
       "It must have no transitive dependencies",
-      "It must already be in 1NF and have no partial dependencies",
-      "All columns must be atomic",
-      "It must have a composite primary key"
+      "It must be in 1NF and have no partial dependencies",
+      "It must have a composite primary key",
+      "It must have all non-prime attributes depend on the primary key"
     ],
     "correct_indices": [
       1
     ],
-    "hint": "2NF builds on 1NF and addresses partial dependencies."
+    "hint": "Review the requirements for 2NF, which build on 1NF."
   },
   {
     "question": "What is a transitive dependency in the context of Third Normal Form (3NF)?",
     "options": [
-      "A non-prime attribute depends on part of a composite key",
       "A non-prime attribute depends on another non-prime attribute",
+      "A non-prime attribute depends on part of a composite primary key",
       "A column contains multiple values",
-      "The primary key is not unique"
+      "A table has no primary key"
     ],
     "correct_indices": [
-      1
+      0
     ],
-    "hint": "3NF eliminates dependencies where non-key attributes depend on other non-key attributes."
+    "hint": "Recall the definition of transitive dependency from the 3NF section."
   }
 ]
