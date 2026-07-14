@@ -21,7 +21,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.SnackbarVisuals
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
@@ -79,12 +78,9 @@ private fun SettingsUI(
         snackbarHost = {
             SnackbarHost(
                 hostState = snackBarHostState,
+                modifier = Modifier.padding(Dimensions.ScreenPadding),
                 snackbar = {
-                    NotImplementedSnackBarUI(
-                        Modifier
-                            .padding(Dimensions.ScreenPadding)
-                            .fillMaxWidth()
-                    )
+                    NotImplementedSnackBarUI(Modifier.fillMaxWidth())
                 }
             )
         },
@@ -308,7 +304,6 @@ private fun SettingSwitch(
                     shape = RoundedCornerShape(Dimensions.SettingSwitchThumbRadius),
                     color = ColorPreset.PositivePrimary
                 )
-                .clickable { onSwitchToggle() }
                 .then(
                     if (isSwitchLeft)
                         Modifier.align(Alignment.CenterStart)
@@ -324,12 +319,22 @@ private fun SettingSwitch(
         ) {
             SettingSwitchOptionBox(
                 label = switchLabelLeft,
-                isActive = isSwitchLeft
+                isActive = isSwitchLeft,
+                onClick =
+                    if (!isSwitchLeft)
+                        onSwitchToggle
+                    else
+                        null
             )
 
             SettingSwitchOptionBox(
                 label = switchLabelRight,
-                isActive = !isSwitchLeft
+                isActive = !isSwitchLeft,
+                onClick =
+                    if (isSwitchLeft)
+                        onSwitchToggle
+                    else
+                        null
             )
         }
     }
@@ -338,12 +343,18 @@ private fun SettingSwitch(
 @Composable
 private fun SettingSwitchOptionBox(
     label: String,
-    isActive: Boolean
+    isActive: Boolean,
+    onClick: (() -> Unit)?
 ) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
             .width(Dimensions.SettingSwitchThumbWidth)
+            .then(
+                onClick?.let {
+                    Modifier.clickable { it.invoke() }
+                } ?: Modifier
+            )
             .padding(Dimensions.SettingSwitchThumbVerticalPadding)
     ) {
         Text(
