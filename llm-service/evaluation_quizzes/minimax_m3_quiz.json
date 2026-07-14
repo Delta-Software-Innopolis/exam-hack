@@ -1,41 +1,41 @@
 [
   {
-    "question": "Who is credited with first proposing database normalization and inventing the relational model?",
+    "question": "Which of the following is a requirement for a table to be in First Normal Form (1NF)?",
     "options": [
-      "Edgar F. Codd",
-      "Tim Berners-Lee",
-      "Donald Chamberlin",
-      "Raymond Boyce"
+      "Each table cell must contain a single atomic value",
+      "Each table cell may contain a list of related values",
+      "Columns within a table may have different data types",
+      "The table must not have a primary key"
     ],
     "correct_indices": [
       0
     ],
-    "hint": "His initials are E.F.C. and the phrase 'so help me Codd' appears in the document."
+    "hint": "1NF focuses on eliminating repeating groups and ensuring each cell holds only one value."
   },
   {
-    "question": "According to the document, what is a partial dependency in the context of Second Normal Form (2NF)?",
+    "question": "A table is already in 1NF and has a single-column primary key. Which normal form is it automatically in?",
     "options": [
-      "A non-key column depends on the entire primary key",
-      "A non-key column depends on only part of a composite primary key",
-      "A non-prime attribute depends on another non-prime attribute",
-      "A column contains multiple values in a single cell"
+      "It remains only in 1NF",
+      "Second Normal Form (2NF)",
+      "Third Normal Form (3NF)",
+      "Boyce-Codd Normal Form (BCNF)"
     ],
     "correct_indices": [
       1
     ],
-    "hint": "It specifically relates to composite primary keys, not single-column ones."
+    "hint": "Partial dependencies can only occur with composite primary keys, so a single-column key avoids this issue."
   },
   {
-    "question": "Which of the following is a drawback of database normalization mentioned in the document?",
+    "question": "Third Normal Form (3NF) specifically eliminates which type of dependency?",
     "options": [
-      "It eliminates data redundancy completely",
-      "It prevents the use of composite primary keys",
-      "It can lead to performance overhead due to joining multiple tables",
-      "It requires all tables to be in Third Normal Form"
+      "Partial dependencies on a composite key",
+      "Dependencies between non-prime attributes (transitive dependencies)",
+      "Dependencies on the primary key",
+      "Dependencies between rows in the same table"
     ],
     "correct_indices": [
-      2
+      1
     ],
-    "hint": "Think about what happens when you need to retrieve data from a highly normalized schema."
+    "hint": "Remember the classic phrase: 'Every attribute must depend on the key, the whole key, and nothing but the key.'"
   }
 ]

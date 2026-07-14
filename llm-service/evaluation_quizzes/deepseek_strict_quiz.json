@@ -2,40 +2,40 @@
   {
     "question": "What is the primary goal of database normalization?",
     "options": [
-      "To increase data redundancy for backup",
+      "To increase data redundancy for faster queries",
       "To reduce redundancy and improve data integrity",
-      "To speed up query performance at all costs",
-      "To simplify the database schema for developers"
+      "To simplify the database schema for developers",
+      "To eliminate all table joins in queries"
     ],
     "correct_indices": [
       1
     ],
-    "hint": "The text states that normalization aims to reduce redundancy and improve data integrity."
+    "hint": "Normalization aims to organize data to reduce duplication and ensure consistency."
   },
   {
     "question": "Which condition must a table satisfy to be in Second Normal Form (2NF)?",
     "options": [
       "It must have no transitive dependencies",
-      "It must have a composite primary key",
       "It must be in 1NF and have no partial dependencies",
+      "It must have a composite primary key",
       "It must have all non-key attributes depend on the key"
     ],
     "correct_indices": [
-      2
+      1
     ],
-    "hint": "The text explains that 2NF requires being in 1NF and having no partial dependencies."
+    "hint": "2NF requires 1NF plus elimination of partial dependencies on a composite key."
   },
   {
-    "question": "What is a known drawback of database normalization?",
+    "question": "What is a transitive dependency in the context of Third Normal Form (3NF)?",
     "options": [
-      "It increases data redundancy",
-      "It causes data anomalies",
-      "It can lead to performance overhead from joins",
-      "It eliminates the need for primary keys"
+      "A non-key attribute depends on another non-key attribute",
+      "A non-key attribute depends on part of a composite key",
+      "A key attribute depends on a non-key attribute",
+      "A non-key attribute depends on the entire primary key"
     ],
     "correct_indices": [
-      2
+      0
     ],
-    "hint": "The text mentions that normalization can cause performance overhead because queries require joining multiple tables."
+    "hint": "Transitive dependency means a non-key column depends on another non-key column, not directly on the primary key."
   }
 ]

@@ -2,6 +2,7 @@ import os
 import json
 import argparse
 import re
+import time
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 from openai import OpenAI
@@ -9,6 +10,9 @@ from dotenv import load_dotenv
 
 # Load env variables from root .env
 load_dotenv(dotenv_path=Path(__file__).resolve().parent.parent / ".env")
+
+# Import deterministic quality checker from codebase
+from quality_checker import run_all_checks
 
 EVALUATOR_SYSTEM_PROMPT = """You are an expert educational quality auditor.
 Your job is to evaluate a generated quiz against a source document using four criteria.
@@ -37,18 +41,29 @@ Respond strictly in the following JSON format (no other text, no markdown code b
 }
 """
 
-COMPARATOR_SYSTEM_PROMPT = """You are the Lead AI Quiz Architect.
-You will be given a list of configuration runs. Each run contains:
+COMPARATOR_SYSTEM_PROMPT = """You are the Lead AI Quiz Architect preparing a final model selection report for Course Teaching Assistants (TAs).
+You will be given a list of configuration runs. Each run contains performance and quality metrics:
 - The configuration name (model name + prompt style)
-- The evaluation scores and explanations for that run
+- Generation Latency (seconds)
+- Deterministic Quality Issues (count of structural violations found by a static checker)
+- Response Character Length
+- Parsing Success (True/False)
+- Subjective Evaluator Scores & Explanations
 - The generated quiz questions
 
-Your task is to analyze all configurations and output:
-1. A summary table comparing all runs by criteria scores and total scores.
-2. A detailed critical review of each model + prompt combination's performance.
-3. Your definitive expert recommendation on which model + prompt combination is the best overall and why.
+Your task is to analyze all configurations and output a rigorous report justifying the model choice for the TAs.
+Provide:
+1. A summary table comparing all runs across:
+   - Latency (seconds)
+   - Deterministic Quality Issues
+   - Total Quality Score (Evaluator sum / 40)
+   - Parsing Success
+   - Output Character Length
+2. A detailed critical review of each configuration's efficiency and output quality.
+3. A formal trade-off analysis (e.g. speed vs. quality, cost/API efficiency).
+4. A definitive, evidence-based recommendation for the TAs explaining why the selected model+prompt is optimal for production deployment.
 
-Output your report in a readable markdown format. Include a comparison table.
+Output your report in a readable, professional markdown format. Include the comparison table.
 """
 
 def parse_json_robust(content: str) -> Any:
@@ -134,9 +149,17 @@ def main():
         print(f"Provider: {provider} | Model: {model}")
         print(f"==================================================")
 
-        # 1. Generate Quiz
+        # Metrics to collect
+        latency = 0.0
+        response_char_len = 0
+        parsing_success = False
+        auto_issues_count = 0
+        auto_issues_details = []
         quiz_cards = []
         gen_error = None
+
+        # 1. Generate Quiz (with time measurement)
+        start_time = time.time()
         try:
             client = get_client_for_provider(provider)
             system_prompt = prompt_template.format(count=args.count)
@@ -151,8 +174,10 @@ def main():
                 temperature=0.3
             )
             
+            latency = time.time() - start_time
             raw_content = response.choices[0].message.content
-            print("Successfully received generator response. Parsing...")
+            response_char_len = len(raw_content) if raw_content else 0
+            print(f"Successfully received generator response in {latency:.2f}s. Parsing...")
             
             try:
                 # Parse cards
@@ -164,7 +189,14 @@ def main():
                 else:
                     raise ValueError(f"Expected list or 'items' key, got {type(parsed)}")
                 
+                parsing_success = True
                 print(f"Generated {len(quiz_cards)} quiz questions.")
+                
+                # Deterministic structural quality checks
+                check_report = run_all_checks(quiz_cards)
+                auto_issues_count = check_report["total_issues"]
+                auto_issues_details = [issue["detail"] for issue in check_report["issues"]]
+                print(f"Deterministic checks: {auto_issues_count} issue(s) detected.")
                 
                 # Save generated quiz
                 quiz_file = quizzes_dir / f"{name}_quiz.json"
@@ -177,6 +209,7 @@ def main():
                 print(f"Warning: {gen_error}")
                 
         except Exception as ge:
+            latency = time.time() - start_time
             gen_error = f"API call failed: {ge}"
             print(f"Warning: {gen_error}")
 
@@ -186,7 +219,6 @@ def main():
         
         if gen_error:
             # Assign lowest scores due to generation failure
-            # ponytail: using score of 1 as a placeholder for complete failure
             scores = {
                 "document_alignment": 1,
                 "exam_prep_help": 1,
@@ -251,12 +283,18 @@ def main():
         for k, v in scores.items():
             print(f"  - {k}: {v}/10")
         print(f"  Total Score: {total_score}/40")
+        print(f"  Latency: {latency:.2f}s | Deterministic Issues: {auto_issues_count}")
         
         results.append({
             "name": name,
             "provider": provider,
             "model": model,
             "prompt": prompt_template,
+            "latency_seconds": round(latency, 2),
+            "response_char_len": response_char_len,
+            "parsing_success": parsing_success,
+            "deterministic_issues_count": auto_issues_count,
+            "deterministic_issues_details": auto_issues_details,
             "scores": scores,
             "explanations": explanations,
             "total_score": total_score,
@@ -273,6 +311,13 @@ def main():
     for r in results:
         comparison_data.append({
             "name": r["name"],
+            "provider": r["provider"],
+            "model": r["model"],
+            "latency_seconds": r["latency_seconds"],
+            "response_char_len": r["response_char_len"],
+            "parsing_success": r["parsing_success"],
+            "deterministic_issues_count": r["deterministic_issues_count"],
+            "deterministic_issues_details": r["deterministic_issues_details"],
             "scores": r["scores"],
             "explanations": r["explanations"],
             "total_score": r["total_score"],
@@ -294,7 +339,7 @@ def main():
     except Exception as ce:
         report_md = f"# Model Comparison Report\n\nError running comparator agent: {ce}\n\n## Scores Summary\n\n"
         for r in results:
-            report_md += f"- **{r['name']}**: {r['total_score']}/40\n"
+            report_md += f"- **{r['name']}**: {r['total_score']}/40 (Latency: {r['latency_seconds']}s)\n"
 
     # Write report file
     with open(output_path, "w", encoding="utf-8") as rf:
