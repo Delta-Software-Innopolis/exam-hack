@@ -31,7 +31,7 @@ fun NotImplementedSnackBarUI(
         modifier = modifier
             .background(
                 shape = RoundedCornerShape(Dimensions.DefaultCardRadius),
-                color = ColorPreset.BackgroundWarningSecondary
+                color = ColorPreset.NotImplementedPrimary
             )
             .padding(Dimensions.ScreenPadding)
     ) {

@@ -159,7 +159,12 @@ class RootComponent(
 
             is Config.QuizHub        ->
                 IRootComponent.Child.QuizHub(
-                    QuizHubComponent(componentContext)
+                    QuizHubComponent(
+                        componentContext = componentContext,
+                        toQuizList = ::navigateToQuizList,
+                        toProfile = ::navigateToProfile,
+                        toSettings = ::navigateToSettings
+                    )
                 )
 
             is Config.QuizSolve      ->
@@ -173,7 +178,12 @@ class RootComponent(
 
             is Config.Profile        ->
                 IRootComponent.Child.Profile(
-                    ProfileComponent(componentContext)
+                    ProfileComponent(
+                        componentContext = componentContext,
+                        toQuizHub = ::navigateToQuizHub,
+                        toQuizList = ::navigateToQuizList,
+                        toSettings = ::navigateToSettings
+                    )
                 )
 
             is Config.Settings       ->

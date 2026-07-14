@@ -111,6 +111,13 @@ class Dimensions {
         val QuizHubPlaceholderTextSpacing = 60.dp
         val SearchBarRadius = 24.dp
 
+        // Profile
+        val ProfileImageSize = 160.dp
+        val ProfileScreenTopSpacing = 32.dp
+        val ProfileInfoSpacing = 8.dp
+        val LogoutButtonPadding = 12.dp
+        val UsernameFontSize = 32.sp
+
         // Quiz List
         val QuizListFabSize = 64.dp
         val QuizListFabBottomPadding = 8.dp
