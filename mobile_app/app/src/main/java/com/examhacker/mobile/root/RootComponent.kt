@@ -1,6 +1,5 @@
 package com.examhacker.mobile.root
 
-import android.util.Log
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.StackNavigation
@@ -11,6 +10,8 @@ import com.arkivanov.decompose.router.stack.popWhile
 import com.arkivanov.decompose.router.stack.pushNew
 import com.arkivanov.decompose.router.stack.replaceCurrent
 import com.arkivanov.decompose.router.stack.pushToFront
+import com.arkivanov.decompose.value.MutableValue
+import com.arkivanov.decompose.value.update
 import kotlinx.serialization.Serializable
 import com.examhacker.authentication.component.AuthenticationComponent
 import com.examhacker.authentication.component.IAuthenticationComponent
@@ -50,6 +51,11 @@ import kotlin.time.ExperimentalTime
 interface IRootComponent {
 
     val stack: Value<ChildStack<*, Child>>
+    val model: Value<Model>
+
+    data class Model(
+        val quizzes: List<Quiz>? = null
+    )
 
     sealed class Child {
         class Introduction(val component: IIntroductionComponent) : Child()
@@ -76,8 +82,10 @@ class RootComponent(
     private val startOverlayService: () -> Unit
 ) : ComponentContext by componentContext, IRootComponent {
 
-    private val navigation = StackNavigation<Config>()
+    private val _model = MutableValue(IRootComponent.Model())
+    override val model = _model
 
+    private val navigation = StackNavigation<Config>()
     override val stack: Value<ChildStack<*, IRootComponent.Child>> =
         childStack(
             source = navigation,
@@ -115,31 +123,17 @@ class RootComponent(
                 IRootComponent.Child.QuizList(
                     QuizListComponent(
                         componentContext,
-                        quizzes = createMockQuizList(),
+                        quizRepository = quizRepository,
+                        saveQuizzes = ::saveQuizzes,
                         toQuizCreate = ::navigateToQuizCreate,
-                        toQuizInfo = {
-                            navigateToQuizInfo(
-                                Quiz(
-                                    info = QuizInfo(
-                                        id = 1,
-                                        name = "Quiz name",
-                                        creationDate = now().toString(),
-                                        updatingDate = null,
-                                        author = Author(1, "User")
-                                    ),
-                                    description = "Nice description",
-                                    questions = listOf(
-                                        Question(
-                                            id = 1,
-                                            description = "How much?",
-                                            variants = listOf(
-                                                AnswerVariant("One", false),
-                                                AnswerVariant("Two", true)
-                                            )
-                                        )
-                                    )
+                        toQuizInfo = { quizId ->
+                            val quiz = model.value.quizzes?.findLast { it.info.id == quizId }
+
+                            quiz?.let {
+                                navigateToQuizInfo(
+                                    quiz = it
                                 )
-                            )
+                            }
                         },
                         toQuizHub = ::navigateToQuizHub,
                         toProfile = ::navigateToProfile,
@@ -286,6 +280,12 @@ class RootComponent(
 
     private fun back() {
         navigation.pop()
+    }
+
+    private fun saveQuizzes(quizzes: List<Quiz>) {
+        _model.update {
+            it.copy(quizzes = quizzes)
+        }
     }
 
     @OptIn(ExperimentalTime::class)

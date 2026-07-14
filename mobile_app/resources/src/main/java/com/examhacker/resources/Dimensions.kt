@@ -22,6 +22,8 @@ class Dimensions {
         val NavigationButtonPadding = 8.dp
         val DefaultCardRadius = 16.dp
         val MediumIconSize = 24.dp
+        val CircularProgressIndicatorSize = 40.dp
+        val CircularProgressIndicatorWidth = 4.dp
         val ScreenTitleFontSize = 32.sp
         val TitleSmallFontSize = 28.sp
         val SubtitleFontSize = 24.sp
