@@ -8,6 +8,7 @@ enum ButtonVariants {
   GREEN = 'green',
   RED = 'red',
   AI = 'ai',
+  QUIZRED = 'quizred'
 }
 
 const props = defineProps({
@@ -163,6 +164,10 @@ button {
 
 .red:active {
   background-color: var(--raddish-dark);
+}
+
+.quizred {
+    background-color: var(--quiz-red)
 }
 
 /* in order to make .ai:disabled i think we should use svg image of the disabled button,
