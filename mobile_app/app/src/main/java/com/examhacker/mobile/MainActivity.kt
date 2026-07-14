@@ -17,7 +17,6 @@ import com.examhacker.common.utility.AndroidFilePicker
 import com.examhacker.mobile.introduction_screen.IntroductionScreen
 import com.examhacker.mobile.root.IRootComponent
 import com.examhacker.mobile.root.RootComponent
-import com.examhacker.quiz_list.ui.QuizListScreen
 import com.examhacker.quiz_solve.ui.QuizSolveScreen
 import com.examhacker.settings.ui.SettingsScreen
 import com.examhacker.mobile.util.PermissionHandler
@@ -27,6 +26,7 @@ import com.examhacker.quiz_create.ui.QuizCreateScreen
 import com.examhacker.quiz_edit.ui.QuizEditScreen
 import com.examhacker.quiz_hub.ui.QuizHubScreen
 import com.examhacker.quiz_info.ui.QuizInfoScreen
+import com.examhacker.quiz_list.ui.QuizListScreen
 
 class MainActivity : ComponentActivity() {
     private val notificationPermissionLauncher = registerForActivityResult(
