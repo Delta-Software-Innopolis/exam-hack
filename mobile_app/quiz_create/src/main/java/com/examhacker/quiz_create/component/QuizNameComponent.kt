@@ -19,13 +19,19 @@ internal interface IQuizNameComponent {
     fun onDescriptionChange(description: String)
     fun isNextEnabled(): Boolean
     fun onNextClick()
+    fun goToQuizHub()
+    fun goToProfile()
+    fun goToSettings()
 }
 
 internal class QuizNameComponent(
     componentContext: ComponentContext,
-    private val goToGenerate: () -> Unit,
     private val updateName: (String) -> Unit,
-    private val updateDescription: (String) -> Unit
+    private val updateDescription: (String) -> Unit,
+    private val goToGenerate: () -> Unit,
+    private val toQuizHub: () -> Unit,
+    private val toProfile: () -> Unit,
+    private val toSettings: () -> Unit
 ) : IQuizNameComponent, ComponentContext by componentContext {
 
     private val _model = MutableValue(IQuizNameComponent.Model())
@@ -61,5 +67,17 @@ internal class QuizNameComponent(
 
             goToGenerate()
         }
+    }
+
+    override fun goToQuizHub() {
+        toQuizHub()
+    }
+
+    override fun goToProfile() {
+        toProfile()
+    }
+
+    override fun goToSettings() {
+        toSettings()
     }
 }
