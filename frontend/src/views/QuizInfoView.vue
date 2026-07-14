@@ -2,7 +2,6 @@
 import { ref, watch, useTemplateRef, computed } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import BasicButton from '@/components/basic/BasicButton.vue';
-import { updateCards, createCards, deleteCards, deletePack } from '@/core'
 import type { Card, QuizItem } from '@/types';
 import { useNewQuizzesStore } from '@/stores/new-quizzes';
 import QuizQuestionsList from '@/components/quiz/QuizQuestionsList.vue';
@@ -29,27 +28,6 @@ const activeQuestion = ref<Card>();
 
 function notImplemented() {
     alert('Thank you for trying!\nThis will be implemented later 🫡')
-}
-
-async function onDeleteQuiz() {
-    if (!quiz.value) return
-
-    const confirmed = confirm(
-        `Delete quiz "${quiz.value.name}"?\n\nThis action cannot be undone.`
-    )
-
-    if (!confirmed) return
-
-    const ok = await deletePack(quiz.value.id)
-
-    if (!ok) {
-        alert("Couldn't delete quiz")
-        return
-    }
-
-    await quizzesStore.fetchMyQuizzes()
-
-    router.push("/quizzes")
 }
 
 const modalEdit = useTemplateRef('modal-edit');
