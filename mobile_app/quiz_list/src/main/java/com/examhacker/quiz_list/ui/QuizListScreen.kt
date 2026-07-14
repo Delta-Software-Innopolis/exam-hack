@@ -106,8 +106,8 @@ fun QuizListUI(
             model.quizzes?.let { quizzes ->
                 items(quizzes) {
                     QuizCard(
-                        quizName = it.name,
-                        author = "${stringResource(R.string.by)} ${it.authorName}",
+                        quizName = it.info.name,
+                        author = "${stringResource(R.string.by)} ${it.info.author.name}",
                         onClick = onQuizClick
                     )
                 }

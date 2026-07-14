@@ -288,16 +288,24 @@ class RootComponent(
         navigation.pop()
     }
 
+    @OptIn(ExperimentalTime::class)
     private fun createMockQuizList(): List<Quiz> =
         List(8) { index ->
             Quiz(
-                id = index,
-                authorName = "User",
-                name = "Quiz name",
+                info = QuizInfo(
+                    id = index,
+                    name = "Quiz name",
+                    creationDate = now().toString(),
+                    updatingDate = now().toString(),
+                    author = Author(
+                        id = index,
+                        name = "User"
+                    )
+                ),
                 description = "Quiz description",
                 questions = List(5) {
                     Question(
-                        id = 2,
+                        id = index,
                         description = "What is the name of your Practicum Project TA?",
                         variants = listOf(
                             AnswerVariant("Andrei Markov", true),

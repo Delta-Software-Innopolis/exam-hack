@@ -4,7 +4,7 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
-import com.examhacker.common.data.Quiz
+import com.examhacker.domain.model.Quiz
 
 interface IQuizListComponent {
 
