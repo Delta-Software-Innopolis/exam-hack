@@ -168,6 +168,8 @@ async function publishQuiz() {
         alert("Couldn't publish quiz")
         return
     }
+
+    router.push("/quizhub")
 }
 </script>
 
