@@ -60,11 +60,31 @@ async function onDeleteQuiz() {
 }
 const modalShare = useTemplateRef('modal-share');
 
+async function onDeleteQuiz() {
+    if (!quiz.value) return
+
+    const confirmed = confirm(
+        `Delete quiz "${quiz.value.name}"?\n\nThis action cannot be undone.`
+    )
+
+    if (!confirmed) return
+
+    const ok = await deletePack(quiz.value.id)
+
+    if (!ok) {
+        alert("Couldn't delete quiz")
+        return
+    }
+
+    await quizzesStore.fetchMyQuizzes()
+
+    router.push("/quizzes")
+}
+
 function onStartEditQuestion(q_idx: number) {
     let q = quiz?.value?.cards.at(q_idx);
     modalEdit.value?.open(q);
 }
-
 
 function onDeleteQuestion(q: Card) {
     if (quiz.value === undefined) { return; }
@@ -82,7 +102,6 @@ function onDeleteQuestion(q: Card) {
     hasUnsavedChanges.value = true
     modalEdit?.value?.close();
 }
-
 
 function onAddQuestion(q: Card) {
     if (quiz.value === undefined) { return; }
