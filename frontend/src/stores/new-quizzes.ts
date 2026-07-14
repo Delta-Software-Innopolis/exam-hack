@@ -24,6 +24,7 @@ export const useNewQuizzesStore = defineStore('newQuizzes', () =>
 {
     const quizzes: Ref<QuizItem[]> = ref([])
     const hubQuizzes: Ref<QuizItem[]> = ref([])
+    const currentSharedQuiz: Ref<QuizItem | undefined> = ref(undefined)
 
     function getHubQuizInfo(quizId: string | string[] | undefined) {
         console.log(quizId)
@@ -88,6 +89,27 @@ export const useNewQuizzesStore = defineStore('newQuizzes', () =>
             }
             const payload = await response.json()
             quizzes.value = payload.packs as QuizItem[]
+            console.log("PAYLOAD:", payload)
+            console.log("QUIZ:", quizzes.value)
+        } 
+        catch (error) {
+            console.error('Could not fetch Quizzes', error)
+        }
+    }
+
+    async function fetchQuizByInviteId(id: string): Promise<void> {
+        const nm = useNetworkManager()
+        try {
+            console.log(`PATH - /core/share/${id}`)
+            const response = await nm.fetch_core(`/core/share/${id}`, { method: 'GET' })
+            console.log(response)
+            if (!response.ok) {
+                console.error(response)
+                throw response.status
+            }
+            const payload = await response.json() as QuizItem
+            console.log("PAYLOAD:", payload)
+            currentSharedQuiz.value = payload
         } 
         catch (error) {
             console.error('Could not fetch Quizzes', error)
@@ -108,6 +130,8 @@ export const useNewQuizzesStore = defineStore('newQuizzes', () =>
         getAllMyQuizzesInfo,
         hubQuizzes,
         getHubQuizInfo,
+        fetchQuizByInviteId,
+        currentSharedQuiz
     }
 },
 {

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { QuizItem } from "@/types"
 import type { Ref } from "vue";
-import { ref, onMounted, onBeforeUpdate} from "vue";
+import { computed, ref, onMounted, onBeforeUpdate} from "vue";
 import QuizComponent from "@/components/basic/QuizComponent.vue";
 import { useRouter } from "vue-router";
 import { useNewQuizzesStore } from "@/stores/new-quizzes";
@@ -9,7 +9,7 @@ import PlusButton from "@/components/buttons/PlusButton.vue";
 
 const router = useRouter();
 const quizzesStore = useNewQuizzesStore()
-const quizzes = ref(quizzesStore.getAllMyQuizzesInfo()) as Ref<QuizItem[]>;
+const quizzes = computed(() => quizzesStore.getAllMyQuizzesInfo())
 const isLoading = ref(true);
 
 onMounted(async ()=> {
@@ -20,9 +20,6 @@ onMounted(async ()=> {
   } finally {
     isLoading.value = false;
   }
-})
-onBeforeUpdate(()=>{
-    quizzes.value = quizzesStore.getAllMyQuizzesInfo()
 })
 </script>
 
@@ -44,7 +41,7 @@ onBeforeUpdate(()=>{
         :name="quiz.name"
         :author="quiz.author.name"
         :description="quiz.description"
-      </QuizComponent>
+      ></QuizComponent>
     </div>
   </div>
   <div v-else>Loading...</div>

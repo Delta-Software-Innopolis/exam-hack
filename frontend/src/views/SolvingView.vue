@@ -13,8 +13,16 @@ import HintSVG from '@/assets/Hint.svg'
 import UnknownView from './UnknownView.vue';
 
 const route = useRoute();
+const isShared = computed(() => route.query.shared === 'true')
 const quizzesStore = useNewQuizzesStore()
-const quiz = ref(quizzesStore.getMyQuizInfo(route.params.quizId))
+const quiz = ref<QuizItem>();
+if (isShared) {
+    quiz.value = quizzesStore.currentSharedQuiz
+} else {
+    quiz.value = quizzesStore.getMyQuizInfo(route.params.quizId)
+}
+console.log("QUIZ:", quiz)
+
 const knownQuiz = computed(()=>quiz.value.id !== -1);
 const questionNum = ref(0)
 const card = computed(() => quiz.value ? quiz.value.cards[questionNum.value] : undefined) as ComputedRef<Card>
@@ -42,7 +50,6 @@ function nextCard(){
         return
     }
     router.push({name: "quizzes"})
-
 }
 
 function prevCard(){
