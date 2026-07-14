@@ -32,6 +32,9 @@ interface IQuizEditComponent {
 
     fun onEditQuestionClick(index: Int, question: Question)
     fun onAddQuestionClick()
+    fun goToQuizHub()
+    fun goToProfile()
+    fun goToSettings()
     fun onCloseClick()
 }
 
@@ -39,6 +42,9 @@ class QuizEditComponent(
     componentContext: ComponentContext,
     private val questions: List<Question>,
     private val saveQuiz: (List<Question>) -> Unit,
+    private val toQuizHub: () -> Unit,
+    private val toProfile: () -> Unit,
+    private val toSettings: () -> Unit,
     private val back: () -> Unit
 ) : IQuizEditComponent, ComponentContext by componentContext {
 
@@ -97,6 +103,18 @@ class QuizEditComponent(
         navigation.activate(
             Config.AddQuestionDialog(model.value.questions.lastIndex)
         )
+    }
+
+    override fun goToQuizHub() {
+        toQuizHub()
+    }
+
+    override fun goToProfile() {
+        toProfile()
+    }
+
+    override fun goToSettings() {
+        toSettings()
     }
 
     override fun onCloseClick() {

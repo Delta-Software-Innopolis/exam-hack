@@ -11,7 +11,7 @@ import TrashButton from '@/components/buttons/TrashButton.vue';
 import PlayButton from '@/components/buttons/PlayButton.vue';
 import UnknownView from './UnknownView.vue';
 import ModalQuestionAdd from '@/components/modals/ModalQuestionAdd.vue';
-import PlusButton from '@/components/buttons/PlusButton.vue';10
+import PlusButton from '@/components/buttons/PlusButton.vue';
 
 const route = useRoute();
 const router = useRouter();

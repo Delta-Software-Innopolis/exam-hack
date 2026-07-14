@@ -9,8 +9,12 @@ const route = useRoute()
 
 <template>
   <main class="page-content">
-    <NavigationSidebar :class="{show: route.meta.showSidebar}"/>
-    <RouterView class="main-view"/>
+    <NavigationSidebar v-if="route.meta.showSidebar"/>
+    <RouterView class="main-view" v-slot="{ Component }">
+        <Transition :name="(route.meta.withAnimation ? 'view' : '')" mode="out-in">
+            <component :is="Component"/>
+        </Transition>
+    </RouterView>
   </main>
 </template>
 
@@ -29,10 +33,6 @@ const route = useRoute()
 
 .navigation-sidebar {
   height: 100%;
-  display: none;
-}
-
-.navigation-sidebar.show {
   display: flex;
 }
 
@@ -40,5 +40,16 @@ const route = useRoute()
   height: 100%;
   width: 100%;
   overflow-y: auto;
+}
+
+.view-enter-from,
+.view-leave-to {
+    opacity: 0;
+}
+
+.view-enter-active,
+.view-leave-active {
+    transition: opacity 0.2s,
+                transform 0.2s;
 }
 </style>

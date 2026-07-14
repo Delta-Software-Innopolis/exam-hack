@@ -18,6 +18,12 @@ export const useUserStore = defineStore('user', () => {
         return __isAuthenticated
     }
 
+    function logout() {
+        username.value = "";
+        isNew.value = true;
+        __isAuthenticated = false;
+    }
+
     async function __validateOrRefresh(): Promise<boolean> {
         try {
             let valid = await Auth.validate()
@@ -33,6 +39,7 @@ export const useUserStore = defineStore('user', () => {
         username,
         isNew,
         isAuthenticated,
+        logout,
     }
 },
 {
