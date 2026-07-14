@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ref, useTemplateRef, type Ref } from 'vue';
+import { onMounted, onUnmounted, ref, useTemplateRef, type Ref, watch } from 'vue';
 import type { Card } from '@/types';
 import { fetchCreateQuiz } from '@/core';
-import { useRouter } from 'vue-router';
+import { useRouter, onBeforeRouteLeave } from 'vue-router';
 import { generateCards } from '@/generation';
 import ModalGenerationLoading from '@/components/modals/ModalGenerationLoading.vue';
 import ModalGenerationSettings from '@/components/modals/ModalGenerationSettings.vue';
@@ -20,6 +20,8 @@ const questions: Ref<Card[]> = ref([]);
 
 const allowMultipleCorrects = ref(true);
 const generateQuestionsNumber = ref<number>(10);
+
+const hasUnsavedProgress = ref(false)
 
 
 async function onGenerateConfirm() {
@@ -82,6 +84,38 @@ async function onFinishCreation() {
     }
 
 }
+
+
+watch(
+    [quizTitle, quizDescription],
+    () => hasUnsavedProgress.value = true
+)
+
+
+function beforeUnload(event: BeforeUnloadEvent) {
+    if (!hasUnsavedProgress.value) return
+    event.preventDefault()
+    event.returnValue = ''
+}
+
+
+onMounted(()=>{
+    window.addEventListener('beforeunload', beforeUnload)
+})
+
+
+onUnmounted(()=>{
+    window.removeEventListener('beforeunload', beforeUnload)
+})
+
+
+onBeforeRouteLeave(() => {
+    if (!hasUnsavedProgress.value) return true
+
+    return window.confirm(
+        "Your quiz progress will be lost. Continue?"
+    )
+})
 </script>
 
 
