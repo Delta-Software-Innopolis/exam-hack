@@ -16,11 +16,12 @@ revision: str = '4dfd06a8c76c'
 down_revision: Union[str, Sequence[str], None] = '248d2a417dcf'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
-bind = op.get_bind()
-inspector = Inspector.from_engine(bind)
 
 def upgrade() -> None:
     """Upgrade schema."""
+    bind = op.get_bind()
+    inspector = Inspector.from_engine(bind)
+
     if inspector.has_table("cards"):
         op.drop_constraint(
             "cards_pack_id_fkey",
@@ -53,6 +54,9 @@ def upgrade() -> None:
 
 def downgrade() -> None:
     """Downgrade schema."""
+    bind = op.get_bind()
+    inspector = Inspector.from_engine(bind)
+
     if inspector.has_table("card_options"):
         op.drop_constraint(
             "card_options_card_id_fkey",
