@@ -51,12 +51,6 @@ function nextCard(){
     isHintClicked.value = false
     questionNum.value++;
     updateButtonStyles()
-    if (questionNum.value < (quiz.value ? quiz.value.cards.length : 1) - 1) {
-        questionNum.value++;
-        styles.value = new Array(4).fill('default')
-        return
-    }
-    router.push({name: "quizzes"})
 }
 
 function prevCard(){
