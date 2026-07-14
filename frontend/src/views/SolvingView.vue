@@ -62,7 +62,7 @@ function checkAnswer(index:number){
         if (card.value.correct.includes(ind)) {
             styles.value[ind] = "green"
         } else {
-            styles.value[ind] = "red"
+            styles.value[ind] = "quizred"
         }
     }
 }
@@ -79,7 +79,7 @@ function checkAnswer(index:number){
                         <div class="current-progress":style="{ width: progressWidth}"></div>
                     </div>
                 </div>
-                <Transition mode="out-in">
+                <Transition name="question" mode="out-in">
                     <div class="options" :key="questionNum">
                         <div class="question">
                             <div class="title">{{ card?.question }}</div>
@@ -92,7 +92,7 @@ function checkAnswer(index:number){
                                     :class="{ answered: questionAnswered }"
                                     @click="checkAnswer(index)"
                                 >
-                                    Option {{`${index}: ${option} `}}
+                                <span class="option-index">{{ index }}.</span>{{ option }}
                                 </BasicButton>
                             </div>
                         </div>
@@ -227,6 +227,12 @@ function checkAnswer(index:number){
     background-color: var(--background-light);
 }
 
+.option-index {
+    margin-left: 3px;
+    margin-right: 6px;
+    color: var(--background-dimm);
+}
+
 .answered {
     pointer-events: none;
 }
@@ -296,17 +302,17 @@ function checkAnswer(index:number){
 .hint-button:hover {
 }
 
-.v-enter-active,
-.v-leave-active {
+.question-enter-active,
+.question-leave-active {
     transition: all .25s ease;
 }
 
-.v-enter-from {
+.question-enter-from {
     opacity: 0;
     transform: translateX(30px);
 }
 
-.v-leave-to {
+.question-leave-to {
     opacity: 0;
     transform: translateX(-30px);
 }
