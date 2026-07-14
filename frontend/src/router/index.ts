@@ -13,7 +13,6 @@ import QuizCreationView from '@/views/QuizCreationView.vue'
 import QuizHubView from '@/views/QuizHubView.vue'
 import QuizHubItemView from '@/views/QuizHubItemView.vue'
 import WorkingOnView from '@/views/WorkingOnView.vue'
-import QuizInviteView from '@/views/QuizInviteView.vue'
 import ProfileView from '@/views/ProfileView.vue'
 import QuizInviteView from '@/views/QuizInviteView.vue'
 
