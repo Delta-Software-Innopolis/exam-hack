@@ -107,7 +107,6 @@ async def get_packs(
         ).order_by(*[desc(column) for column in rank_col], desc(PublishedPackModel.rating).nulls_last())
     else:
         stmt = select(PublishedPackModel).order_by(desc(PublishedPackModel.rating).nulls_last())
-    print("FILTERS" + ("-")* 20, filters)       
     stmt = (
         stmt.join(PublishedPackModel.source)
         .where(*filters)
@@ -176,6 +175,17 @@ async def add_pack(
     result = (await session.scalars(stmt)).first()
     if not result:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="There is no pack with such id")
+    query = text("""
+        SELECT * FROM pack_permissions
+        WHERE user_id=:u_id AND pack_id=:p_id;
+                 """)
+    result = (await session.execute(query,
+        {
+            "u_id": user_data["user_id"],
+            "p_id": pack_id
+        })).scalar_one_or_none()
+    if result:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="You have already added this pack")
     query = text("""
         INSERT INTO pack_permissions (user_id, pack_id, permission) VALUES
                  (:user_id, :pack_id, 2);

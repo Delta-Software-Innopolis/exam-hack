@@ -18,6 +18,6 @@ class Card_option(Base):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True, index=True)
     content: Mapped[str] = mapped_column(Text, nullable=False)
     is_right: Mapped[bool] = mapped_column(nullable=False)
-    card_id: Mapped[int] = mapped_column(ForeignKey("cards.id"), nullable=False)
+    card_id: Mapped[int] = mapped_column(ForeignKey("cards.id", ondelete="CASCADE"), nullable=False)
 
     card: Mapped["Card"] = relationship("Card", uselist=False, back_populates="options_models")
