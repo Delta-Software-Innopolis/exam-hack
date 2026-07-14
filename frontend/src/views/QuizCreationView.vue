@@ -24,9 +24,6 @@ const generateQuestionsNumber = ref<number>(10);
 const hasUnsavedProgress = ref(false)
 
 
-const hasUnsavedProgress = ref(false)
-
-
 async function onGenerateConfirm() {
     modalGenerationSettings?.value?.close();
     if (!quizTitle.value) {
