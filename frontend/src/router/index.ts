@@ -93,10 +93,10 @@ const router = createRouter({
       meta: { showSidebar: true, withAnimation: true }
     },
     {
-        path: '/quizhub/:quizId',
-        name: 'quizhubItem',
-        component: QuizHubItemView,
-        meta: { showSidebar: true, withAnimation: true },
+      path: '/quizhub/:quizId',
+      name: 'quizhubItem',
+      component: QuizHubItemView,
+      meta: { showSidebar: true, withAnimation: true }
     },
     {
       path: '/quizhub/:quizId',
@@ -126,7 +126,7 @@ const router = createRouter({
       path: '/invite/:code',
       name: 'quizInvite',
       component: QuizInviteView,
-      meta: { showSidebar: true }
+      meta: { showSidebar: true, withAnimation: true }
     },
     {
       path: '/:pathMatch(.*)*',

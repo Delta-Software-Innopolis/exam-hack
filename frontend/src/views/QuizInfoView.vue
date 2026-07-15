@@ -68,6 +68,51 @@ async function onDeleteQuiz() {
 
     router.push("/quizzes")
 }
+const modalShare = useTemplateRef('modal-share');
+const modalPublish = useTemplateRef('modal-publish');
+
+async function onDeleteQuiz() {
+    if (!quiz.value) return
+
+    const confirmed = confirm(
+        `Delete quiz "${quiz.value.name}"?\n\nThis action cannot be undone.`
+    )
+
+    if (!confirmed) return
+
+    const ok = await deletePack(quiz.value.id)
+
+    if (!ok) {
+        alert("Couldn't delete quiz")
+        return
+    }
+
+    await quizzesStore.fetchMyQuizzes()
+
+    router.push("/quizzes")
+}
+const modalShare = useTemplateRef('modal-share');
+
+async function onDeleteQuiz() {
+    if (!quiz.value) return
+
+    const confirmed = confirm(
+        `Delete quiz "${quiz.value.name}"?\n\nThis action cannot be undone.`
+    )
+
+    if (!confirmed) return
+
+    const ok = await deletePack(quiz.value.id)
+
+    if (!ok) {
+        alert("Couldn't delete quiz")
+        return
+    }
+
+    await quizzesStore.fetchMyQuizzes()
+
+    router.push("/quizzes")
+}
 
 function onStartEditQuestion(q_idx: number) {
     let q = quiz?.value?.cards.at(q_idx);
@@ -220,7 +265,7 @@ async function publishQuiz() {
                         </BasicButton>
                     </div>
                     <div class="bottom-buttons">
-                        <TrashButton v-if="knownQuiz" variant="red" 
+                        <TrashButton data-testid="delete-quiz" v-if="knownQuiz" variant="red" 
                             @click="onDeleteQuiz"
                         >
                             Delete
