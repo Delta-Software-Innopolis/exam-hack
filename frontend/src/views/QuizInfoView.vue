@@ -23,7 +23,7 @@ const router = useRouter();
 const quizzesStore = useNewQuizzesStore();
 const quiz = ref<QuizItem>(quizzesStore.getMyQuizInfo(route.params.quizId));
 const knownQuiz = computed(() => quiz.value.id !== -1);
-const quizLink = computed(() => `${window.location.origin}/invite/${quiz.value.share_code}`)
+const quizLink = computed(() => `${window.location.origin}/invite/${quiz.value?.share_code}`)
 
 const copied = ref(false);
 const hasUnsavedChanges = ref(false)
@@ -139,7 +139,7 @@ async function submitChanges() {
     isSaving.value = false
 }
 
-let copyTimeout: number | undefined
+let copyTimeout: ReturnType<typeof setTimeout>;
 
 async function copyLink() {
     await navigator.clipboard.writeText(quizLink.value)

@@ -21,7 +21,8 @@ export interface QuizItem {
     author: Author,
     description?: string,
     cards: Card[],
-    mock?: boolean
+    mock?: boolean,
+    share_code?: string
 }
 
 
