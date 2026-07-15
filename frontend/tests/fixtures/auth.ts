@@ -37,7 +37,6 @@ export const test = base.extend<Fixtures>({
             .click();
 
 
-        // ждём переход после регистрации
         await page.waitForURL('/quizzes');
 
 

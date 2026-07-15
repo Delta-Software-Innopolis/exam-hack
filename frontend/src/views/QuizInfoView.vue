@@ -213,7 +213,7 @@ async function copyLink() {
                         </BasicButton>
                     </div>
                     <div class="bottom-buttons">
-                        <TrashButton v-if="knownQuiz" variant="red" 
+                        <TrashButton data-testid="delete-quiz" v-if="knownQuiz" variant="red" 
                             @click="onDeleteQuiz"
                         >
                             Delete
