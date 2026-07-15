@@ -36,7 +36,7 @@ db-shell:
 	. ./.env.$(ENV) && $(DC) -p exam-hacker-$(ENV) exec db psql -U $$POSTGRES_USER -d $$POSTGRES_DB
 
 generate-secrets:
-	openssl genpkey -algorithm RSA -out jwt_private.pem -pkeyopt rsa_keygen_bits:2048 && openssl rsa -pubout -in jwt_private.pem -out jwt_public.pem && mkdir auth/secrets && mkdir quiz_core/secrets && cp jwt_public.pem jwt_private.pem auth/secrets/ && cp jwt_public.pem quiz_core/secrets/
+	openssl genpkey -algorithm RSA -out jwt_private.pem -pkeyopt rsa_keygen_bits:2048 && openssl rsa -pubout -in jwt_private.pem -out jwt_public.pem && mkdir auth/secrets && mkdir quiz_core/secrets && mkdir quiz_hub/secrets && cp jwt_public.pem jwt_private.pem auth/secrets/ && cp jwt_public.pem quiz_core/secrets/ && cp jwt_public.pem quiz_hub/secrets/
 
 logs:
 	$(DC) -p exam-hacker-$(ENV) logs -f
