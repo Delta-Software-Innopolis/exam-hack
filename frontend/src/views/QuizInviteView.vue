@@ -38,7 +38,7 @@ onMounted(async () => {
   try {
     await quizzesStore.fetchQuizByInviteId(quizCode);
 //    quiz.value = quizzesStore.currentSharedQuiz.value;
-    console.log("store.value:", quizzesStore.currentSharedQuiz.value);
+//    console.log("store.value:", quizzesStore.currentSharedQuiz.value);
     console.log("quiz.value:", quiz.value);
   } catch (error) {
     console.error("Error", error);
@@ -80,7 +80,7 @@ onMounted(async () => {
             <div class="top-action-bar">
                 <h2>Questions</h2>
             </div>
-            <QuizQuestionsList :cards="quiz?.cards" variant="view" />
+            <QuizQuestionsList :cards="quiz!.cards" variant="view" />
         </div>
     </div>
     <UnknownView v-else />

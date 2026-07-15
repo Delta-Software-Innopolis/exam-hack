@@ -4,7 +4,7 @@ import { useNewQuizzesStore } from '@/stores/new-quizzes';
 import { onBeforeMount, onMounted, onUnmounted, type ComputedRef } from 'vue';
 import BasicButton from '@/components/basic/BasicButton.vue';
 import ModalWindow from '@/components/basic/ModalWindow.vue';
-import type { Card } from '@/types'
+import type { Card, QuizItem } from '@/types'
 import { ref, computed, useTemplateRef, Transition } from 'vue';
 import router from '@/router';
 
@@ -24,7 +24,7 @@ if (isShared) {
 }
 console.log("QUIZ:", quiz)
 
-const knownQuiz = computed(()=>quiz.value.id !== -1);
+const knownQuiz = computed(() => quiz?.value?.id !== -1);
 const questionNum = ref(0)
 const card = computed(() => quiz.value ? quiz.value.cards[questionNum.value] : undefined) as ComputedRef<Card>
 const lastClicked = ref<number|null>(null)
@@ -36,13 +36,14 @@ const transitionDirection = ref<'right'|'left'>('right');
 console.log("CARD:", card)
 
 const progressWidth = computed(()=> {
+    if (!quiz.value) return;
     const total = (quiz.value ? quiz.value.cards.length : 1) || 1
-    const current = (questionNum.value+1 < quiz.value.cards.length) ? (questionNum.value + 1) : quiz.value.cards.length
+    const current = (questionNum.value+1 < quiz.value.cards.length) ? (questionNum.value + 1) : quiz?.value?.cards.length
     return `${current/total * 100}%` 
 })
 
-const answered = ref<boolean[]>(Array(quiz.value.cards.length).fill(false))
-const correct = ref<boolean[]>(Array(quiz.value.cards.length).fill(false))
+const answered = ref<boolean[]>(Array(quiz?.value?.cards.length).fill(false))
+const correct = ref<boolean[]>(Array(quiz?.value?.cards.length).fill(false))
 const styles = ref<string[]>(new Array(4).fill('default'))
 
 function nextCard(){
@@ -86,17 +87,17 @@ function checkAnswer(index:number){
 
 
 <template>
-    <div class="container" v-if="knownQuiz">
+    <div class="container" v-if="knownQuiz && quiz">
         <div class="main-container">
             <div class="content">
                 <div class="progress-bar">
-                    <div class="card-num">{{ questionNum+1 < quiz.cards.length ? questionNum + 1 : quiz.cards.length }} / {{ quiz.cards.length }}</div>
+                    <div class="card-num">{{ questionNum+1 < quiz?.cards.length ? questionNum + 1 : quiz.cards.length }} / {{ quiz.cards.length }}</div>
                     <div class="progress">
                         <div class="current-progress":style="{width: progressWidth}"></div>
                     </div>
                 </div>
                 <Transition name="fade">
-                    <div class="quiz-itself" v-if="questionNum < quiz.cards.length">
+                    <div class="quiz-itself" v-if="questionNum < quiz?.cards.length">
                         <Transition :name="transitionDirection" mode="out-in">
                             <div class="options" :key="questionNum">
                                 <div class="question">
@@ -128,12 +129,12 @@ function checkAnswer(index:number){
                     </div>
                 </Transition>
                 <Transition name="fade-congrat">
-                    <div class="quiz-congrat" v-if="questionNum >= quiz.cards.length">
+                    <div class="quiz-congrat" v-if="questionNum >= quiz?.cards?.length">
                         <h3>
                             👏 Congrats, you're back on track!
                         </h3>
                         <p>
-                            {{ correct.filter(answer => answer === true).length }}/{{ quiz.cards.length }} correct answers
+                            {{ correct.filter(answer => answer === true).length }}/{{ quiz?.cards.length }} correct answers
                         </p>
                         <BasicButton @click="router.push({name: 'quizzes'})">Go home</BasicButton>
                     </div>
