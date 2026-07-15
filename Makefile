@@ -8,7 +8,7 @@ prod:
 		-p exam-hacker-prod \
 		-f docker-compose.yml \
 		--env-file .env.prod \
-		up -d
+		up -d --build
 
 dev:
 	$(DC) \
