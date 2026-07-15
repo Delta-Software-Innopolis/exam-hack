@@ -14,12 +14,19 @@ import HintSVG from '@/assets/Hint.svg'
 import UnknownView from './UnknownView.vue';
 
 const route = useRoute();
+console.log("route.query:", route.query)
+console.log(route.fullPath)
+console.log(route.query)
+console.log(route.query.shared)
+console.log(route.query.shared === 'true')
 const isShared = computed(() => route.query.shared === 'true')
 const quizzesStore = useNewQuizzesStore()
 const quiz = ref<QuizItem>();
-if (isShared) {
+if (isShared.value) {
+    console.log("SHARED")
     quiz.value = quizzesStore.currentSharedQuiz
 } else {
+    console.log("NOT SHARED")
     quiz.value = quizzesStore.getMyQuizInfo(route.params.quizId)
 }
 console.log("QUIZ:", quiz)
