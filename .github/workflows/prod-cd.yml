@@ -70,5 +70,3 @@ jobs:
           script: |
             cd ~/exam-hack
             make pull ENV=prod
-            make prod
-
