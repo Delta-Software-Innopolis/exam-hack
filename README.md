@@ -33,6 +33,7 @@ Students can upload lecture materials and automatically generate quizzes and fla
 - Docker
 - Docker Compose
 - GNU Make
+- openssl (to generate secrets) 
 
 #### Clone the repository
 ```sh
@@ -47,6 +48,7 @@ make generate-secrets
 #### Configure environment variables
 ```sh
 cp .env.dev.example .env.dev
+vim .env.dev
 ```
 
 #### Run the project with Docker Compose
