@@ -7,7 +7,6 @@ prod:
 	$(DC) \
 		-p exam-hacker-prod \
 		-f docker-compose.yml \
-		-f docker-compose.prod.yml \
 		--env-file .env.prod \
 		up -d
 
