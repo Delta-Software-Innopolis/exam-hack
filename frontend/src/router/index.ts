@@ -84,6 +84,12 @@ const router = createRouter({
       path: '/quizhub',
       name: 'quizhub',
       component: QuizHubView,
+      meta: { showSidebar: true }
+    },
+    {
+      path: '/quizhub/:quizId',
+      name: 'quizhubItem',
+      component: QuizHubItemView,
       meta: { showSidebar: true, withAnimation: true }
     },
     {
@@ -91,6 +97,12 @@ const router = createRouter({
       name: 'quizhubItem',
       component: QuizHubItemView,
       meta: { showSidebar: true, withAnimation: true }
+    },
+    {
+      path: '/quizhub/:quizId',
+      name: 'quizhubItem',
+      component: QuizHubItemView,
+      meta: { showSidebar: true }
     },
     {
       path: '/profile/:username',
@@ -115,12 +127,6 @@ const router = createRouter({
       name: 'quizInvite',
       component: QuizInviteView,
       meta: { showSidebar: true, withAnimation: true }
-    },
-    {
-      path: '/invite/:code',
-      name: 'quizInvite',
-      component: QuizInviteView,
-      meta: { showSidebar: true }
     },
     {
       path: '/:pathMatch(.*)*',

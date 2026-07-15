@@ -45,6 +45,8 @@ function notImplemented() {
 
 const modalEdit = useTemplateRef('modal-edit');
 const modalAdd = useTemplateRef('modal-add');
+const modalShare = useTemplateRef('modal-share');
+const modalPublish = useTemplateRef('modal-publish');
 
 async function onDeleteQuiz() {
     if (!quiz.value) return
