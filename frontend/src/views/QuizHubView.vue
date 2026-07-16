@@ -40,7 +40,7 @@ try {
     params.append("limit", "16")
     const address = import.meta.env.DEV ? "http://localhost:8067": import.meta.env.VITE_HUB_URL_DEV
     isLoading.value = true 
-    const response = await fetch(`${address}/hub/packs?${params.toString()}`,
+    const response = await fetch(`${address}/hub/packs/?${params.toString()}`,
     {
         method: 'GET'
     })

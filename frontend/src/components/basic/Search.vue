@@ -32,7 +32,7 @@ async function fetchInfo() {
         }
         const address = import.meta.env.DEV ? "http://localhost:8067" : import.meta.env.VITE_HUB_URL_DEV
         const response = await fetch(
-            `${address}/hub/suggestions?` +
+            `${address}/hub/suggestions/?` +
                 new URLSearchParams({
                     sug_type: props.sug_type,
                     q: model.value,
