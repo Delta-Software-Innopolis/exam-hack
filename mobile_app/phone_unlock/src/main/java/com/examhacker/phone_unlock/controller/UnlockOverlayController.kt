@@ -1,7 +1,9 @@
 package com.examhacker.phone_unlock.controller
 
+import androidx.compose.ui.util.fastFirst
 import com.examhacker.common.data.AnswerVariant
 import com.examhacker.common.data.Question
+import com.examhacker.common.data.Quiz
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -11,6 +13,7 @@ import kotlinx.coroutines.flow.update
 class UnlockOverlayController(
 //    private val repository: QuizRepository,
     private val dismissOverlay: () -> Unit,
+    private val updateQuestionAnsweredStatus: (Int) -> Unit,
     private val scope: CoroutineScope
 ) {
     data class State(
@@ -45,13 +48,11 @@ class UnlockOverlayController(
 //    }
 
     fun submitAnswer(answer: AnswerVariant) {
-        val question = _state.value.question ?: return
-
-        _state.update {
-            it.copy(finalAnswer = answer)
+        _state.value.question?.let {
+            _state.update {
+                it.copy(finalAnswer = answer)
+            }
         }
-
-//        dismissOverlay()
     }
 
     fun takeHint() {
@@ -59,19 +60,41 @@ class UnlockOverlayController(
     }
 
     fun proceed() {
+        state.value.question?.let {
+            updateQuestionAnsweredStatus(it.id)
+        }
         dismissOverlay()
     }
 
     fun reset() {
         _state.update { State() }
-        loadMockQuestions()
+//        loadMockQuestions()
 //        loadQuestion()
+    }
+
+    fun setQuestion(quiz: Quiz, answered: List<Boolean>) {
+        val question = quiz.questions
+            .filterIndexed { index, _ -> !answered[index] }
+            .firstOrNull()
+
+        _state.update { state ->
+            state.copy(
+                question = question,
+                totalQuestions = quiz.questions.size,
+                solvedQuestions =
+                    if (answered.count { !it } == 0)
+                        0
+                    else
+                        answered.count { it }
+            )
+        }
     }
 
     fun loadMockQuestions() {
         _state.update {
             it.copy(
                 question = Question(
+                    id = 1,
                     description = "Question description, may span several lines, we’ll discuss the font size and boldness later",
                     variants = listOf(
                         AnswerVariant(

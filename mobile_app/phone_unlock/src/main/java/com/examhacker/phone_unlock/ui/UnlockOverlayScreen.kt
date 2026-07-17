@@ -137,6 +137,7 @@ fun UnlockOverlayPreview() {
     UnlockOverlayUI(
         model = UnlockOverlayController.State().copy(
             question = Question(
+                id = 1,
                 description = "Question description, may span several lines, we’ll discuss the font size and boldness later",
                 variants = listOf(
                     AnswerVariant(

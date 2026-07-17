@@ -4,6 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Question(
+    val id: Int,
     val description: String,
     val variants: List<AnswerVariant>
 )

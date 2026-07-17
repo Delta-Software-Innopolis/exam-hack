@@ -44,6 +44,7 @@ dependencies {
     // Kotlinx
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.kotlinx.serialization.json)
 
     // Navigation
     implementation(libs.decompose.core)

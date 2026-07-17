@@ -12,6 +12,7 @@ import android.content.IntentFilter
 import android.os.IBinder
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import com.examhacker.common.utility.SettingStorage
 import com.examhacker.phone_unlock.controller.UnlockOverlayController
 import com.examhacker.phone_unlock.ui.UnlockOverlayWindow
 import com.examhacker.resources.R
@@ -19,17 +20,23 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 
 class UnlockOverlayService : Service() {
     private lateinit var controller: UnlockOverlayController
     private lateinit var unlockOverlayWindow: UnlockOverlayWindow
+    private lateinit var settingStorage: SettingStorage
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
 
     private val unlockReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             if (intent.action == ACTION_USER_PRESENT) {
                 Log.d("Unlock", "ACTION_USER_PRESENT detecte")
-                showOverlay()
+                val isUnlockFeatureOn = settingStorage.getUnlockFeatureMode()
+
+                if (isUnlockFeatureOn) {
+                    showOverlay()
+                }
             }
         }
     }
@@ -39,15 +46,16 @@ class UnlockOverlayService : Service() {
 
         controller = UnlockOverlayController(
 //            repository = ...,
-        dismissOverlay = ::dismissOverlay,
-        scope = serviceScope
+            dismissOverlay = ::dismissOverlay,
+            updateQuestionAnsweredStatus = ::updateQuestionAnsweredStatus,
+            scope = serviceScope
         )
-
         unlockOverlayWindow = UnlockOverlayWindow(
             context = this,
             controller = controller,
             scope = serviceScope
         )
+        settingStorage = SettingStorage(applicationContext)
 
         registerReceiver(unlockReceiver, IntentFilter(ACTION_USER_PRESENT))
         createNotificationChannel()
@@ -97,12 +105,23 @@ class UnlockOverlayService : Service() {
     }
 
     fun showOverlay() {
-        controller.reset()
-        unlockOverlayWindow.show()
+        val quizWithAnswers = settingStorage.getUnlockFeatureQuiz()
+
+        quizWithAnswers?.let {
+            controller.reset()
+            controller.setQuestion(quizWithAnswers.first, quizWithAnswers.second)
+            unlockOverlayWindow.show()
+        }
     }
 
     private fun dismissOverlay() {
         unlockOverlayWindow.dismiss()
+    }
+
+    private fun updateQuestionAnsweredStatus(id: Int) {
+        serviceScope.launch {
+            settingStorage.updateQuestionAnsweredStatus(id)
+        }
     }
 
     companion object {

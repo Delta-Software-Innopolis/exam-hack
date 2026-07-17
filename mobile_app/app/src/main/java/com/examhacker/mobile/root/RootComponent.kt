@@ -18,6 +18,7 @@ import com.examhacker.common.data.AnswerVariant
 import com.examhacker.common.data.Question
 import com.examhacker.common.data.Quiz
 import com.examhacker.common.utility.FilePicker
+import com.examhacker.common.utility.ISettingStorage
 import com.examhacker.mobile.introduction_screen.IIntroductionComponent
 import com.examhacker.mobile.introduction_screen.IntroductionComponent
 import com.examhacker.mobile.util.IPermissionHandler
@@ -60,6 +61,7 @@ interface IRootComponent {
 class RootComponent(
     private val componentContext: ComponentContext,
     private val permissionHandler: IPermissionHandler,
+    private val settingStorage: ISettingStorage,
     private val filePicker: FilePicker,
     private val startOverlayService: () -> Unit
 ) : ComponentContext by componentContext, IRootComponent {
@@ -111,6 +113,7 @@ class RootComponent(
                                     description = "Nice description",
                                     questions = listOf(
                                         Question(
+                                            id = 1,
                                             description = "How much?",
                                             variants = listOf(
                                                 AnswerVariant("One", false),
@@ -201,6 +204,7 @@ class RootComponent(
                 IRootComponent.Child.Settings(
                     SettingsComponent(
                         componentContext = componentContext,
+                        settingsStorage = settingStorage,
                         goToQuizList = ::navigateToQuizList,
                         goToProfile = ::navigateToProfile,
                         goToQuizHub = ::navigateToQuizHub,
@@ -276,6 +280,7 @@ class RootComponent(
                 description = "Quiz description",
                 questions = List(5) {
                     Question(
+                        id = 2,
                         description = "What is the name of your Practicum Project TA?",
                         variants = listOf(
                             AnswerVariant("Andrei Markov", true),

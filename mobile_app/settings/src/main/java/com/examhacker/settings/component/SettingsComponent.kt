@@ -1,5 +1,6 @@
 package com.examhacker.settings.component
 
+import android.util.Log
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
@@ -45,16 +46,44 @@ class SettingsComponent(
     private val _model = MutableValue(ISettingsComponent.Model())
     override val model = _model
 
+    init {
+        val isUnlockFeatureOn = settingsStorage.getUnlockFeatureMode()
+        val quiz = settingsStorage.getUnlockFeatureQuiz()
+
+        _model.update {
+            it.copy(
+                isPhoneUnlockFeatureOn = isUnlockFeatureOn,
+                quizzes = createMockQuizzes(),
+                selectedQuiz = quiz?.first
+            )
+        }
+    }
+
     override fun onPhoneUnlockFeatureToggle() {
+        if (model.value.isPhoneUnlockFeatureOn) {
+            CoroutineScope(Dispatchers.Main).launch {
+                    settingsStorage.saveUnlockFeatureMode(false)
+                    settingsStorage.clearUnlockFeatureQuiz()
+            }
+        } else {
+            CoroutineScope(Dispatchers.Main).launch {
+                settingsStorage.saveUnlockFeatureMode(true)
+            }
+        }
+
         _model.update {
             it.copy(
                 isPhoneUnlockFeatureOn = !it.isPhoneUnlockFeatureOn,
                 quizzes =
-                    if (it.quizzes == null)
+                    if (!it.isPhoneUnlockFeatureOn)
                         createMockQuizzes()
                     else
                         null,
-                selectedQuiz = settingsStorage.getUnlockFeatureQuiz()?.first
+                selectedQuiz =
+                    if (!it.isPhoneUnlockFeatureOn)
+                        settingsStorage.getUnlockFeatureQuiz()?.first
+                    else
+                        null
             )
         }
     }
@@ -62,9 +91,13 @@ class SettingsComponent(
     override fun onQuizSelect(id: Int) {
         val quiz = model.value.quizzes?.findLast { it.id == id }
 
-        quiz?.let {
+        quiz?.let { quiz ->
             CoroutineScope(Dispatchers.IO).launch {
-                settingsStorage.saveUnlockFeatureQuiz(it)
+                settingsStorage.saveUnlockFeatureQuiz(quiz)
+            }
+
+            _model.update {
+                it.copy(selectedQuiz = quiz)
             }
         }
     }
@@ -102,6 +135,7 @@ class SettingsComponent(
                 description = "",
                 questions = listOf(
                     Question(
+                        id = 1,
                         description = "How much?",
                         variants = listOf(
                             AnswerVariant("One", false),
@@ -109,6 +143,7 @@ class SettingsComponent(
                         )
                     ),
                     Question(
+                        id = 2,
                         description = "How are you",
                         variants = listOf(AnswerVariant("good", true))
                     )
@@ -121,6 +156,7 @@ class SettingsComponent(
                 description = "",
                 questions = listOf(
                     Question(
+                        id = 3,
                         description = "Hate me?",
                         variants = listOf(AnswerVariant("No", true))
                     )
