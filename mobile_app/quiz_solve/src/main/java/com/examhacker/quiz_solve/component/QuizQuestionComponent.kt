@@ -11,6 +11,8 @@ import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
 import com.examhacker.common.data.AnswerVariant
 import com.examhacker.common.data.Question
+import com.examhacker.common.utility.ai_chat.AIChatComponent
+import com.examhacker.common.utility.ai_chat.IAIChatComponent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay

@@ -80,6 +80,7 @@
 	<string name="quiz_result_screen_title">Congrats, you’re back on track 👏</string>
 	<string name="quiz_result_correct_answers">Correct answers</string>
 	<string name="quit_solving_button_label">Take a break</string>
+	<string name="finish_solving_button_label">Proceed</string>
 
 	<!-- AI Chat -->
 	<string name="chat_with">Chat with</string>

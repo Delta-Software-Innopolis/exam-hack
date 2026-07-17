@@ -31,40 +31,27 @@ fun AnswerVariantCard(
     var isFocused by remember { mutableStateOf(false) }
 
     Card(
-        shape = RoundedCornerShape(Dimensions.AnswerVariantCardRadius),
-        border = BorderStroke(
-            width =
-                if (status == AnswerVariantStatus.DEFAULT)
-                    Dimensions.DefaultBorderWidth
-                else
-                    Dimensions.ThickBorderWidth,
-            color =
-                when(status) {
-                    AnswerVariantStatus.DEFAULT          ->
-                        if (isFocused)
-                            ColorPreset.BorderFocus
-                        else
-                            ColorPreset.BorderDefault
-                    AnswerVariantStatus.ANSWERED_CORRECT -> ColorPreset.BorderPositiveTertiary
-                    AnswerVariantStatus.ANSWERED_WRONG   -> ColorPreset.BorderDangerTertiary
-                }
-        ),
-        colors = CardDefaults.cardColors(
-            containerColor =
-                when(status) {
-                    AnswerVariantStatus.DEFAULT          ->
-                        if (isFocused)
-                            ColorPreset.BackgroundFocus
-                        else
-                            ColorPreset.BackgroundVariant
-                    AnswerVariantStatus.ANSWERED_CORRECT -> ColorPreset.BackgroundPositiveSecondary
-                    AnswerVariantStatus.ANSWERED_WRONG   -> ColorPreset.BackgroundDangerSecondary
-                },
-            contentColor = ColorPreset.Black
-        ),
+        shape = RoundedCornerShape(Dimensions.DefaultCardRadius),
         modifier = Modifier
             .onFocusChanged { isFocused = it.isFocused && enabled }
-            .clickable(onClick = onClick, enabled = enabled)
+            .clickable(onClick = onClick, enabled = enabled),
+        border =
+            if (isFocused)
+                BorderStroke(
+                    width = Dimensions.ThickBorderWidth,
+                    color = ColorPreset.SecondaryDimm
+                )
+            else
+                null,
+        colors = CardDefaults.cardColors(
+            contentColor = ColorPreset.Black,
+            containerColor =
+                when(status) {
+                    AnswerVariantStatus.DEFAULT          -> ColorPreset.BackgroundDefaultPrimary
+                    AnswerVariantStatus.ANSWERED_CORRECT -> ColorPreset.BackgroundPositiveSecondary
+                    AnswerVariantStatus.ANSWERED_WRONG   -> ColorPreset.BackgroundDangerSecondary
+                }
+        )
     ) {
         Text(
             text = description,

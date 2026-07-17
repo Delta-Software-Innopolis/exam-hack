@@ -1,4 +1,4 @@
-package com.examhacker.quiz_solve.component
+package com.examhacker.common.utility.ai_chat
 
 import android.util.Log
 import com.arkivanov.decompose.ComponentContext

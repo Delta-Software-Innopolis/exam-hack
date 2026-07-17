@@ -14,6 +14,7 @@ import com.examhacker.phone_unlock.controller.UnlockOverlayController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
+@Deprecated("Migrated back to Compose")
 class UnlockOverlayView(
     context: Context,
     private val controller: UnlockOverlayController,
