@@ -50,18 +50,6 @@ class ColorPreset {
         // Let's use color notation as above
         val LightGray = Color(0xFFD9D9D9)
         val Gray = Color(0xFF757575)
-
         val Turquoise = Color(0xFF7CF4FF)
-        val Mint = Color(0xFFEBFDFF)
-
-        val LightGreen = Color(0xFFCFF7D3)
-        val Green = Color(0xFF14AE5C)
-
-        val LightRed = Color(0xFFFDD3D0)
-        val Red = Color(0xFFEC221F)
-
-        val Lilac = Color(0xFFFF61ED)
-
-        val Background = Color(0xFFF3F6F7)
     }
 }

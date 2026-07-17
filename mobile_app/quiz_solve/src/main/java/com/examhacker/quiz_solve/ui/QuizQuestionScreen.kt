@@ -132,6 +132,7 @@ private fun QuizQuestionScreen() {
 
 private fun createMockData(): IQuizQuestionComponent.Model {
     val question1 = Question(
+        id = 1,
         description = "Question description, may span several lines, we’ll discuss the font size and boldness later",
         variants = listOf(
             AnswerVariant("Option 1, option description", false),
@@ -142,6 +143,7 @@ private fun createMockData(): IQuizQuestionComponent.Model {
     )
 
     val question2 = Question(
+        id = 2,
         description = "Why do dogs think their tails are so clingy, they always want to grab it?",
         variants = listOf(
             AnswerVariant("Option 1", false),

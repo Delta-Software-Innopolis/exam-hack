@@ -101,7 +101,7 @@ fun QuizListUI(
                 end = Dimensions.ScreenPadding,
                 top = Dimensions.ScreenPadding
             ),
-            verticalArrangement = Arrangement.spacedBy(Dimensions.QuizListItemsSpacing)
+            verticalArrangement = Arrangement.spacedBy(Dimensions.DefaultListSpacing)
         ) {
             model.quizzes?.let { quizzes ->
                 items(quizzes) {

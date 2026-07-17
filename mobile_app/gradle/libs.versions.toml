@@ -17,7 +17,8 @@ ksp = "2.3.9"
 decompose = "3.5.0"
 ktor = "3.5.0"
 kotlinx-coroutines = "1.11.0"
-kotlin-serialization = "2.2.0"
+kotlin-serialization-plugin = "2.2.0"
+kotlin-serialization = "1.7.3"
 material3 = "1.4.0"
 foundationLayout = "1.11.4"
 
@@ -54,6 +55,7 @@ ktor-client-cio = { group = "io.ktor", name = "ktor-client-cio", version.ref = "
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
+kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlin-serialization" }
 androidx-compose-foundation-layout = { group = "androidx.compose.foundation", name = "foundation-layout", version.ref = "foundationLayout" }
 
 [plugins]
@@ -61,6 +63,6 @@ android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin-serialization" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin-serialization-plugin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp"}
 

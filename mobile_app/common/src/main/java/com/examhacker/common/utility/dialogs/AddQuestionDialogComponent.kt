@@ -84,8 +84,9 @@ class AddQuestionDialogComponent(
     override fun onAddQuestion() {
         addQuestion(
             Question(
-                model.value.questionDescription,
-                model.value.variants
+                id = model.value.questionNumber,
+                description = model.value.questionDescription,
+                variants = model.value.variants
             )
         )
 

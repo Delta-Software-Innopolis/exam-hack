@@ -18,7 +18,7 @@ fun QuestionList(
 ) {
     LazyColumn(
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(Dimensions.QuestionListSpacing),
+        verticalArrangement = Arrangement.spacedBy(Dimensions.DefaultListSpacing),
         modifier = modifier
     ) {
         itemsIndexed(questions) { index, question, ->

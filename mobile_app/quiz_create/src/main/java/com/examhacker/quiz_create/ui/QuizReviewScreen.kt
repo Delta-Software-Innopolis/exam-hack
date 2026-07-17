@@ -243,6 +243,7 @@ private fun PreviewQuizReviewScreen() {
 private fun createMockQuestions(): List<Question> =
     listOf(
         Question(
+            id = 1,
             description = "Why do dogs think their tails are so clingy, they always want to grab it?",
             variants = listOf(
                 AnswerVariant("Option 1", false),
@@ -252,6 +253,7 @@ private fun createMockQuestions(): List<Question> =
             )
         ),
         Question(
+            id = 2,
             description = "Why something is this thing?",
             variants = listOf(
                 AnswerVariant("Option 1", false),
@@ -261,6 +263,7 @@ private fun createMockQuestions(): List<Question> =
             )
         ),
         Question(
+            id = 3,
             description = "Why do dogs think their tails are so clingy, they always want to grab it?",
             variants = listOf(
                 AnswerVariant("Option 1", false),

@@ -94,7 +94,7 @@ private fun QuizNameUI(
                     .navigationBarsPadding()
             )
         },
-        containerColor = ColorPreset.Background
+        containerColor = ColorPreset.BackgroundVariant
     ) { contentPadding ->
 
         Column(

@@ -91,8 +91,9 @@ class EditQuestionDialogComponent(
         saveChanges(
             model.value.questionNumber - 1,
             Question(
-                model.value.questionDescription,
-                model.value.variants
+                id = model.value.questionNumber,
+                description = model.value.questionDescription,
+                variants = model.value.variants
             )
         )
         
