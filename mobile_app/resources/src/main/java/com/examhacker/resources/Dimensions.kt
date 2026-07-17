@@ -10,10 +10,12 @@ class Dimensions {
         val DefaultBorderWidth = 1.dp
         val ThickBorderWidth = 2.dp
         val InputFieldRadius = 16.dp
-        val QuestionListSpacing = 16.dp
         val QuestionCardPadding = 8.dp
         val QuestionCardRadius = 16.dp
         val ButtonRadius = 16.dp
+        val DefaultListSpacing = 16.dp
+        val CircularProgressIndicatorSize = 40.dp
+        val CircularProgressIndicatorWidth = 4.dp
         val FloatingActionButtonPadding = 22.dp
         val ButtonContentSpacing = 8.dp
         val NavigationIconSize = 34.dp
@@ -27,6 +29,7 @@ class Dimensions {
         val ButtonLabelFontSize = 16.sp
         val QuestionCardFontSize = 16.sp
         val SnackBarFontSize = 18.sp
+        val ConnectionErrorFontSize = 16.sp
 
         // AppNavigationBar
         val AppNavigationPaddingVertical = 8.dp
@@ -67,7 +70,6 @@ class Dimensions {
         val AuthorNameFontSize = 16.sp
 
         // Quiz List
-        val QuizListItemSpacing = 16.dp
         val QuizItemAuthorFontSize = 16.sp
         val QuizItemTitleFontSize = 24.sp
 
@@ -104,8 +106,10 @@ class Dimensions {
         val SettingSwitchThumbHeight = 51.dp
         val SettingSwitchRadius = 20.dp
         val SettingSwitchThumbRadius = 16.dp
+        val QuizSelectableRowPadding = 4.dp
         val SettingLabelFontSize = 18.sp
         val SettingOptionFontSize = 16.sp
+        val QuizSelectableFontSize = 16.sp
 
         // Quiz Hub
         val QuizHubPlaceholderTextSpacing = 60.dp
@@ -118,40 +122,8 @@ class Dimensions {
         val LogoutButtonPadding = 12.dp
         val UsernameFontSize = 32.sp
 
-        // Quiz List
-        val QuizListFabSize = 64.dp
-        val QuizListFabBottomPadding = 8.dp
-        val QuizListFabIconSize = 40.dp
-        val QuizListContentBottomPadding = 100.dp
-        val QuizListItemsSpacing = 16.dp
-        val QuizListPreviewItemsSpacing = 8.dp
-        val QuizListTitleBottomPadding = 16.dp
-
-        // Quiz Card
-        val QuizCardHeight = 82.dp
-        val QuizCardRadius = 16.dp
-        val QuizCardHorizontalPadding = 20.dp
-        val QuizCardVerticalPadding = 24.dp
-        val QuizCardIconSize = 34.dp
-
-        //Main Navigation Bar
-        val NavigationBarVerticalPadding = 8.dp
-        val NavigationBarHeight = 88.dp
-
-        val NavigationItemSpacing = 8.dp
-        val NavigationItemIconSize = 34.dp
-        val NavigationItemFontSize = 14.sp
-
-        // Quiz Solve Bottom Bar
-        val QuizSolveBottomBarIconSize = 50.dp
-        val QuizSolveBottomBarAiButtonSize = 48.dp
-        val QuizSolveBottomBarBottomPadding = 24.dp
-        val QuizSolveBottomBarHorizontalPadding = 32.dp
-
         // Quiz Progress Bar
-        val QuizProgressBarCornerRadius = 100.dp
         val QuizProgressBarPadding = 16.dp
-        val QuizProgressBarTextSpacing = 8.dp
 
         // DrawScope dimensions
         const val PROGRESS_BAR_CORNER_RADIUS = 100f

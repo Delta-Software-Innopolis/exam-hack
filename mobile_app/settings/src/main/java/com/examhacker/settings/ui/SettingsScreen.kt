@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -14,9 +15,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
@@ -31,11 +38,17 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
+import com.examhacker.common.data.AnswerVariant
+import com.examhacker.common.data.Question
+import com.examhacker.common.data.Quiz
 import com.examhacker.common.ui.AppNavigationBar
+import com.examhacker.common.ui.ContentPlaceholder
 import com.examhacker.common.ui.NavigationTab
 import com.examhacker.common.ui.NotImplementedSnackBarUI
 import com.examhacker.common.ui.ScreenTitle
@@ -54,6 +67,7 @@ fun SettingsScreen(component: ISettingsComponent) {
         onPhoneUnlockFeatureToggle = component::onPhoneUnlockFeatureToggle,
         onLanguageToggle = component::onLanguageToggle,
         onThemeToggle = component::onThemeToggle,
+        onQuizSelect = component::onQuizSelect,
         onProfileClick = component::toProfile,
         onQuizListClick = component::toQuizList,
         onQuizHubClick = component::toQuizHub
@@ -66,6 +80,7 @@ private fun SettingsUI(
     onPhoneUnlockFeatureToggle: () -> Unit,
     onLanguageToggle: () -> Unit,
     onThemeToggle: () -> Unit,
+    onQuizSelect: (Int) -> Unit,
     onProfileClick: () -> Unit,
     onQuizListClick: () -> Unit,
     onQuizHubClick: () -> Unit
@@ -147,6 +162,26 @@ private fun SettingsUI(
                     onPhoneUnlockFeatureToggle = onPhoneUnlockFeatureToggle,
                     modifier = Modifier.fillMaxWidth()
                 )
+            }
+
+            if (model.isPhoneUnlockFeatureOn) {
+                SettingItemCard(Modifier.fillMaxWidth()) {
+                    model.quizzes?.let {
+                        QuizSelectList(
+                            quizzes = it,
+                            selectedQuiz = model.selectedQuiz,
+                            onQuizSelect = onQuizSelect,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                        ?: ContentPlaceholder(
+                            isLoading = model.isQuizzesLoading,
+                            error = model.quizLoadingError,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .fillMaxHeight(0.3f)
+                        )
+                }
             }
         }
     }
@@ -236,6 +271,76 @@ private fun PhoneUnlockFeatureSetting(
 
                 checkedBorderColor = ColorPreset.BorderPositiveTertiary,
                 uncheckedBorderColor = ColorPreset.Secondary
+            )
+        )
+    }
+}
+
+@Composable
+private fun QuizSelectList(
+    quizzes: List<Quiz>,
+    selectedQuiz: Quiz?,
+    onQuizSelect: (Int) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    LazyColumn(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(Dimensions.DefaultListSpacing),
+        modifier = modifier.selectableGroup()   
+    ) {
+        items(quizzes) { quiz ->
+
+            QuizSelectable(
+                quiz = quiz,
+                isSelected = quiz == selectedQuiz,
+                onSelect = onQuizSelect,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+    }
+}
+
+@Composable
+private fun QuizSelectable(
+    quiz: Quiz,
+    isSelected: Boolean,
+    onSelect: (Int) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = modifier
+            .selectable(
+                selected = isSelected,
+                onClick = { onSelect(quiz.id) },
+                role = Role.RadioButton
+            )
+    ) {
+        Column(horizontalAlignment = Alignment.Start) {
+            Text(
+                text = quiz.name,
+                color = ColorPreset.Black,
+                fontSize = Dimensions.QuizSelectableFontSize,
+                fontWeight = FontWeight.Bold,
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 1
+            )
+
+            Text(
+                text = "${quiz.questions.size} question${if (quiz.questions.size > 1) "s" else ""}",
+                color = ColorPreset.Secondary,
+                fontSize = Dimensions.QuizSelectableFontSize,
+                fontWeight = FontWeight.Normal
+            )
+        }
+
+        RadioButton(
+            selected = isSelected,
+            onClick = null,
+            colors = RadioButtonDefaults.colors(
+                selectedColor = ColorPreset.PositivePrimary,
+                unselectedColor = ColorPreset.SecondaryDimm
             )
         )
     }
@@ -377,13 +482,49 @@ private fun SettingSwitchOptionBox(
 @Composable
 private fun SettingsScreenPreview() {
     SettingsUI(
-        model = ISettingsComponent.Model(),
+        model = ISettingsComponent.Model()
+            .copy(isPhoneUnlockFeatureOn = true, quizzes = createMockQuizzes()),
         onPhoneUnlockFeatureToggle = {},
         onLanguageToggle = {},
         onThemeToggle = {},
+        onQuizSelect = {},
         onProfileClick = {},
         onQuizListClick = {},
         onQuizHubClick = {}
     )
 }
 
+private fun createMockQuizzes(): List<Quiz> =
+    listOf(
+        Quiz(
+            id = 1,
+            authorName = "pavmash",
+            name = "best quiz",
+            description = "",
+            questions = listOf(
+                Question(
+                    description = "How much?",
+                    variants = listOf(
+                        AnswerVariant("One", false),
+                        AnswerVariant("Two", true)
+                    )
+                ),
+                Question(
+                    description = "How are you",
+                    variants = listOf(AnswerVariant("good", true))
+                )
+            )
+        ),
+        Quiz(
+            id = 2,
+            authorName = "upconett",
+            name = "Nice quiz",
+            description = "",
+            questions = listOf(
+                Question(
+                    description = "Hate me?",
+                    variants = listOf(AnswerVariant("No", true))
+                )
+            )
+        )
+    )
