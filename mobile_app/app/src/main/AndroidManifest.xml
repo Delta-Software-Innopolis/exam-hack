@@ -38,6 +38,15 @@
 			android:name="android.foreground_service_type_special_use"
 			android:value="overlay_service" />
 		</service>
+
+		<activity
+			android:name="com.examhacker.phone_unlock.UnlockActivity"
+			android:exported="true"
+			android:label="Unlock Activity"
+			android:theme="@style/Theme.ExamHackerMobile"
+			android:noHistory="true"
+			android:excludeFromRecents="true">
+		</activity>
 	</application>
 
 </manifest>

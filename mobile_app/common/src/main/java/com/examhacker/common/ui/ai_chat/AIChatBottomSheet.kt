@@ -1,4 +1,4 @@
-package com.examhacker.quiz_solve.ui
+package com.examhacker.common.ui.ai_chat
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -46,7 +46,7 @@ import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.examhacker.common.data.ChatMessage
 import com.examhacker.common.data.MessageAuthor
 import com.examhacker.resources.R
-import com.examhacker.quiz_solve.component.IAIChatComponent
+import com.examhacker.common.utility.ai_chat.IAIChatComponent
 import com.examhacker.resources.ColorPreset
 import com.examhacker.resources.Dimensions
 import kotlinx.coroutines.launch
