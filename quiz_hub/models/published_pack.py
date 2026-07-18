@@ -6,6 +6,7 @@ from sqlalchemy.dialects.postgresql import TSVECTOR
 from database import Base
 from datetime import datetime, timezone
 from .forks import forks
+from .rating import rating as rating_table
 
 if TYPE_CHECKING:
     from .pack import Pack
@@ -67,7 +68,14 @@ class Published_pack(Base):
         lazy="noload",
         order_by="Published_pack.rating.desc().nulls_last()"
     )
-
+    
+    valuers: Mapped[list["User"]] = relationship(
+        "User", 
+        secondary=rating_table,
+        lazy="noload",
+        back_populates="rated_packs"
+        )
+        
     __table_args__ = (
         Index("ix_desc_tsv_gin", "tsv_desc", postgresql_using="gin"),
         Index("ix_course_book_tsv_gin", "tsv_course_book", postgresql_using="gin"),

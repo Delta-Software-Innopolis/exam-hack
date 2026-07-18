@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING
 from sqlalchemy import String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from database import Base
+from .rating import rating as rating_table
 
 if TYPE_CHECKING:
     from .comment import Comment
@@ -19,5 +20,11 @@ class User(Base):
     packs: Mapped[list["Published_pack"]] = relationship(
         "Published_pack",
         back_populates="author",
+    )
+    rated_packs: Mapped[list["Published_pack"]] = relationship(
+        "Published_pack",
+        secondary=rating_table,
+        back_populates="valuers",
+        lazy="noload"
     )
     comments: Mapped[list["Comment"]] = relationship("Comment", back_populates="author", lazy="noload")
