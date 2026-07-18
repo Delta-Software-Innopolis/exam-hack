@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Query, HTTPException, status
+from fastapi import APIRouter, Depends, Query, HTTPException, status, Body
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload, load_only, selectinload, DeclarativeBase
 from database import get_async_db
@@ -7,10 +7,11 @@ from models.user import User as UserModel
 from models.pack import Pack as PackModel
 from models.card import Card as CardModel
 from models.card_option import Card_option as CardOptionModel
+from models.rating import rating as rating_table
 from sqlalchemy import select, text, func, or_, desc
 from pydantic_models.published_quiz import PublishedQuizesResponse, PublishedPackNew, PublishedQuiz, FullPublishedQuiz
 from typing import Any, cast
-from dependencies import validate_token
+from dependencies import validate_token, validate_pack_score
 router = APIRouter(
     prefix="/hub/packs",
     tags=["packs"]
@@ -238,3 +239,28 @@ async def get_pack_by_id(
     if result is None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="no pack with such id")
     return cast(FullPublishedQuiz, result)
+
+@router.post("/{pack_id}/ratings", dependencies=[Depends(validate_pack_score)])
+async def add_rate(pack_id: int, score: int = Body(embed=True), user_info = Depends(validate_token), session: AsyncSession = Depends(get_async_db)):
+    pack_stmt = select(PublishedPackModel).where(PublishedPackModel.id == pack_id)
+    result = (await session.scalars(pack_stmt)).first()
+    if not result:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="There is no pack with such id")
+    user_id = user_info["user_id"]
+    rate_stmt = select(rating_table).where(rating_table.c.pack_id == pack_id, rating_table.c.user_id == user_id)
+    result = (await session.execute(rate_stmt)).one_or_none()
+    if result:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="you have already rated this pack")
+    query = text("""
+        INSERT INTO rating (user_id, pack_id, score) VALUES
+                 (:user_id, :pack_id, :score)
+                 """)
+    await session.execute(query, 
+        {
+            "user_id": user_id,
+            "pack_id": pack_id,
+            "score": score
+        }
+    )
+    await session.commit()
+    return {"adding": "success"}
