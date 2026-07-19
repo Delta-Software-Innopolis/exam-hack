@@ -24,7 +24,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.FilterQuality
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -41,7 +43,7 @@ import com.examhacker.resources.ColorPreset
 fun ProfileScreen(component: IProfileComponent) {
     ProfileUI(
         username = stringResource(R.string.username_placeholder),
-        avatar = painterResource(R.drawable.gitcat_refined),
+        avatar = ImageBitmap.imageResource(R.drawable.gitcat_refined),
         onLogoutClick = component::logout,
         onQuizHubClick = component::goToQuizHub,
         onQuizListClick = component::goToQuizList,
@@ -52,7 +54,7 @@ fun ProfileScreen(component: IProfileComponent) {
 @Composable
 private fun ProfileUI(
     username: String,
-    avatar: Painter,
+    avatar: ImageBitmap,
     onLogoutClick: () -> Unit,
     onQuizHubClick: () -> Unit,
     onQuizListClick: () -> Unit,
@@ -104,7 +106,7 @@ private fun ProfileUI(
 
 @Composable
 private fun UserInfo(
-    avatar: Painter,
+    avatar: ImageBitmap,
     username: String,
     modifier: Modifier = Modifier
 ) {
@@ -114,8 +116,9 @@ private fun UserInfo(
         modifier = modifier
     ) {
         Image(
-            painter = avatar,
+            bitmap = avatar,
             contentDescription = null,
+            filterQuality = FilterQuality.None,
             modifier = Modifier
                 .size(Dimensions.ProfileImageSize)
                 .clip(CircleShape)
@@ -168,7 +171,7 @@ private fun LogoutButton(
 private fun ProfileScreenPreview() {
     ProfileUI(
         username = stringResource(R.string.username_placeholder),
-        avatar = painterResource(R.drawable.gitcat_refined),
+        avatar = ImageBitmap.imageResource(R.drawable.gitcat_refined),
         onLogoutClick = {},
         onQuizHubClick = {},
         onQuizListClick = {},
