@@ -14,8 +14,6 @@ class Dimensions {
         val QuestionCardRadius = 16.dp
         val ButtonRadius = 16.dp
         val DefaultListSpacing = 16.dp
-        val CircularProgressIndicatorSize = 40.dp
-        val CircularProgressIndicatorWidth = 4.dp
         val FloatingActionButtonPadding = 22.dp
         val ButtonContentSpacing = 8.dp
         val NavigationIconSize = 34.dp

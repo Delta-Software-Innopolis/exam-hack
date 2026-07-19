@@ -17,8 +17,6 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.arkivanov.decompose.router.slot.ChildSlot
-import com.examhacker.common.data.AnswerVariant
-import com.examhacker.common.data.Question
 import com.examhacker.common.ui.QuizProgressBar
 import com.examhacker.common.ui.QuizSolveBottomBar
 import com.examhacker.common.ui.QuizSolveQuestionSection

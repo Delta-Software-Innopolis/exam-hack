@@ -123,7 +123,7 @@ private fun QuizList(
 ) {
     LazyColumn(
         modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(Dimensions.QuizListItemsSpacing)
+        verticalArrangement = Arrangement.spacedBy(Dimensions.DefaultListSpacing)
     ) {
         items(quizzes) {
             QuizCard(

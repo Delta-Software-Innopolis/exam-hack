@@ -9,6 +9,8 @@ import com.arkivanov.decompose.router.slot.dismiss
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
+import com.examhacker.common.utility.ai_chat.IAIChatComponent
+import com.examhacker.common.utility.ai_chat.AIChatComponent
 import com.examhacker.domain.model.AnswerVariant
 import com.examhacker.domain.model.Question
 import kotlinx.coroutines.CoroutineScope
