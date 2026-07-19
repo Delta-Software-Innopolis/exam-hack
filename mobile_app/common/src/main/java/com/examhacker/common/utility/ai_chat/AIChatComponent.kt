@@ -5,8 +5,8 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
-import com.examhacker.common.data.ChatMessage
-import com.examhacker.common.data.MessageAuthor
+import com.examhacker.domain.model.ChatMessage
+import com.examhacker.domain.model.MessageAuthor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay

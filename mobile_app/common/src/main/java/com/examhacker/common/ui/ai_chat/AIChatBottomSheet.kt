@@ -43,8 +43,8 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
-import com.examhacker.common.data.ChatMessage
-import com.examhacker.common.data.MessageAuthor
+import com.examhacker.domain.model.ChatMessage
+import com.examhacker.domain.model.MessageAuthor
 import com.examhacker.resources.R
 import com.examhacker.common.utility.ai_chat.IAIChatComponent
 import com.examhacker.resources.ColorPreset

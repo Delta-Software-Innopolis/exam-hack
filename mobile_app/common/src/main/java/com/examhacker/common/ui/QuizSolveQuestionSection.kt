@@ -13,8 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import com.examhacker.common.data.AnswerVariant
-import com.examhacker.common.data.Question
+import com.examhacker.domain.model.AnswerVariant
+import com.examhacker.domain.model.Question
 import com.examhacker.resources.Dimensions
 
 @Composable

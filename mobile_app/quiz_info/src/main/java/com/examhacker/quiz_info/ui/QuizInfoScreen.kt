@@ -44,16 +44,21 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
-import com.examhacker.common.data.Quiz
-import com.examhacker.common.data.QuizStatistics
+import com.examhacker.domain.model.QuizStatistics
 import com.examhacker.common.ui.AppNavigationBar
 import com.examhacker.common.ui.DeleteButton
 import com.examhacker.common.ui.NavigationTab
 import com.examhacker.common.ui.SingleBackButtonTopBar
+import com.examhacker.domain.model.Author
+import com.examhacker.domain.model.Quiz
+import com.examhacker.domain.model.QuizInfo
 import com.examhacker.resources.R
 import com.examhacker.quiz_info.component.IQuizInfoComponent
 import com.examhacker.resources.ColorPreset
 import com.examhacker.resources.Dimensions
+import java.time.Instant
+import kotlin.time.Clock.System.now
+import kotlin.time.ExperimentalTime
 
 @Composable
 fun QuizInfoScreen(component: IQuizInfoComponent) {
@@ -120,15 +125,15 @@ private fun QuizInfoUI(
                 )
         ) {
             QuizNameWithAuthor(
-                quizName = model.quiz.name,
-                authorName = model.quiz.authorName,
+                quizName = model.quiz?.info?.name ?: "Quiz name",
+                authorName = model.quiz?.info?.author?.name ?: "Author name",
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(Dimensions.ScreenPadding)
             )
 
             QuizDescriptionCard(
-                description = model.quiz.description,
+                description = model.quiz?.description ?: "Quiz description",
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -469,11 +474,16 @@ private fun QuizInfoScreenPreview() {
     )
 }
 
+@OptIn(ExperimentalTime::class)
 private fun createMockQuiz() =
     Quiz(
-        id = 1,
-        authorName = "User",
-        name = "Full Quiz Title, maybe a long one",
+        info = QuizInfo(
+            id = 1,
+            name = "Full Quiz Title, maybe a long one",
+            creationDate = now().toString(),
+            updatingDate = null,
+            author = Author(1, "User")
+        ),
         description = "Full quiz description, may take several lines, like a lot of text\n" + "For real",
         questions = emptyList()
     )

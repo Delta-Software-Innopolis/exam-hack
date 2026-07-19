@@ -28,8 +28,6 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.arkivanov.decompose.router.slot.ChildSlot
-import com.examhacker.common.data.AnswerVariant
-import com.examhacker.common.data.Question
 import com.examhacker.common.ui.AppNavigationBar
 import com.examhacker.common.ui.FloatingAddButton
 import com.examhacker.common.ui.NavigationTab
@@ -37,6 +35,8 @@ import com.examhacker.common.ui.QuestionList
 import com.examhacker.common.ui.ScreenTitle
 import com.examhacker.common.ui.dialogs.AddQuestionDialog
 import com.examhacker.common.ui.dialogs.EditQuestionDialog
+import com.examhacker.domain.model.AnswerVariant
+import com.examhacker.domain.model.Question
 import com.examhacker.resources.R
 import com.examhacker.quiz_create.component.IQuizReviewComponent
 import com.examhacker.quiz_create.ui.common.CreationStage

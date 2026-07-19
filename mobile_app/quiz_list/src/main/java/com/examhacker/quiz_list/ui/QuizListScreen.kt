@@ -3,8 +3,8 @@ package com.examhacker.quiz_list.ui
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,7 +16,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.ui.res.painterResource
 import com.examhacker.resources.R
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -24,21 +23,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.examhacker.quiz_list.component.IQuizListComponent
 import com.examhacker.resources.ColorPreset
 import com.examhacker.resources.Dimensions
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.examhacker.common.ui.AppNavigationBar
+import com.examhacker.common.ui.CustomCircularProgressIndicator
 import com.examhacker.common.ui.FloatingAddButton
 import com.examhacker.common.ui.NavigationTab
 import com.examhacker.common.ui.ScreenTitle
+import com.examhacker.domain.model.Quiz
 
 @Composable
 fun QuizListScreen(component: IQuizListComponent) {
@@ -55,10 +55,10 @@ fun QuizListScreen(component: IQuizListComponent) {
 }
 
 @Composable
-fun QuizListUI(
+private fun QuizListUI(
     model: IQuizListComponent.Model,
     onAddQuizClick: () -> Unit,
-    onQuizClick: () -> Unit,
+    onQuizClick: (Int) -> Unit,
     onProfileClick: () -> Unit,
     onQuizHubClick: () -> Unit,
     onSettingsClick: () -> Unit
@@ -92,33 +92,51 @@ fun QuizListUI(
         modifier = Modifier.fillMaxSize()
     ) { contentPadding ->
 
-        LazyColumn(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(contentPadding),
-            contentPadding = PaddingValues(
-                start = Dimensions.ScreenPadding,
-                end = Dimensions.ScreenPadding,
-                top = Dimensions.ScreenPadding
-            ),
-            verticalArrangement = Arrangement.spacedBy(Dimensions.DefaultListSpacing)
+                .padding(contentPadding)
+                .padding(Dimensions.ScreenPadding),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            model.quizzes?.let { quizzes ->
-                items(quizzes) {
-                    QuizCard(
-                        quizName = it.name,
-                        author = "${stringResource(R.string.by)} ${it.authorName}",
-                        onClick = onQuizClick
-                    )
-                }
+            model.quizzes?.let {
+                QuizList(
+                    quizzes = it,
+                    onQuizClick = onQuizClick,
+                    modifier = Modifier.fillMaxWidth()
+                )
             }
+                ?: ContentPlaceholder(
+                    isLoading = model.isLoading,
+                    error = model.error,
+                    modifier = Modifier.fillMaxSize()
+                )
         }
-
     }
 }
 
 @Composable
-fun QuizCard(
+private fun QuizList(
+    quizzes: List<Quiz>,
+    onQuizClick: (Int) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    LazyColumn(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(Dimensions.DefaultListSpacing)
+    ) {
+        items(quizzes) {
+            QuizCard(
+                quizName = it.info.name,
+                author = "${stringResource(R.string.by)} ${it.info.author.name}",
+                onClick = { onQuizClick(it.info.id) }
+            )
+        }
+    }
+}
+
+@Composable
+private fun QuizCard(
     quizName: String,
     author: String,
     onClick: () -> Unit = {}
@@ -157,6 +175,38 @@ fun QuizCard(
                 .padding(Dimensions.NavigationButtonPadding)
                 .size(Dimensions.NavigationIconSize)
         )
+    }
+}
+
+@Composable
+private fun ContentPlaceholder(
+    isLoading: Boolean,
+    error: String?,
+    modifier: Modifier = Modifier
+) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = modifier
+    ) {
+        if (isLoading) {
+            CustomCircularProgressIndicator()
+        } else {
+            error?.let {
+                Text(
+                    text = it,
+                    fontSize = Dimensions.ConnectionErrorFontSize,
+                    fontWeight = FontWeight.SemiBold,
+                    color = ColorPreset.BackgroundVariant,
+                    textAlign = TextAlign.Left,
+                    modifier = Modifier
+                        .background(
+                            color = ColorPreset.ErrorPrimary,
+                            shape = RoundedCornerShape(Dimensions.DefaultCardRadius)
+                        )
+                        .padding(Dimensions.ScreenPadding)
+                )
+            }
+        }
     }
 }
 

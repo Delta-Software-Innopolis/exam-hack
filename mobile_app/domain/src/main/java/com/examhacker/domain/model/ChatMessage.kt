@@ -1,4 +1,4 @@
-package com.examhacker.common.data
+package com.examhacker.domain.model
 
 data class ChatMessage(
     val text: String,

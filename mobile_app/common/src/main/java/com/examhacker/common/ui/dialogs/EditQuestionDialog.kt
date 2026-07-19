@@ -16,7 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
-import com.examhacker.common.data.AnswerVariant
+import com.examhacker.domain.model.AnswerVariant
 import com.examhacker.common.ui.DeleteButton
 import com.examhacker.resources.R
 import com.examhacker.common.utility.dialogs.IEditQuestionDialogComponent

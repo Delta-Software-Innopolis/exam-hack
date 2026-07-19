@@ -4,18 +4,24 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
-import com.examhacker.common.data.Quiz
+import com.examhacker.domain.model.Quiz
+import com.examhacker.domain.repository.IQuizRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 interface IQuizListComponent {
 
     val model: Value<Model>
 
     data class Model(
-        val quizzes: List<Quiz>? = null
+        val quizzes: List<Quiz>? = null,
+        val isLoading: Boolean = false,
+        val error: String? = null
     )
 
     fun onAddQuiz()
-    fun onQuizClick()
+    fun onQuizClick(quizId: Int)
     fun goToQuizHub()
     fun goToProfile()
     fun goToSettings()
@@ -24,8 +30,9 @@ interface IQuizListComponent {
 
 class QuizListComponent(
     componentContext: ComponentContext,
-    quizzes: List<Quiz>,
-    private val toQuizInfo: () -> Unit,
+    private val quizRepository: IQuizRepository,
+    private val saveQuizzes: (List<Quiz>) -> Unit,
+    private val toQuizInfo: (Int) -> Unit,
     private val toQuizCreate: () -> Unit,
     private val toQuizHub: () -> Unit,
     private val toProfile: () -> Unit,
@@ -37,17 +44,15 @@ class QuizListComponent(
     override val model = _model
 
     init {
-        _model.update {
-            it.copy(quizzes = quizzes)
-        }
+        loadQuizzes()
     }
 
     override fun onAddQuiz() {
         toQuizCreate()
     }
 
-    override fun onQuizClick() {
-        toQuizInfo()
+    override fun onQuizClick(quizId: Int) {
+        toQuizInfo(quizId)
     }
 
     override fun goToQuizHub() {
@@ -64,5 +69,33 @@ class QuizListComponent(
 
     override fun back() {
         goBack()
+    }
+
+    private fun loadQuizzes() {
+        CoroutineScope(Dispatchers.IO).launch {
+            _model.update {
+                it.copy(isLoading = true)
+            }
+
+            quizRepository.getAllPacks()
+                .onSuccess { quizzes ->
+                    _model.update {
+                        it.copy(
+                            quizzes = quizzes,
+                            isLoading = false
+                        )
+                    }
+
+                    saveQuizzes(quizzes)
+                }
+                .onFailure { exception ->
+                    _model.update {
+                        it.copy(
+                            error = exception.message,
+                            isLoading = false
+                        )
+                    }
+                }
+        }
     }
 }

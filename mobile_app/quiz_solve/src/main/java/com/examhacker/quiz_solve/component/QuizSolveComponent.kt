@@ -10,7 +10,7 @@ import com.arkivanov.decompose.router.stack.pushNew
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
-import com.examhacker.common.data.Question
+import com.examhacker.domain.model.Question
 import kotlinx.serialization.Serializable
 
 interface IQuizSolveComponent {

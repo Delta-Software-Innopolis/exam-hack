@@ -42,6 +42,14 @@ dependencies {
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
 
+    // Ktor
+    implementation(libs.ktor.client.core)
+    implementation(libs.ktor.client.cio)
+    implementation(libs.ktor.client.content.negotiation)
+    implementation(libs.ktor.client.logging)
+    implementation(libs.ktor.client.auth)
+    implementation(libs.ktor.kotlinx.serialization)
+
     // Navigation
     implementation(libs.decompose.core)
     implementation(libs.decompose.compose)
@@ -50,7 +58,7 @@ dependencies {
     // Project
     implementation(project(":resources"))
     implementation(project(":common"))
-    implementation(project(":data_network"))
+    implementation(project(":domain"))
 
     // Testing
     testImplementation(libs.junit)

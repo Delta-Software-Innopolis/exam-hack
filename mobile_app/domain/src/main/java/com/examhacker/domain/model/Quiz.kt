@@ -1,12 +1,10 @@
-package com.examhacker.common.data
+package com.examhacker.domain.model
 
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class Quiz(
-    val id: Int,
-    val authorName: String,
-    val name: String,
+    val info: QuizInfo,
     val description: String,
     val questions: List<Question>
 )

@@ -52,6 +52,7 @@ dependencies {
 
     // Project
     implementation(project(":resources"))
+    implementation(project(":domain"))
 
     // Testing
     testImplementation(libs.junit)

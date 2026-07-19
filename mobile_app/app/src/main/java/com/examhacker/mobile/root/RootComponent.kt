@@ -1,6 +1,5 @@
 package com.examhacker.mobile.root
 
-import android.util.Log
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.StackNavigation
@@ -11,13 +10,20 @@ import com.arkivanov.decompose.router.stack.popWhile
 import com.arkivanov.decompose.router.stack.pushNew
 import com.arkivanov.decompose.router.stack.replaceCurrent
 import com.arkivanov.decompose.router.stack.pushToFront
+import com.arkivanov.decompose.value.MutableValue
+import com.arkivanov.decompose.value.update
 import kotlinx.serialization.Serializable
 import com.examhacker.authentication.component.AuthenticationComponent
 import com.examhacker.authentication.component.IAuthenticationComponent
-import com.examhacker.common.data.AnswerVariant
-import com.examhacker.common.data.Question
-import com.examhacker.common.data.Quiz
 import com.examhacker.common.utility.FilePicker
+import com.examhacker.domain.model.AnswerVariant
+import com.examhacker.domain.model.Author
+import com.examhacker.domain.model.Question
+import com.examhacker.domain.model.Quiz
+import com.examhacker.domain.model.QuizInfo
+import com.examhacker.domain.repository.IAuthenticationRepository
+import com.examhacker.domain.repository.IQuizRepository
+import com.examhacker.domain.repository.ITokenStorage
 import com.examhacker.common.utility.ISettingStorage
 import com.examhacker.mobile.introduction_screen.IIntroductionComponent
 import com.examhacker.mobile.introduction_screen.IntroductionComponent
@@ -39,10 +45,17 @@ import com.examhacker.quiz_list.component.QuizListComponent
 import com.examhacker.quiz_solve.component.QuizSolveComponent
 import com.examhacker.settings.component.SettingsComponent
 import kotlinx.serialization.Contextual
+import kotlin.time.Clock.System.now
+import kotlin.time.ExperimentalTime
 
 interface IRootComponent {
 
     val stack: Value<ChildStack<*, Child>>
+    val model: Value<Model>
+
+    data class Model(
+        val quizzes: List<Quiz>? = null
+    )
 
     sealed class Child {
         class Introduction(val component: IIntroductionComponent) : Child()
@@ -60,14 +73,19 @@ interface IRootComponent {
 
 class RootComponent(
     private val componentContext: ComponentContext,
+    private val tokenStorage: ITokenStorage,
+    private val authRepository: IAuthenticationRepository,
+    private val quizRepository: IQuizRepository,
     private val permissionHandler: IPermissionHandler,
     private val settingStorage: ISettingStorage,
     private val filePicker: FilePicker,
     private val startOverlayService: () -> Unit
 ) : ComponentContext by componentContext, IRootComponent {
 
-    private val navigation = StackNavigation<Config>()
+    private val _model = MutableValue(IRootComponent.Model())
+    override val model = _model
 
+    private val navigation = StackNavigation<Config>()
     override val stack: Value<ChildStack<*, IRootComponent.Child>> =
         childStack(
             source = navigation,
@@ -76,6 +94,7 @@ class RootComponent(
             handleBackButton = false,
             childFactory = ::createChild,
         )
+    @OptIn(ExperimentalTime::class)
     private fun createChild(config: Config, componentContext: ComponentContext,)
     : IRootComponent.Child =
         when (config) {
@@ -93,6 +112,8 @@ class RootComponent(
                 IRootComponent.Child.Authentication(
                     AuthenticationComponent(
                         componentContext = componentContext,
+                        authRepository = authRepository,
+                        tokenStorage = tokenStorage,
                         goToQuizList = ::fromAuthToQuizList,
                         goBack = ::back
                     )
@@ -102,27 +123,17 @@ class RootComponent(
                 IRootComponent.Child.QuizList(
                     QuizListComponent(
                         componentContext,
-                        quizzes = createMockQuizList(),
+                        quizRepository = quizRepository,
+                        saveQuizzes = ::saveQuizzes,
                         toQuizCreate = ::navigateToQuizCreate,
-                        toQuizInfo = {
-                            navigateToQuizInfo(
-                                Quiz(
-                                    id = 1,
-                                    authorName = "User",
-                                    name = "Quiz name",
-                                    description = "Nice description",
-                                    questions = listOf(
-                                        Question(
-                                            id = 1,
-                                            description = "How much?",
-                                            variants = listOf(
-                                                AnswerVariant("One", false),
-                                                AnswerVariant("Two", true)
-                                            )
-                                        )
-                                    )
+                        toQuizInfo = { quizId ->
+                            val quiz = model.value.quizzes?.findLast { it.info.id == quizId }
+
+                            quiz?.let {
+                                navigateToQuizInfo(
+                                    quiz = it
                                 )
-                            )
+                            }
                         },
                         toQuizHub = ::navigateToQuizHub,
                         toProfile = ::navigateToProfile,
@@ -271,16 +282,30 @@ class RootComponent(
         navigation.pop()
     }
 
+    private fun saveQuizzes(quizzes: List<Quiz>) {
+        _model.update {
+            it.copy(quizzes = quizzes)
+        }
+    }
+
+    @OptIn(ExperimentalTime::class)
     private fun createMockQuizList(): List<Quiz> =
         List(8) { index ->
             Quiz(
-                id = index,
-                authorName = "User",
-                name = "Quiz name",
+                info = QuizInfo(
+                    id = index,
+                    name = "Quiz name",
+                    creationDate = now().toString(),
+                    updatingDate = now().toString(),
+                    author = Author(
+                        id = index,
+                        name = "User"
+                    )
+                ),
                 description = "Quiz description",
                 questions = List(5) {
                     Question(
-                        id = 2,
+                        id = index,
                         description = "What is the name of your Practicum Project TA?",
                         variants = listOf(
                             AnswerVariant("Andrei Markov", true),

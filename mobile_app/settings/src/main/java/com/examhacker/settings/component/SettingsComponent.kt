@@ -1,17 +1,20 @@
 package com.examhacker.settings.component
 
-import android.util.Log
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
-import com.examhacker.common.data.AnswerVariant
-import com.examhacker.common.data.Question
-import com.examhacker.common.data.Quiz
+import com.examhacker.domain.model.Quiz
+import com.examhacker.domain.model.Question
+import com.examhacker.domain.model.AnswerVariant
 import com.examhacker.common.utility.ISettingStorage
+import com.examhacker.domain.model.Author
+import com.examhacker.domain.model.QuizInfo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlin.time.Clock.System.now
+import kotlin.time.ExperimentalTime
 
 interface ISettingsComponent {
     val model: Value<Model>
@@ -89,7 +92,7 @@ class SettingsComponent(
     }
 
     override fun onQuizSelect(id: Int) {
-        val quiz = model.value.quizzes?.findLast { it.id == id }
+        val quiz = model.value.quizzes?.findLast { it.info.id == id }
 
         quiz?.let { quiz ->
             CoroutineScope(Dispatchers.IO).launch {
@@ -126,12 +129,20 @@ class SettingsComponent(
         goToQuizHub()
     }
 
+    @OptIn(ExperimentalTime::class)
     private fun createMockQuizzes(): List<Quiz> =
         listOf(
             Quiz(
-                id = 1,
-                authorName = "pavmash",
-                name = "best quiz",
+                info = QuizInfo(
+                    id = 1,
+                    name = "best quiz",
+                    creationDate = now().toString(),
+                    updatingDate = null,
+                    author = Author(
+                        id = 1,
+                        name = "pavmash"
+                    )
+                ),
                 description = "",
                 questions = listOf(
                     Question(
@@ -150,9 +161,16 @@ class SettingsComponent(
                 )
             ),
             Quiz(
-                id = 2,
-                authorName = "upconett",
-                name = "Nice quiz",
+                info = QuizInfo(
+                    id = 1,
+                    name = "Nice quiz",
+                    creationDate = now().toString(),
+                    updatingDate = null,
+                    author = Author(
+                        id = 2,
+                        name = "upconett"
+                    )
+                ),
                 description = "",
                 questions = listOf(
                     Question(

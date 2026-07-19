@@ -43,6 +43,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
+import com.examhacker.authentication.component.AuthError
 import com.examhacker.authentication.component.IAuthenticationComponent
 import com.examhacker.authentication.component.ScreenMode
 import com.examhacker.common.ui.LogoImage
@@ -191,7 +192,7 @@ private fun InputFields(
             value = email,
             onValueChange = onEmailChange,
             label = stringResource(R.string.email_input_label),
-            error = errors.email,
+            error = errors.email ?: errors.general,
             modifier = Modifier.fillMaxWidth(),
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Next,
@@ -207,7 +208,7 @@ private fun InputFields(
                     stringResource(R.string.password_register_label)
                 else
                     stringResource(R.string.password_login_label),
-            error = errors.password,
+            error = errors.password ?: errors.general,
             modifier = Modifier.fillMaxWidth(),
             isPassword = true,
             keyboardOptions = KeyboardOptions(
@@ -224,7 +225,7 @@ private fun InputFields(
                 value = repeatedPassword,
                 onValueChange = onRepeatedPasswordChange,
                 label = stringResource(R.string.repeat_password_label),
-                error = errors.repeatedPassword,
+                error = errors.repeatedPassword ?: errors.general,
                 modifier = Modifier.fillMaxWidth(),
                 isPassword = true,
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)
@@ -296,7 +297,7 @@ private fun InputTextField(
     onValueChange: (String) -> Unit,
     label: String,
     modifier: Modifier = Modifier,
-    error: String? = null,
+    error: AuthError? = null,
     isPassword: Boolean = false,
     keyboardOptions: KeyboardOptions = KeyboardOptions()
 ) {
@@ -336,16 +337,8 @@ private fun InputTextField(
                 focusedContainerColor = ColorPreset.Transparent,
                 unfocusedContainerColor = ColorPreset.Transparent,
 
-                focusedBorderColor =
-                    if (error == null)
-                        ColorPreset.BorderDefault
-                    else
-                        ColorPreset.ErrorPrimary,
-                unfocusedBorderColor =
-                    if (error == null)
-                        ColorPreset.BorderDefault
-                    else
-                        ColorPreset.ErrorPrimary,
+                focusedBorderColor = ColorPreset.BorderDefault,
+                unfocusedBorderColor = ColorPreset.BorderDefault,
                 errorBorderColor = ColorPreset.ErrorPrimary,
 
                 errorLabelColor = ColorPreset.ErrorPrimary,
@@ -376,17 +369,42 @@ private fun InputTextField(
         )
 
         if (error != null) {
-            Text(
-                text = error,
-                style = TextStyle(
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Normal,
-                    color = ColorPreset.ErrorPrimary
-                ),
+            AuthErrorText(
+                error = error,
                 modifier = Modifier.fillMaxWidth()
             )
         }
     }
+}
+
+@Composable
+private fun AuthErrorText(
+    error: AuthError,
+    modifier: Modifier = Modifier
+) {
+    val text = when(error) {
+        AuthError.BLANK_EMAIL              -> stringResource(R.string.error_blank_email)
+        AuthError.BLANK_PASSWORD           -> stringResource(R.string.error_blank_password)
+        AuthError.BLANK_REPEAT_PASSWORD    -> stringResource(R.string.error_blank_repeated_password)
+        AuthError.NOT_MATCHING_PASSWORDS   -> stringResource(R.string.error_different_passwords)
+        AuthError.NO_INTERNET              -> stringResource(R.string.error_no_internet)
+        AuthError.TIMEOUT                  -> stringResource(R.string.error_timeout)
+        AuthError.INVALID_CREDENTIALS      -> stringResource(R.string.error_invalid_credentials)
+        AuthError.AUTH_FAILED              -> stringResource(R.string.error_authentication_fail)
+        AuthError.EMAIL_ALREADY_REGISTERED -> stringResource(R.string.error_email_already_in_use)
+        AuthError.SERVER_ERROR             -> stringResource(R.string.error_server)
+        AuthError.UNKNOWN_ERROR            -> stringResource(R.string.error_unknown)
+    }
+
+    Text(
+        text = text,
+        style = TextStyle(
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Normal,
+            color = ColorPreset.ErrorPrimary
+        ),
+        modifier = modifier
+    )
 }
 
 @Preview(device = Devices.DEFAULT)
@@ -394,7 +412,7 @@ private fun InputTextField(
 private fun AuthenticationUIPreview() {
     AuthenticationUI(
         model = IAuthenticationComponent.Model().copy(
-            errors = IAuthenticationComponent.Errors(email = "ghfgh")
+            errors = IAuthenticationComponent.Errors(email = AuthError.BLANK_EMAIL)
         ),
         onSwitchScreenMode = {},
         onEmailChange = {},

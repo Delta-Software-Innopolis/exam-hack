@@ -1,10 +1,10 @@
 package com.examhacker.common.utility
 
 import android.content.Context
-import com.examhacker.common.data.Quiz
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import androidx.core.content.edit
+import com.examhacker.domain.model.Quiz
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromJsonElement
 import kotlinx.serialization.json.encodeToJsonElement

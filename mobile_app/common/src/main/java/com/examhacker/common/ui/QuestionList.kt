@@ -7,7 +7,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.examhacker.common.data.Question
+import com.examhacker.domain.model.Question
 import com.examhacker.resources.Dimensions
 
 @Composable

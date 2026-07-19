@@ -42,6 +42,9 @@ dependencies {
     implementation(libs.room.paging)
     ksp(libs.room.compiler)
 
+    // Other modules
+    implementation(project(":domain"))
+
     // Testing
     testImplementation(libs.junit)
     testImplementation(libs.room.testing)

@@ -1,9 +1,8 @@
 package com.examhacker.phone_unlock.controller
 
-import androidx.compose.ui.util.fastFirst
-import com.examhacker.common.data.AnswerVariant
-import com.examhacker.common.data.Question
-import com.examhacker.common.data.Quiz
+import com.examhacker.domain.model.AnswerVariant
+import com.examhacker.domain.model.Question
+import com.examhacker.domain.model.Quiz
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -94,7 +93,7 @@ class UnlockOverlayController(
         _state.update {
             it.copy(
                 question = Question(
-                    id = 1,
+                    id = 0,
                     description = "Question description, may span several lines, we’ll discuss the font size and boldness later",
                     variants = listOf(
                         AnswerVariant(

@@ -19,8 +19,6 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.arkivanov.decompose.router.slot.ChildSlot
-import com.examhacker.common.data.AnswerVariant
-import com.examhacker.common.data.Question
 import com.examhacker.common.ui.AppNavigationBar
 import com.examhacker.common.ui.FloatingAddButton
 import com.examhacker.common.ui.NavigationTab
@@ -29,6 +27,8 @@ import com.examhacker.common.ui.ScreenTitle
 import com.examhacker.common.ui.SingleBackButtonTopBar
 import com.examhacker.common.ui.dialogs.AddQuestionDialog
 import com.examhacker.common.ui.dialogs.EditQuestionDialog
+import com.examhacker.domain.model.Question
+import com.examhacker.domain.model.AnswerVariant
 import com.examhacker.quiz_edit.component.IQuizEditComponent
 import com.examhacker.resources.ColorPreset
 import com.examhacker.resources.Dimensions
@@ -165,7 +165,7 @@ private fun PreviewQuizEditScreen() {
 private fun createMockQuestions(): List<Question> =
     listOf(
         Question(
-            id = 1,
+            id = 0,
             description = "Why do dogs think their tails are so clingy, they always want to grab it?",
             variants = listOf(
                 AnswerVariant("Option 1", false),
@@ -175,7 +175,7 @@ private fun createMockQuestions(): List<Question> =
             )
         ),
         Question(
-            id = 2,
+            id = 1,
             description = "Why something is this thing?",
             variants = listOf(
                 AnswerVariant("Option 1", false),
@@ -185,7 +185,7 @@ private fun createMockQuestions(): List<Question> =
             )
         ),
         Question(
-            id = 3,
+            id = 2,
             description = "Why do dogs think their tails are so clingy, they always want to grab it?",
             variants = listOf(
                 AnswerVariant("Option 1", false),

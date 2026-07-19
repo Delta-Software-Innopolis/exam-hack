@@ -44,19 +44,23 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
-import com.examhacker.common.data.AnswerVariant
-import com.examhacker.common.data.Question
-import com.examhacker.common.data.Quiz
 import com.examhacker.common.ui.AppNavigationBar
 import com.examhacker.common.ui.ContentPlaceholder
 import com.examhacker.common.ui.NavigationTab
 import com.examhacker.common.ui.NotImplementedSnackBarUI
 import com.examhacker.common.ui.ScreenTitle
+import com.examhacker.domain.model.AnswerVariant
+import com.examhacker.domain.model.Author
+import com.examhacker.domain.model.Question
+import com.examhacker.domain.model.Quiz
+import com.examhacker.domain.model.QuizInfo
 import com.examhacker.resources.ColorPreset
 import com.examhacker.resources.Dimensions
 import com.examhacker.resources.R
 import com.examhacker.settings.component.ISettingsComponent
 import kotlinx.coroutines.launch
+import kotlin.time.Clock.System.now
+import kotlin.time.ExperimentalTime
 
 @Composable
 fun SettingsScreen(component: ISettingsComponent) {
@@ -313,13 +317,13 @@ private fun QuizSelectable(
         modifier = modifier
             .selectable(
                 selected = isSelected,
-                onClick = { onSelect(quiz.id) },
+                onClick = { onSelect(quiz.info.id) },
                 role = Role.RadioButton
             )
     ) {
         Column(horizontalAlignment = Alignment.Start) {
             Text(
-                text = quiz.name,
+                text = quiz.info.name,
                 color = ColorPreset.Black,
                 fontSize = Dimensions.QuizSelectableFontSize,
                 fontWeight = FontWeight.Bold,
@@ -494,12 +498,20 @@ private fun SettingsScreenPreview() {
     )
 }
 
+@OptIn(ExperimentalTime::class)
 private fun createMockQuizzes(): List<Quiz> =
     listOf(
         Quiz(
-            id = 1,
-            authorName = "pavmash",
-            name = "best quiz",
+            info = QuizInfo(
+                id = 1,
+                name = "best quiz",
+                creationDate = now().toString(),
+                updatingDate = null,
+                author = Author(
+                    id = 1,
+                    name = "pavmash"
+                )
+            ),
             description = "",
             questions = listOf(
                 Question(
@@ -518,9 +530,16 @@ private fun createMockQuizzes(): List<Quiz> =
             )
         ),
         Quiz(
-            id = 2,
-            authorName = "upconett",
-            name = "Nice quiz",
+            info = QuizInfo(
+                id = 1,
+                name = "Nice quiz",
+                creationDate = now().toString(),
+                updatingDate = null,
+                author = Author(
+                    id = 2,
+                    name = "upconett"
+                )
+            ),
             description = "",
             questions = listOf(
                 Question(

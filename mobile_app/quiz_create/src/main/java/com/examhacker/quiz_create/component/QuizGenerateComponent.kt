@@ -4,9 +4,9 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
-import com.examhacker.common.data.PickedFile
-import com.examhacker.common.data.Question
 import com.examhacker.common.utility.FilePicker
+import com.examhacker.domain.model.PickedFile
+import com.examhacker.domain.model.Question
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
