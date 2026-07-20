@@ -10,6 +10,7 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.RoundRect
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.tooling.preview.Preview
 import com.examhacker.resources.ColorPreset
@@ -18,7 +19,8 @@ import com.examhacker.resources.Dimensions
 @Composable
 fun CustomProgressIndicator(
     progress: Float,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    trackColor: Color = ColorPreset.BackgroundDefaultPrimary
 ) {
     Box(
         modifier = modifier.drawWithCache {
@@ -59,7 +61,7 @@ fun CustomProgressIndicator(
 
             onDrawBehind {
                 drawRoundRect(
-                    color = ColorPreset.BackgroundDefaultPrimary,
+                    color = trackColor,
                     cornerRadius = CornerRadius(Dimensions.PROGRESS_BAR_CORNER_RADIUS)
                 )
 

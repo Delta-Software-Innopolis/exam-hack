@@ -101,7 +101,7 @@ class QuizEditComponent(
 
     override fun onAddQuestionClick() {
         navigation.activate(
-            Config.AddQuestionDialog(model.value.questions.lastIndex)
+            Config.AddQuestionDialog(model.value.questions.size)
         )
     }
 

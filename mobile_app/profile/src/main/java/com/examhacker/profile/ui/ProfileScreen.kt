@@ -67,7 +67,11 @@ private fun ProfileUI(
                 modifier = Modifier
                     .fillMaxWidth()
                     .statusBarsPadding()
-                    .padding(horizontal = Dimensions.ScreenPadding)
+                    .padding(
+                        top = Dimensions.ScreenPadding,
+                        start = Dimensions.ScreenPadding,
+                        end = Dimensions.ScreenPadding
+                    )
             )
         },
         bottomBar = {
