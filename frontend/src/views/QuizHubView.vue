@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onBeforeMount, computed, watch} from "vue";
+import { ref, onBeforeMount, computed, watch } from "vue";
 import QuizHubItemComponent from "@/components/basic/QuizHubItemComponent.vue";
 import Search from "@/components/basic/Search.vue";
 import SearchSVG from "@/assets/Search.svg"
@@ -20,6 +20,7 @@ const main = ref('')
 const pageNum = ref(1)
 const totalMatches = ref(null)
 const limit = ref(12)
+
 watch(pageNum, async () => {
   fetchInfo()
 })
@@ -35,41 +36,44 @@ function unfocusInput() {
   const input = document.activeElement as HTMLInputElement | null
   input?.blur()
 }
+
 async function fetchInfo() {
-try {
-  const params = new URLSearchParams()
-  addParam(params, "subject", subject.value)
-  addParam(params, "professor", professor.value)
-  addParam(params, "course_book", book.value)
-  addParam(params, "university", university.value)
-  addParam(params, "search_main", main.value)
+    try {
+        const params = new URLSearchParams()
+        addParam(params, "subject", subject.value)
+        addParam(params, "professor", professor.value)
+        addParam(params, "course_book", book.value)
+        addParam(params, "university", university.value)
+        addParam(params, "search_main", main.value)
 
-    params.append("offset", pageNum.value.toString())
-    params.append("limit", limit.value.toString())
-    const address = import.meta.env.DEV ? "http://localhost:8067": import.meta.env.VITE_HUB_URL_DEV
-    isLoading.value = true 
-    const response = await fetch(`${address}/hub/packs/?${params.toString()}`,
-    {
-        method: 'GET'
-    })
-    if (!response.ok) {
-        throw new Error(`Ошибка сети: ${response.status}`)
+        params.append("offset", pageNum.value.toString())
+        params.append("limit", limit.value.toString())
+        const address = import.meta.env.DEV ? "http://localhost:8067" : import.meta.env.VITE_HUB_URL_DEV
+        isLoading.value = true 
+        const response = await fetch(`${address}/hub/packs/?${params.toString()}`, {
+            method: 'GET'
+        })
+
+        if (!response.ok) {
+            throw new Error(`Ошибка сети: ${response.status}`)
+        }
+
+        const data = await response.json()
+        if (data.packs.length < 1) {
+            return
+        } 
+
+        quizzes.value = data.packs
+        quizzesStore.hubQuizzes = data.packs
+        totalMatches.value = data.total
+        console.log(quizzes.value)
+    } catch (error) {
+        console.error('Не удалось загрузить квизы:', error) 
+    } finally {
+        isLoading.value = false
     }
-    const data = await response.json()
-    if (data.packs.length < 1) {
-        return
-    } 
-    quizzes.value = data.packs
-    quizzesStore.hubQuizzes = data.packs
-    totalMatches.value = data.total
-    console.log(quizzes.value)
-} catch (error) {
-    console.error('Не удалось загрузить квизы:', error) 
-} finally {
-    isLoading.value = false
 }
 
-}
 onBeforeMount(async ()=> {
   try {
     await fetchInfo()
@@ -116,11 +120,10 @@ onBeforeMount(async ()=> {
       <BasicButton v-if="pageNum < Math.ceil(totalMatches / limit)" @click="pageNum++">next</BasicButton>
     </div>
   </div>
-  <div v-else>Loading...</div>
+  <div v-else></div>
 </template>
 
 <style scoped>
-
 .buttons-container {
   display: flex;
   justify-content: center;
@@ -149,14 +152,12 @@ onBeforeMount(async ()=> {
     --icon-stroke: var(--secondary);
 }
 
-
 .top-container { 
   display: flex;
   flex-direction: column;
   gap: 8px;
   justify-content: space-between;
 }
-
 
 .main-tag > *{
     width: 100%;
@@ -172,8 +173,6 @@ onBeforeMount(async ()=> {
 .tag {
   flex: 1;
 }
-
-
 
 .Quiz-Container {
   display: grid;
@@ -197,6 +196,4 @@ onBeforeMount(async ()=> {
 @-moz-keyframes spin { 100% { -moz-transform: rotate(360deg); } }
 @-webkit-keyframes spin { 100% { -webkit-transform: rotate(360deg); } }
 @keyframes spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
-
-
 </style>

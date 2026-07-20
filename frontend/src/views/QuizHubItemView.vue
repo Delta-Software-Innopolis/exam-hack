@@ -17,6 +17,8 @@ const route = useRoute()
 const router = useRouter()
 const networkManager = useNetworkManager()
 const quiz = ref<QuizHubItem|null>(null)
+const isLoading = ref(true)
+const isError = ref(false)
 const refact_rating = (value: number|null) => {
     if (value) {
         return Number.isInteger(value)? `${value}.0` : `${value}`
@@ -25,6 +27,10 @@ const refact_rating = (value: number|null) => {
 const showPensil = ref(false)
 onMounted(async() => {
     quiz.value = await getQuiz()
+    isLoading.value = false
+    if (quiz.value == undefined) {
+        isError.value = true
+    }
     console.log(quiz.value)
 })
 
@@ -218,9 +224,9 @@ const ratingVarStyle = [
             />
         </div>
     </div>
+    <div v-else-if="!isError"></div>
     <UnknownView v-else />
 </template>
-
 
 <style scoped>
 .wrappre {

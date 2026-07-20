@@ -1,4 +1,4 @@
-.PHONY: prod dev test down pull db-shell generate-secrets logs ps restart clean help
+.PHONY: prod dev test deploy down pull db-shell generate-secrets logs ps restart clean help
 
 DC = docker compose
 ENV ?= dev
@@ -25,6 +25,14 @@ test:
 		-f docker-compose.test.yml \
 		--env-file .env.test \
 		up --build -d
+
+deploy:
+	git pull origin main && \
+	$(DC) \
+		-p exam-hacker-prod \
+		-f docker-compose.yml \
+		--env-file .env.prod \
+		up -d --build
 
 down:
 	$(DC) -p exam-hacker-$(ENV) down

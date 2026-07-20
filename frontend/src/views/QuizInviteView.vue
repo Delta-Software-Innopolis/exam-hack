@@ -15,11 +15,10 @@ const route = useRoute();
 const router = useRouter();
 const quizCode = route.params.code as string;
 const isLoading = ref(true);
+const isError = ref(false);
 
 const quizzesStore = useNewQuizzesStore();
 const quiz = computed(() => quizzesStore.currentSharedQuiz);
-
-console.log("QUIZ:", quiz);
 
 const hasUnsavedChanges = ref(false);
 const deletedCards = ref<number[]>([]);
@@ -37,10 +36,9 @@ const addToCollection = async () => {
 onMounted(async () => {
   try {
     await quizzesStore.fetchQuizByInviteId(quizCode);
-//    quiz.value = quizzesStore.currentSharedQuiz.value;
-//    console.log("store.value:", quizzesStore.currentSharedQuiz.value);
     console.log("quiz.value:", quiz.value);
   } catch (error) {
+    isError.value = true;
     console.error("Error", error);
   } finally {
     isLoading.value = false;
@@ -83,9 +81,9 @@ onMounted(async () => {
             <QuizQuestionsList :cards="quiz!.cards" variant="view" />
         </div>
     </div>
+    <div v-else-if="!isError"></div>
     <UnknownView v-else />
 </template>
-
 
 <style scoped>
 .main-container {
@@ -196,8 +194,8 @@ button a {
 .red-button {
     background-color: var(--raddish);
 }
+
 .red-button:hover {
     background-color: var(--raddish-dimm);
 }
-
 </style>

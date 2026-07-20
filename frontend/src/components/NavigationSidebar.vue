@@ -34,16 +34,16 @@ const route = useRoute()
                 <UserSVG />
                 <h1>Profile</h1>
             </RouterLink>
-            <RouterLink to="/settings" class="nav-button" :class="{active: route.name == 'settings'}">
-                <SettingsSVG />
-                <h1>Settings</h1>
-            </RouterLink>
-            <div class="bottom">
-                <RouterLink to="/showcase" class="nav-button" :class="{active: route.name == 'showcase'}">
-                    <CircleSVG />
-                    <h1>Showcase</h1>
-                </RouterLink>
-            </div>
+            <!-- <RouterLink to="/settings" class="nav-button" :class="{active: route.name == 'settings'}"> -->
+            <!--     <SettingsSVG /> -->
+            <!--     <h1>Settings</h1> -->
+            <!-- </RouterLink> -->
+            <!-- <div class="bottom"> -->
+            <!--     <RouterLink to="/showcase" class="nav-button" :class="{active: route.name == 'showcase'}"> -->
+            <!--         <CircleSVG /> -->
+            <!--         <h1>Showcase</h1> -->
+            <!--     </RouterLink> -->
+            <!-- </div> -->
         </nav>
     </div>
 </template>

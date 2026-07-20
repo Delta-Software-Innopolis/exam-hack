@@ -30,7 +30,7 @@ const router = createRouter({
       path: '/welcome',
       name: 'welcome',
       component: WelcomeView,
-      meta: { showSidebar: false}
+      meta: { showSidebar: false }
     },
     {
       path: '/auth/signup',
@@ -84,12 +84,6 @@ const router = createRouter({
       path: '/quizhub',
       name: 'quizhub',
       component: QuizHubView,
-      meta: { showSidebar: true }
-    },
-    {
-      path: '/quizhub/:quizId',
-      name: 'quizhubItem',
-      component: QuizHubItemView,
       meta: { showSidebar: true, withAnimation: true }
     },
     {
@@ -102,7 +96,13 @@ const router = createRouter({
       path: '/quizhub/:quizId',
       name: 'quizhubItem',
       component: QuizHubItemView,
-      meta: { showSidebar: true }
+      meta: { showSidebar: true, withAnimation: true }
+    },
+    {
+      path: '/quizhub/:quizId',
+      name: 'quizhubItem',
+      component: QuizHubItemView,
+      meta: { showSidebar: true, withAnimation: true }
     },
     {
       path: '/profile/:username',

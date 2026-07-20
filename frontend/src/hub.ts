@@ -30,6 +30,6 @@ export async function publishQuizToHub(
         return true;
     } catch (err) {
         console.error(err)
-        throw new Error('something wrong with publishToHub');
+        return false;
     }
 }

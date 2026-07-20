@@ -44,7 +44,7 @@ onMounted(async ()=> {
       ></QuizComponent>
     </div>
   </div>
-  <div v-else>Loading...</div>
+  <div v-else></div>
 </template>
 
 <style scoped>

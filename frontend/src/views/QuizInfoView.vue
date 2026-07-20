@@ -60,7 +60,7 @@ async function onDeleteQuiz() {
     const ok = await deletePack(quiz.value.id)
 
     if (!ok) {
-        alert("Couldn't delete quiz")
+        alert("Couldn't delete quiz. Note: if you tried to delete quiz you took from QuizHub, that's forbidden.")
         return
     }
 
@@ -166,7 +166,7 @@ async function publishQuiz() {
     );
 
     if (!ok) {
-        alert("Couldn't publish quiz")
+        alert("Couldn't publish quiz. Note: if you tried publishing quiz you took from QuizHub, that's forbidden.")
         return
     }
 
