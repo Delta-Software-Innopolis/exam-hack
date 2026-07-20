@@ -94,7 +94,7 @@ class FilterParams:
 @router.get("/", response_model=PublishedQuizesResponse)
 async def get_packs(
     offset: int = Query(1, ge=1), 
-    limit: int = Query(16, ge=16),
+    limit: int = Query(16, ge=8),
     params: dict[str, Any] = Depends(FilterParams()),
     session: AsyncSession = Depends(get_async_db)
     )->dict:
