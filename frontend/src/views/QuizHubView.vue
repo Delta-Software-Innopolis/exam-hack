@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { ref, onBeforeMount } from "vue";
+import { ref, onBeforeMount, computed } from "vue";
 import QuizHubItemComponent from "@/components/basic/QuizHubItemComponent.vue";
 import Search from "@/components/basic/Search.vue";
 import SearchSVG from "@/assets/Search.svg"
-import type { QuizItem } from "@/types";
+import type { QuizPartialHubItem } from "@/types";
 import { useNewQuizzesStore } from "@/stores/new-quizzes";
 
 const quizzesStore = useNewQuizzesStore();
-const quizzes = ref<QuizItem[]>([]);
+const quizzes = ref<QuizPartialHubItem[]>([]);
 const isLoading = ref(false)
 
 const book = ref('')
@@ -87,12 +87,18 @@ onBeforeMount(async ()=> {
         </div>
     </div>
     <div class="Quiz-Container">
-      <QuizHubItemComponent v-if="quizzes.length > 0"  v-for="quiz in quizzes" 
+      <QuizHubItemComponent class="quiz-item" v-if="quizzes.length > 0"  v-for="quiz in quizzes" 
         :key="quiz.id" 
         :id="quiz.id"
         :name="quiz.name"
         :author="quiz.author.name"
-        :description="quiz.description"/>
+        :description="quiz.description"
+        :course_book="quiz.course_book"
+        :professor="quiz.professor"
+        :subject="quiz.subject"
+        :rating="quiz.rating ? quiz.rating : 0"
+        :university="quiz.university"/>
+        
       <div v-else>Sorry, we can't find such quizzes</div>
     </div>
   </div>
@@ -150,12 +156,12 @@ onBeforeMount(async ()=> {
 
 
 .Quiz-Container {
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: row;
+  display: grid;
   gap: 16px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   cursor: pointer;
 }
+
 .button-container {
   display: flex;
   justify-content: center;

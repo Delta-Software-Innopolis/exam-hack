@@ -11,8 +11,27 @@ const props = defineProps({
     mock: { type: Boolean, default: false },
     name: String,
     author: String,
+    subject: String,
+    university: String,
+    professor: String,
+    course_book: String,
+    rating: {type: Number, required: true},
+    description: String
 })
 
+const styleRatingObject = () => {
+        const rating = props.rating
+        if (rating == 0 || rating == null) return "#757575"
+        else if (rating < 2.5) return "#AF0000"
+        else if (rating >= 2.5 && rating < 3.8) return "#ACAF00"
+        else return "#00AF14"
+    }
+   
+const refact_rating = (value: number|null) => {
+    if (value) {
+        return Number.isInteger(value)? `${value}.0` : `${value}`
+    } else  return '0.0'
+}
 
 const quizItemRef = useTemplateRef('quiz-item')
 // const quizIconRef = useTemplateRef('quiz-icon')
@@ -48,10 +67,20 @@ function onClickQuiz(e: MouseEvent) {
 
 <template>
     <div class="quiz-item" ref="quiz-item" :class="variantClass" @click="onClickQuiz">
-        <div class="header">
-            <div class="name">{{ props.name }}</div>
-            <div class="author">by {{ props.author === undefined ? "You" : props.author }}</div>
+        <div class="tags">
+            <div class="tag"> {{ props.subject }} </div>
+            <div class="tag"> {{ props.university }} </div>
+            <div class="tag"> {{ props.professor }} </div>
+            <div class="tag"> {{ props.course_book }} </div>
         </div>
+        <div class="header">
+            <div class="author-name">
+                <div class="name">{{ props.name }}</div>
+                <div class="author">by {{ props.author === undefined ? "You" : props.author }}</div>
+            </div>
+            <h1 class="rating-title" :style="{color: styleRatingObject()}">{{refact_rating(props.rating)}}</h1>
+        </div>
+        <span class="description">{{ props.description}}</span>
         <!-- <div class="icon" ref="quiz-icon">
             <PlaySVG />
         </div> -->
@@ -60,30 +89,68 @@ function onClickQuiz(e: MouseEvent) {
 
 
 <style scoped>
+
+.description {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    max-width: calc(100% - 8px);
+    color: var(--secondary);
+    font-size: 14px;
+}
+
+.tags {
+    display: flex;
+    width: 100%;
+    height: fit-content;
+    flex-wrap: nowrap;
+    gap: 8px;
+}
+
+.tag {
+    font-size: 12px;
+    color: var(--primary-dimm);
+    background-color: var(--primary-light);
+    border: 1px solid var(--primary);
+    outline: 1px solid var(--primary-light);
+    border-radius: 16px;
+    padding: 4px 12px 4px 12px;
+
+    max-width: 25%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.tag:hover {
+    max-width: none;
+}
+
 .quiz-item {
     display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+    flex-direction: column;
     background-color: var(--background-blueish);
-    max-width: 369px;
+    /* max-width: 369px; */
     width: 100%;
-    max-height: 82px;
-    height: 100%;
-    align-items: center;
     padding: 16px;
     border-radius: 16px;
     transition: 0.2s;
     --icon-stroke: var(--secondary);
     /* --icon-fill: var(--secondary); */
     --icon-stroke-width: 1.5;
+    gap: 16px;
 }
 
 .header {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-    text-overflow: ellipsis;
-    overflow: hidden;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.author-name {
+    display: flex;
+    gap: 8px;
+    max-width: 80%;
 }
 
 .name {
@@ -94,8 +161,12 @@ function onClickQuiz(e: MouseEvent) {
     word-wrap: break-word;
     text-overflow: ellipsis;
     text-wrap-mode: nowrap;
+    max-width: 75%;
 }
 
+.name:hover {
+    text-wrap-mode: wrap;
+}
 .icon {
     display: flex;
     flex-direction: column;
@@ -108,6 +179,9 @@ function onClickQuiz(e: MouseEvent) {
     max-height: 19px;
     display: flex;
     align-items: center;
+    position: relative;
+    bottom: -16.5px;
+    left: 5px;
 }
 
 .white {
