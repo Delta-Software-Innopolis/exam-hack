@@ -10,6 +10,7 @@ import com.examhacker.domain.model.AnswerVariant
 import com.examhacker.common.utility.ISettingStorage
 import com.examhacker.domain.model.Author
 import com.examhacker.domain.model.QuizInfo
+import com.examhacker.domain.repository.IQuizRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -41,6 +42,7 @@ interface ISettingsComponent {
 class SettingsComponent(
     componentContext: ComponentContext,
     private val settingsStorage: ISettingStorage,
+    private val quizRepository: IQuizRepository,
     private val goToQuizList: () -> Unit,
     private val goToProfile: () -> Unit,
     private val goToQuizHub: () -> Unit
@@ -51,14 +53,12 @@ class SettingsComponent(
 
     init {
         val isUnlockFeatureOn = settingsStorage.getUnlockFeatureMode()
-        val quiz = settingsStorage.getUnlockFeatureQuiz()
-
         _model.update {
-            it.copy(
-                isPhoneUnlockFeatureOn = isUnlockFeatureOn,
-                quizzes = createMockQuizzes(),
-                selectedQuiz = quiz?.first
-            )
+            it.copy(isPhoneUnlockFeatureOn = isUnlockFeatureOn)
+        }
+
+        if (isUnlockFeatureOn) {
+            loadQuizzes()
         }
     }
 
@@ -75,19 +75,11 @@ class SettingsComponent(
         }
 
         _model.update {
-            it.copy(
-                isPhoneUnlockFeatureOn = !it.isPhoneUnlockFeatureOn,
-                quizzes =
-                    if (!it.isPhoneUnlockFeatureOn)
-                        createMockQuizzes()
-                    else
-                        null,
-                selectedQuiz =
-                    if (!it.isPhoneUnlockFeatureOn)
-                        settingsStorage.getUnlockFeatureQuiz()?.first
-                    else
-                        null
-            )
+            it.copy(isPhoneUnlockFeatureOn = !it.isPhoneUnlockFeatureOn)
+        }
+
+        if (model.value.isPhoneUnlockFeatureOn) {
+            loadQuizzes()
         }
     }
 
@@ -127,6 +119,36 @@ class SettingsComponent(
 
     override fun toQuizHub() {
         goToQuizHub()
+    }
+
+    private fun loadQuizzes() {
+        CoroutineScope(Dispatchers.IO).launch {
+            _model.update {
+                it.copy(isQuizzesLoading = true)
+            }
+
+            quizRepository.getAllPacks()
+                .onSuccess { quizzes ->
+
+                    val selectedQuizWithAnswers = settingsStorage.getUnlockFeatureQuiz()
+                    _model.update {
+                        it.copy(
+                            quizzes = quizzes,
+                            selectedQuiz = selectedQuizWithAnswers?.first,
+                            isQuizzesLoading = false
+                        )
+                    }
+                }
+                .onFailure { exception ->
+
+                    _model.update {
+                        it.copy(
+                            isQuizzesLoading = false,
+                            quizLoadingError = exception.message
+                        )
+                    }
+                }
+        }
     }
 
     @OptIn(ExperimentalTime::class)
