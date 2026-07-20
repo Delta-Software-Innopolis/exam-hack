@@ -25,7 +25,7 @@ class GenerateRequest(BaseModel):
     text: str = Field(
         ...,
         min_length=10,
-        max_length=50000,
+        max_length=200000,
         description="Raw text document to generate cards from.",
     )
     card_type: Literal["multiple_choice", "single_answer"] = Field(
