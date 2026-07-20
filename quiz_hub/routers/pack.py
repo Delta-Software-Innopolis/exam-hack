@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Query, HTTPException, status
+from fastapi import APIRouter, Depends, Query, HTTPException, status, Body
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload, load_only, selectinload, DeclarativeBase
 from database import get_async_db
@@ -7,10 +7,11 @@ from models.user import User as UserModel
 from models.pack import Pack as PackModel
 from models.card import Card as CardModel
 from models.card_option import Card_option as CardOptionModel
+from models.rating import rating as rating_table
 from sqlalchemy import select, text, func, or_, desc
 from pydantic_models.published_quiz import PublishedQuizesResponse, PublishedPackNew, PublishedQuiz, FullPublishedQuiz
 from typing import Any, cast
-from dependencies import validate_token
+from dependencies import validate_token, validate_pack_score
 router = APIRouter(
     prefix="/hub/packs",
     tags=["packs"]
@@ -93,7 +94,7 @@ class FilterParams:
 @router.get("/", response_model=PublishedQuizesResponse)
 async def get_packs(
     offset: int = Query(1, ge=1), 
-    limit: int = Query(16, ge=16),
+    limit: int = Query(16, ge=8),
     params: dict[str, Any] = Depends(FilterParams()),
     session: AsyncSession = Depends(get_async_db)
     )->dict:
@@ -107,6 +108,7 @@ async def get_packs(
         ).order_by(*[desc(column) for column in rank_col], desc(PublishedPackModel.rating).nulls_last())
     else:
         stmt = select(PublishedPackModel).order_by(desc(PublishedPackModel.rating).nulls_last())
+    count_stmt = select(func.count(PublishedPackModel.id)).join(PublishedPackModel.source).where(*filters)
     stmt = (
         stmt.join(PublishedPackModel.source)
         .where(*filters)
@@ -133,12 +135,11 @@ async def get_packs(
         )
     )
         
+    data_result = (await session.execute(stmt)).unique().all()
+    total_count = (await session.execute(count_stmt)).scalar_one()
+    packs = [row[0] for row in data_result]
 
-    result = (await session.execute(stmt)).all()
-    packs = [row[0] for row in result]
-    # if not result:
-    #     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
-    return {"packs": packs}
+    return {"packs": packs, "total": total_count}
     
 
 @router.post("/")
@@ -201,7 +202,8 @@ async def add_pack(
 @router.get("/{pack_id}", response_model=FullPublishedQuiz)
 async def get_pack_by_id(
     pack_id: int,
-    session: AsyncSession = Depends(get_async_db)
+    session: AsyncSession = Depends(get_async_db),
+    user_info = Depends(validate_token)
 )-> FullPublishedQuiz:
     stmt = (select(PublishedPackModel)
         .where(PublishedPackModel.id == pack_id)
@@ -232,9 +234,68 @@ async def get_pack_by_id(
             )
         )
     )
-    
     result = (await session.execute(stmt)).unique().scalar_one_or_none()
-    print("-" * 80 +f"{result}")
     if result is None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="no pack with such id")
-    return cast(FullPublishedQuiz, result)
+    user_id = user_info["user_id"]
+    rate_stmt = select(rating_table).where(rating_table.c.pack_id == pack_id, rating_table.c.user_id == user_id)
+    result_rate = (await session.execute(rate_stmt)).one_or_none()
+    score_value = result_rate.score if result_rate else None
+    validated_quiz = FullPublishedQuiz.model_validate(result)
+    return validated_quiz.model_copy(
+        update={"your_score": score_value} 
+    )
+
+@router.post("/{pack_id}/ratings", dependencies=[Depends(validate_pack_score)])
+async def add_rate(pack_id: int, score: int = Body(embed=True), user_info = Depends(validate_token), session: AsyncSession = Depends(get_async_db)):
+    pack_stmt = select(PublishedPackModel).where(PublishedPackModel.id == pack_id)
+    result = (await session.scalars(pack_stmt)).first()
+    if not result:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="There is no pack with such id")
+    user_id = user_info["user_id"]
+    rate_stmt = select(rating_table).where(rating_table.c.pack_id == pack_id, rating_table.c.user_id == user_id)
+    result = (await session.execute(rate_stmt)).one_or_none()
+    if result:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="you have already rated this pack")
+    query = text("""
+        INSERT INTO rating (user_id, pack_id, score) VALUES
+                 (:user_id, :pack_id, :score)
+                 """)
+    await session.execute(query, 
+        {
+            "user_id": user_id,
+            "pack_id": pack_id,
+            "score": score
+        }
+    )
+    await session.commit()
+    new_score_stmt = select(PublishedPackModel.rating).where(PublishedPackModel.id == pack_id)
+    new_score = (await session.scalars(new_score_stmt)).first()
+    return {"new_score": new_score}
+
+
+@router.put("/{pack_id}/ratings")
+async def change_rating(
+    pack_id: int, 
+    score: int = Body(embed=True), 
+    user_info = Depends(validate_token), 
+    session: AsyncSession = Depends(get_async_db)
+):
+    user_id = user_info["user_id"]
+    query = text("""
+        UPDATE rating 
+        SET score = :score
+        WHERE user_id = :user_id AND pack_id = :pack_id;
+                 """)
+    await session.execute(query, 
+        {
+            "user_id": user_id,
+            "pack_id": pack_id,
+            "score": score
+        }
+    )
+    await session.commit()
+    new_score_stmt = select(PublishedPackModel.rating).where(PublishedPackModel.id == pack_id)
+    new_score = (await session.scalars(new_score_stmt)).first()
+    return {"new_score": new_score}
+

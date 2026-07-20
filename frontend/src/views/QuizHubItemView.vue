@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, onUnmounted, useTemplateRef, type Ref, onMounted } from 'vue';
+import { ref, watch, onUnmounted, useTemplateRef, type Ref, onMounted, computed } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import BasicButton from '@/components/basic/BasicButton.vue';
 import type { Card, CardType, QuizItem, QuizHubItem } from '@/types';
@@ -9,12 +9,20 @@ import QuizOption from '@/components/basic/QuizOption.vue';
 import QuizQuestionsList from '@/components/quiz/QuizQuestionsList.vue';
 import PlusButton from '@/components/buttons/PlusButton.vue';
 import UnknownView from './UnknownView.vue';
+import ModalWindow from '@/components/basic/ModalWindow.vue';
+import PensilSVG from '@/assets/Pencil.svg'
+import { debounce } from '@/utils.ts';
 
 const route = useRoute()
 const router = useRouter()
 const networkManager = useNetworkManager()
 const quiz = ref<QuizHubItem|null>(null)
-
+const refact_rating = (value: number|null) => {
+    if (value) {
+        return Number.isInteger(value)? `${value}.0` : `${value}`
+    } else  return '0.0'
+}
+const showPensil = ref(false)
 onMounted(async() => {
     quiz.value = await getQuiz()
     console.log(quiz.value)
@@ -28,7 +36,7 @@ async function getQuiz() {
     }
 
     try {
-        const response = await networkManager.unauth_fetch(
+        const response = await networkManager.fetch(
             new URL(`/hub/packs/${quizId}`, HUB_URL),
             {
             method: 'GET',
@@ -77,24 +85,112 @@ async function addToCollection() {
     }
 }
 
+const debounceRate = debounce(rateQuiz, 300)
+async function rateQuiz(rating: number){
+    const quizId = route.params.quizId
+    if (quizId === undefined) {
+        console.error('Missing quiz id in route params')
+        return
+    }
+    try {
+        const response = await networkManager.fetch(
+            new URL(`/hub/packs/${quizId}/ratings`, HUB_URL),
+            {
+            method: quiz.value?.your_score ? "PUT" : "POST",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                "score": rating
+            })
+        },
+        )
+
+        if (!response.ok) {
+            const data = await response.json()
+            const errMsg = data.detail || "server error"
+            alert(errMsg)
+            throw new Error(`Failed to rate quiz: ${errMsg}`)
+        }
+        const data = await response.json()
+        const newScore = data.new_score as number
+        if (quiz.value) {
+            quiz.value.rating = newScore
+            quiz.value.your_score = rating 
+        }
+
+        console.log('Quiz successfully rated', quizId)
+    }catch (error) {
+        console.error('Could not rate quiz:', error)
+    }finally {
+        modalRatingView.value?.close()
+    }
+}
+
 function notImplemented() {
     alert('Thank you for trying!\nThis will be implemented later 🫡')
 }
 
 const activeQuestionId = ref(-1);
 const modalQuestionView = useTemplateRef('modal-question-view');
+const modalRatingView = useTemplateRef('modal-rating-view')
+const styleRatingObject = computed(() => {
+    return (type: number) => {
+        const rating = type == 0 ? quiz.value?.rating : quiz.value?.your_score
+        if (rating == null) return "#757575"
+        else if (rating < 2.5) return "#AF0000"
+        else if (rating >= 2.5 && rating < 3.8) return "#ACAF00"
+        else return "#00AF14"
+    } 
+})
 
+const ratingVarStyle = [
+    "#AF0000",
+    "#AF3400",
+    "#AF7A00",
+    "#ACAF00",
+    "#00AF14"
+]
 </script>
 
 <template>
     <div class="main-container" v-if="quiz">
         <ModalQuestionView ref="modal-question-view"/>
-        <div class="left-side">
-            <div class="title">
-                <h1>{{ quiz.name || 'Unknown Quiz' }}</h1>
+        <ModalWindow ref="modal-rating-view">
+            <div class="rating-container">
+                <h1>Rate this quiz!</h1>
+                <div class="rating-variants">
+                    <div 
+                    class="rating-var"
+                    v-for="value, index in [1, 2, 3, 4, 5]"
+                    :style="{color: ratingVarStyle[index]}"
+                    @click="debounceRate(value)"
+                    >
+                    {{ value }}
+                </div>
+            </div>
+        </div>
+    </ModalWindow>
+    <div class="left-side">
+        <div class="title">
+            <div class="name-rating">
+                <h1>{{ quiz.name || 'Unknown Quiz' }} </h1>
+                <h1 class="rating-title" :style="{color: styleRatingObject(0)}">{{refact_rating(quiz.rating)}}</h1>
+            </div>
+            <div class="author-rating">
                 <span class="author">
                     by <a href="#">{{ quiz.author.name || 'Someone'}}</a>
                 </span>
+                <div class="your-rating" v-if="quiz.your_score" @mouseenter="showPensil = !showPensil" @mouseleave="showPensil = !showPensil" @click="modalRatingView?.open()">
+                    Your rating
+                    <span class="rating-info" :style="{backgroundColor: styleRatingObject(1)}">{{ refact_rating(quiz.your_score) }}</span>
+                    <Transition name="pensil">
+                        <PensilSVG v-if="showPensil"></PensilSVG>
+                    </Transition>
+                </div>
+                <BasicButton class="rating-button" v-else @click="modalRatingView?.open()">Add a rating</BasicButton> 
+                    
+                </div>
             </div>
             <div class="wrappre">
                 <div class="tags">
@@ -133,6 +229,84 @@ const modalQuestionView = useTemplateRef('modal-question-view');
     gap: 16px;
 }
 
+.author-rating {
+    display: flex;
+    gap: 30px;
+    justify-content: space-between;
+}
+
+.name-rating {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.pensil-enter-active,
+.pensil-leave-active {
+    transition: opacity 0.2s ease-in-out;
+}
+
+.pensil-enter-from,
+.pensil-leave-to {
+    opacity: 0;
+}
+
+.your-rating {
+    display: flex;
+    gap: 3px;
+    justify-content: center;
+    align-items: center;
+}
+
+.rating-info {
+    font-weight: bold;
+    color: white;
+    border-radius: 16px;
+    text-align: center;
+    padding: 0 8px;
+}
+
+.rating-button {
+    padding: 4px 10px;
+    border-radius: 10px;
+}
+
+.rating-container {
+    width: 254px;
+    background-color: var(--color-background-secondary);
+    padding: 16px;
+    border-radius: 16px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+}
+
+.rating-variants {
+    display: flex;
+    gap: 8px;
+    width: fit-content;
+    height: fit-content;
+}
+
+.rating-var {
+    background-color: var(--background-blueish);
+    border-radius: 8px;
+    height: 38px;
+    width: 38px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.rating-var:hover {
+    cursor: pointer;
+}
 .tags {
     display: flex;
     width: 100%;

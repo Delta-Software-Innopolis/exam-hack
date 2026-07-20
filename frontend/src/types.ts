@@ -25,6 +25,18 @@ export interface QuizItem {
     share_code?: string
 }
 
+export interface QuizPartialHubItem {
+    id: number,
+    name: string,
+    description?: string,
+    author: Author,
+    rating: number|null,
+    subject: string,
+    university: string,
+    professor: string,
+    course_book: string,
+}
+
 
 export interface QuizHubItem {
     id: number,
@@ -33,11 +45,12 @@ export interface QuizHubItem {
     forked_from?: number,
     author: Author,
     cards: Card[],
-    raiting: number|null,
+    rating: number|null,
     subject: string,
     university: string,
     professor: string,
-    course_book: string
+    course_book: string,
+    your_score?: number
 }
 
 
