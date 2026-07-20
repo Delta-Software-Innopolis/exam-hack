@@ -33,7 +33,7 @@ export interface QuizHubItem {
     forked_from?: number,
     author: Author,
     cards: Card[],
-    raiting: number|null,
+    rating: number|null,
     subject: string,
     university: string,
     professor: string,

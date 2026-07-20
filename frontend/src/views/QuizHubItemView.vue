@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, onUnmounted, useTemplateRef, type Ref, onMounted } from 'vue';
+import { ref, watch, onUnmounted, useTemplateRef, type Ref, onMounted, computed } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import BasicButton from '@/components/basic/BasicButton.vue';
 import type { Card, CardType, QuizItem, QuizHubItem } from '@/types';
@@ -9,6 +9,7 @@ import QuizOption from '@/components/basic/QuizOption.vue';
 import QuizQuestionsList from '@/components/quiz/QuizQuestionsList.vue';
 import PlusButton from '@/components/buttons/PlusButton.vue';
 import UnknownView from './UnknownView.vue';
+import ModalWindow from '@/components/basic/ModalWindow.vue';
 
 const route = useRoute()
 const router = useRouter()
@@ -83,18 +84,50 @@ function notImplemented() {
 
 const activeQuestionId = ref(-1);
 const modalQuestionView = useTemplateRef('modal-question-view');
+const modalRatingView = useTemplateRef('modal-rating-view')
+const styleRatingObject = computed(() => {
+    const rating = quiz.value?.rating
+    if (rating == null) return "black"
+    else if (rating < 2.5) return "#AF0000"
+    else if (rating >= 2.5 && rating < 3.8) return "#ACAF00"
+    else return "#00AF14"
+})
 
+const ratingVarStyle = [
+    "#AF0000",
+    "#AF3400",
+    "#AF7A00",
+    "#ACAF00",
+    "#00AF14"
+]
 </script>
 
 <template>
     <div class="main-container" v-if="quiz">
         <ModalQuestionView ref="modal-question-view"/>
+        <ModalWindow ref="modal-rating-view">
+            <div class="rating-container">
+                <h1>Rate this quiz!</h1>
+                <div class="rating-variants">
+                    <div 
+                        class="rating-var"
+                        v-for="value, index in [1, 2, 3, 4, 5]"
+                        :style="{color: ratingVarStyle[index]}"
+                    >
+                        {{ value }}
+                    </div>
+                </div>
+            </div>
+        </ModalWindow>
         <div class="left-side">
             <div class="title">
                 <h1>{{ quiz.name || 'Unknown Quiz' }}</h1>
-                <span class="author">
-                    by <a href="#">{{ quiz.author.name || 'Someone'}}</a>
-                </span>
+                <div class="author-rating">
+                    <span class="author">
+                        by <a href="#">{{ quiz.author.name || 'Someone'}}</a>
+                    </span>
+                    <span class="rating-info" :style="{backgroundColor: styleRatingObject}">{{ quiz.rating }}</span>
+                </div>
             </div>
             <div class="wrappre">
                 <div class="tags">
@@ -108,6 +141,7 @@ const modalQuestionView = useTemplateRef('modal-question-view');
                 </div>
                 <div class="actions">
                     <div class="top-buttons">
+                        <BasicButton @click="modalRatingView?.open()">Add a rating</BasicButton> 
                         <PlusButton variant="primary" @click="addToCollection()">Add to collection</PlusButton>
                     </div>
                 </div>
@@ -133,6 +167,51 @@ const modalQuestionView = useTemplateRef('modal-question-view');
     gap: 16px;
 }
 
+.author-rating {
+    display: flex;
+    gap: 30px
+}
+
+.rating-info {
+    font-weight: bold;
+    color: white;
+    border-radius: 16px;
+    text-align: center;
+    padding: 0 8px;
+}
+
+.rating-container {
+    width: 254px;
+    background-color: var(--color-background-secondary);
+    padding: 16px;
+    border-radius: 16px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+}
+
+.rating-variants {
+    display: flex;
+    gap: 8px;
+    width: fit-content;
+    height: fit-content;
+}
+
+.rating-var {
+    background-color: var(--background-blueish);
+    border-radius: 8px;
+    height: 38px;
+    width: 38px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 16px;
+    font-weight: bold;
+}
 .tags {
     display: flex;
     width: 100%;
