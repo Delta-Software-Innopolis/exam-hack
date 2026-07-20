@@ -15,7 +15,7 @@ describe('BasicFileUpload', () => {
   it('shows placeholder when there are no files', () => {
     const wrapper = mount(BasicFileUpload)
 
-    expect(wrapper.text()).toContain('Upload files first')
+    expect(wrapper.text()).toContain('Drop files here')
     expect(wrapper.find('ul').exists()).toBe(false)
   }),
   it('adds selected file to the list', async () => {
@@ -76,7 +76,7 @@ describe('BasicFileUpload', () => {
     await wrapper.find('.remove-button').trigger('click')
 
     expect(wrapper.text()).not.toContain('test.txt')
-    expect(wrapper.text()).toContain('Upload files first')
+    expect(wrapper.text()).toContain('Drop files here')
   }),
   it('emits changed after removing a file', async () => {
     const wrapper = mount(BasicFileUpload)
