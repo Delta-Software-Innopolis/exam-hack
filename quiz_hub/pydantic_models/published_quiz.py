@@ -28,6 +28,7 @@ class PublishedQuiz(BaseModel):
 
 class PublishedQuizesResponse(BaseModel):
     packs: list[PublishedQuiz]
+    total: int
 
 class PublishedPackNew(BaseModel):
     pack_id: PositiveInt

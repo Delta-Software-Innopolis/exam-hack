@@ -108,6 +108,7 @@ async def get_packs(
         ).order_by(*[desc(column) for column in rank_col], desc(PublishedPackModel.rating).nulls_last())
     else:
         stmt = select(PublishedPackModel).order_by(desc(PublishedPackModel.rating).nulls_last())
+    count_stmt = select(func.count(PublishedPackModel.id)).join(PublishedPackModel.source).where(*filters)
     stmt = (
         stmt.join(PublishedPackModel.source)
         .where(*filters)
@@ -134,12 +135,11 @@ async def get_packs(
         )
     )
         
+    data_result = (await session.execute(stmt)).unique().all()
+    total_count = (await session.execute(count_stmt)).scalar_one()
+    packs = [row[0] for row in data_result]
 
-    result = (await session.execute(stmt)).all()
-    packs = [row[0] for row in result]
-    # if not result:
-    #     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
-    return {"packs": packs}
+    return {"packs": packs, "total": total_count}
     
 
 @router.post("/")

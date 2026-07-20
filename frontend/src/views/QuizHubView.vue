@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { ref, onBeforeMount, computed } from "vue";
+import { ref, onBeforeMount, computed, watch} from "vue";
 import QuizHubItemComponent from "@/components/basic/QuizHubItemComponent.vue";
 import Search from "@/components/basic/Search.vue";
 import SearchSVG from "@/assets/Search.svg"
 import type { QuizPartialHubItem } from "@/types";
 import { useNewQuizzesStore } from "@/stores/new-quizzes";
+import BasicButton from "@/components/basic/BasicButton.vue";
 
 const quizzesStore = useNewQuizzesStore();
 const quizzes = ref<QuizPartialHubItem[]>([]);
@@ -15,6 +16,13 @@ const professor = ref('')
 const university = ref('')
 const subject = ref('')
 const main = ref('')
+
+const pageNum = ref(1)
+const totalMatches = ref(null)
+const limit = ref(12)
+watch(pageNum, async () => {
+  fetchInfo()
+})
 
 const addParam = (params: URLSearchParams, key: string, value: string) => {
     const trimmed = value.trim()
@@ -36,8 +44,8 @@ try {
   addParam(params, "university", university.value)
   addParam(params, "search_main", main.value)
 
-    params.append("offset", "1")
-    params.append("limit", "16")
+    params.append("offset", pageNum.value.toString())
+    params.append("limit", limit.value.toString())
     const address = import.meta.env.DEV ? "http://localhost:8067": import.meta.env.VITE_HUB_URL_DEV
     isLoading.value = true 
     const response = await fetch(`${address}/hub/packs/?${params.toString()}`,
@@ -53,6 +61,7 @@ try {
     } 
     quizzes.value = data.packs
     quizzesStore.hubQuizzes = data.packs
+    totalMatches.value = data.total
     console.log(quizzes.value)
 } catch (error) {
     console.error('Не удалось загрузить квизы:', error) 
@@ -101,11 +110,22 @@ onBeforeMount(async ()=> {
         
       <div v-else>Sorry, we can't find such quizzes</div>
     </div>
+    <div class="buttons-container"v-if="totalMatches">
+      <BasicButton v-if="pageNum > 1" @click="pageNum--">previous</BasicButton>
+      <span>{{ pageNum }} out of {{ Math.ceil(totalMatches / limit)}}</span>
+      <BasicButton v-if="pageNum < Math.ceil(totalMatches / limit)" @click="pageNum++">next</BasicButton>
+    </div>
   </div>
   <div v-else>Loading...</div>
 </template>
 
 <style scoped>
+
+.buttons-container {
+  display: flex;
+  justify-content: center;
+}
+
 .main-container {
   display: flex;
   flex-direction: column;
