@@ -37,7 +37,8 @@ export interface QuizHubItem {
     subject: string,
     university: string,
     professor: string,
-    course_book: string
+    course_book: string,
+    your_score?: number
 }
 
 

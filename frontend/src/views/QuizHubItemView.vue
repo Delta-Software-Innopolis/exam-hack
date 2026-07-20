@@ -10,11 +10,18 @@ import QuizQuestionsList from '@/components/quiz/QuizQuestionsList.vue';
 import PlusButton from '@/components/buttons/PlusButton.vue';
 import UnknownView from './UnknownView.vue';
 import ModalWindow from '@/components/basic/ModalWindow.vue';
+import PensilSVG from '@/assets/Pencil.svg'
 
 const route = useRoute()
 const router = useRouter()
 const networkManager = useNetworkManager()
 const quiz = ref<QuizHubItem|null>(null)
+const refact_rating = (value: number|null) => {
+    if (value) {
+        return Number.isInteger(value)? `${value}.0` : `${value}`
+    } else  return '0.0'
+}
+const showPensil = ref(false)
 onMounted(async() => {
     quiz.value = await getQuiz()
     console.log(quiz.value)
@@ -28,7 +35,7 @@ async function getQuiz() {
     }
 
     try {
-        const response = await networkManager.unauth_fetch(
+        const response = await networkManager.fetch(
             new URL(`/hub/packs/${quizId}`, HUB_URL),
             {
             method: 'GET',
@@ -106,11 +113,8 @@ async function rateQuiz(rating: number){
         const data = await response.json()
         const newScore = data.new_score as number
         if (quiz.value) {
-            quiz.value.rating = newScore 
-            // console.log(newScore)
-            // //change reactive object to it's copy
-            // //to activate reactivity
-            // quiz.value = {...quiz.value}
+            quiz.value.rating = newScore
+            quiz.value. your_score = rating 
         }
 
         console.log('Quiz successfully rated', quizId)
@@ -129,11 +133,13 @@ const activeQuestionId = ref(-1);
 const modalQuestionView = useTemplateRef('modal-question-view');
 const modalRatingView = useTemplateRef('modal-rating-view')
 const styleRatingObject = computed(() => {
-    const rating = quiz.value?.rating
-    if (rating == null) return "black"
-    else if (rating < 2.5) return "#AF0000"
-    else if (rating >= 2.5 && rating < 3.8) return "#ACAF00"
-    else return "#00AF14"
+    return (type: number) => {
+        const rating = type == 0 ? quiz.value?.rating : quiz.value?.your_score
+        if (rating == null) return "#757575"
+        else if (rating < 2.5) return "#AF0000"
+        else if (rating >= 2.5 && rating < 3.8) return "#ACAF00"
+        else return "#00AF14"
+    } 
 })
 
 const ratingVarStyle = [
@@ -153,24 +159,35 @@ const ratingVarStyle = [
                 <h1>Rate this quiz!</h1>
                 <div class="rating-variants">
                     <div 
-                        class="rating-var"
-                        v-for="value, index in [1, 2, 3, 4, 5]"
-                        :style="{color: ratingVarStyle[index]}"
-                        @click="rateQuiz(value)"
+                    class="rating-var"
+                    v-for="value, index in [1, 2, 3, 4, 5]"
+                    :style="{color: ratingVarStyle[index]}"
+                    @click="rateQuiz(value)"
                     >
-                        {{ value }}
-                    </div>
+                    {{ value }}
                 </div>
             </div>
-        </ModalWindow>
-        <div class="left-side">
-            <div class="title">
-                <h1>{{ quiz.name || 'Unknown Quiz' }}</h1>
-                <div class="author-rating">
-                    <span class="author">
-                        by <a href="#">{{ quiz.author.name || 'Someone'}}</a>
-                    </span>
-                    <span v-if="quiz.rating" class="rating-info" :style="{backgroundColor: styleRatingObject}">{{ quiz.rating }}</span>
+        </div>
+    </ModalWindow>
+    <div class="left-side">
+        <div class="title">
+            <div class="name-rating">
+                <h1>{{ quiz.name || 'Unknown Quiz' }} </h1>
+                <h1 class="rating-title" :style="{color: styleRatingObject(0)}">{{refact_rating(quiz.rating)}}</h1>
+            </div>
+            <div class="author-rating">
+                <span class="author">
+                    by <a href="#">{{ quiz.author.name || 'Someone'}}</a>
+                </span>
+                <div class="your-rating" v-if="quiz.your_score" @mouseenter="showPensil = !showPensil" @mouseleave="showPensil = !showPensil">
+                    Your rating
+                    <span class="rating-info" :style="{backgroundColor: styleRatingObject(1)}">{{ refact_rating(quiz.your_score) }}</span>
+                    <Transition name="pensil">
+                        <PensilSVG v-if="showPensil"></PensilSVG>
+                    </Transition>
+                </div>
+                <BasicButton class="rating-button" v-else @click="modalRatingView?.open()">Add a rating</BasicButton> 
+                    
                 </div>
             </div>
             <div class="wrappre">
@@ -185,7 +202,6 @@ const ratingVarStyle = [
                 </div>
                 <div class="actions">
                     <div class="top-buttons">
-                        <BasicButton @click="modalRatingView?.open()">Add a rating</BasicButton> 
                         <PlusButton variant="primary" @click="addToCollection()">Add to collection</PlusButton>
                     </div>
                 </div>
@@ -213,7 +229,31 @@ const ratingVarStyle = [
 
 .author-rating {
     display: flex;
-    gap: 30px
+    gap: 30px;
+    justify-content: space-between;
+}
+
+.name-rating {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.pensil-enter-active,
+.pensil-leave-active {
+    transition: opacity 0.2s ease-in-out;
+}
+
+.pensil-enter-from,
+.pensil-leave-to {
+    opacity: 0;
+}
+
+.your-rating {
+    display: flex;
+    gap: 3px;
+    justify-content: center;
+    align-items: center;
 }
 
 .rating-info {
@@ -222,6 +262,11 @@ const ratingVarStyle = [
     border-radius: 16px;
     text-align: center;
     padding: 0 8px;
+}
+
+.rating-button {
+    padding: 4px 10px;
+    border-radius: 10px;
 }
 
 .rating-container {
@@ -255,6 +300,10 @@ const ratingVarStyle = [
 
     font-size: 16px;
     font-weight: bold;
+}
+
+.rating-var:hover {
+    cursor: pointer;
 }
 .tags {
     display: flex;
