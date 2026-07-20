@@ -189,23 +189,23 @@ async function publishQuiz() {
                 {{ quiz.description || "This quiz has no description..." }}
             </div>
             <div class="stats-n-actions">
-                <div class="stats">
-                    <div class="commpletion">
-                        <h4>Completion</h4>
-                        <div class="progress-bar">
-                            <span class="percentage">0%</span>
-                            <div class="bar"></div>
-                        </div>
-                    </div>
-                    <div class="statistics">
-                        <h4>Statistics</h4>
-                        <ul>
-                            <li>Attempts: 0</li>
-                            <li>R/W ratio: 0.5</li>
-                            <li>Time practicing: 10m 32s</li>
-                        </ul>
-                    </div>
-                </div>
+                <!-- <div class="stats"> -->
+                <!--     <div class="commpletion"> -->
+                <!--         <h4>Completion</h4> -->
+                <!--         <div class="progress-bar"> -->
+                <!--             <span class="percentage">0%</span> -->
+                <!--             <div class="bar"></div> -->
+                <!--         </div> -->
+                <!--     </div> -->
+                <!--     <div class="statistics"> -->
+                <!--         <h4>Statistics</h4> -->
+                <!--         <ul> -->
+                <!--             <li>Attempts: 0</li> -->
+                <!--             <li>R/W ratio: 0.5</li> -->
+                <!--             <li>Time practicing: 10m 32s</li> -->
+                <!--         </ul> -->
+                <!--     </div> -->
+                <!-- </div> -->
                 <div class="actions">
                     <div class="top-buttons">
                         <PlayButton v-if="knownQuiz" variant="primary" 
@@ -376,6 +376,7 @@ button a {
 
 .actions {
     display: flex;
+    margin-left: auto;
     flex-direction: column;
     justify-content: space-between;
     width: fit-content;
