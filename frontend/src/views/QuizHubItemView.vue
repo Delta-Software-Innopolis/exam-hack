@@ -11,6 +11,7 @@ import PlusButton from '@/components/buttons/PlusButton.vue';
 import UnknownView from './UnknownView.vue';
 import ModalWindow from '@/components/basic/ModalWindow.vue';
 import PensilSVG from '@/assets/Pencil.svg'
+import { debounce } from '@/utils.ts';
 
 const route = useRoute()
 const router = useRouter()
@@ -84,6 +85,7 @@ async function addToCollection() {
     }
 }
 
+const debounceRate = debounce(rateQuiz, 300)
 async function rateQuiz(rating: number){
     const quizId = route.params.quizId
     if (quizId === undefined) {
@@ -94,7 +96,7 @@ async function rateQuiz(rating: number){
         const response = await networkManager.fetch(
             new URL(`/hub/packs/${quizId}/ratings`, HUB_URL),
             {
-            method: 'POST',
+            method: quiz.value?.your_score ? "PUT" : "POST",
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -114,7 +116,7 @@ async function rateQuiz(rating: number){
         const newScore = data.new_score as number
         if (quiz.value) {
             quiz.value.rating = newScore
-            quiz.value. your_score = rating 
+            quiz.value.your_score = rating 
         }
 
         console.log('Quiz successfully rated', quizId)
@@ -162,7 +164,7 @@ const ratingVarStyle = [
                     class="rating-var"
                     v-for="value, index in [1, 2, 3, 4, 5]"
                     :style="{color: ratingVarStyle[index]}"
-                    @click="rateQuiz(value)"
+                    @click="debounceRate(value)"
                     >
                     {{ value }}
                 </div>
@@ -179,7 +181,7 @@ const ratingVarStyle = [
                 <span class="author">
                     by <a href="#">{{ quiz.author.name || 'Someone'}}</a>
                 </span>
-                <div class="your-rating" v-if="quiz.your_score" @mouseenter="showPensil = !showPensil" @mouseleave="showPensil = !showPensil">
+                <div class="your-rating" v-if="quiz.your_score" @mouseenter="showPensil = !showPensil" @mouseleave="showPensil = !showPensil" @click="modalRatingView?.open()">
                     Your rating
                     <span class="rating-info" :style="{backgroundColor: styleRatingObject(1)}">{{ refact_rating(quiz.your_score) }}</span>
                     <Transition name="pensil">

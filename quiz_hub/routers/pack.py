@@ -272,3 +272,30 @@ async def add_rate(pack_id: int, score: int = Body(embed=True), user_info = Depe
     new_score_stmt = select(PublishedPackModel.rating).where(PublishedPackModel.id == pack_id)
     new_score = (await session.scalars(new_score_stmt)).first()
     return {"new_score": new_score}
+
+
+@router.put("/{pack_id}/ratings")
+async def change_rating(
+    pack_id: int, 
+    score: int = Body(embed=True), 
+    user_info = Depends(validate_token), 
+    session: AsyncSession = Depends(get_async_db)
+):
+    user_id = user_info["user_id"]
+    query = text("""
+        UPDATE rating 
+        SET score = :score
+        WHERE user_id = :user_id AND pack_id = :pack_id;
+                 """)
+    await session.execute(query, 
+        {
+            "user_id": user_id,
+            "pack_id": pack_id,
+            "score": score
+        }
+    )
+    await session.commit()
+    new_score_stmt = select(PublishedPackModel.rating).where(PublishedPackModel.id == pack_id)
+    new_score = (await session.scalars(new_score_stmt)).first()
+    return {"new_score": new_score}
+
