@@ -263,4 +263,6 @@ async def add_rate(pack_id: int, score: int = Body(embed=True), user_info = Depe
         }
     )
     await session.commit()
-    return {"adding": "success"}
+    new_score_stmt = select(PublishedPackModel.rating).where(PublishedPackModel.id == pack_id)
+    new_score = (await session.scalars(new_score_stmt)).first()
+    return {"new_score": new_score}

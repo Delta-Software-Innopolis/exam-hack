@@ -15,7 +15,6 @@ const route = useRoute()
 const router = useRouter()
 const networkManager = useNetworkManager()
 const quiz = ref<QuizHubItem|null>(null)
-
 onMounted(async() => {
     quiz.value = await getQuiz()
     console.log(quiz.value)
@@ -78,6 +77,50 @@ async function addToCollection() {
     }
 }
 
+async function rateQuiz(rating: number){
+    const quizId = route.params.quizId
+    if (quizId === undefined) {
+        console.error('Missing quiz id in route params')
+        return
+    }
+    try {
+        const response = await networkManager.fetch(
+            new URL(`/hub/packs/${quizId}/ratings`, HUB_URL),
+            {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                "score": rating
+            })
+        },
+        )
+
+        if (!response.ok) {
+            const data = await response.json()
+            const errMsg = data.detail || "server error"
+            alert(errMsg)
+            throw new Error(`Failed to rate quiz: ${errMsg}`)
+        }
+        const data = await response.json()
+        const newScore = data.new_score as number
+        if (quiz.value) {
+            quiz.value.rating = newScore 
+            // console.log(newScore)
+            // //change reactive object to it's copy
+            // //to activate reactivity
+            // quiz.value = {...quiz.value}
+        }
+
+        console.log('Quiz successfully rated', quizId)
+    }catch (error) {
+        console.error('Could not rate quiz:', error)
+    }finally {
+        modalRatingView.value?.close()
+    }
+}
+
 function notImplemented() {
     alert('Thank you for trying!\nThis will be implemented later 🫡')
 }
@@ -113,6 +156,7 @@ const ratingVarStyle = [
                         class="rating-var"
                         v-for="value, index in [1, 2, 3, 4, 5]"
                         :style="{color: ratingVarStyle[index]}"
+                        @click="rateQuiz(value)"
                     >
                         {{ value }}
                     </div>
@@ -126,7 +170,7 @@ const ratingVarStyle = [
                     <span class="author">
                         by <a href="#">{{ quiz.author.name || 'Someone'}}</a>
                     </span>
-                    <span class="rating-info" :style="{backgroundColor: styleRatingObject}">{{ quiz.rating }}</span>
+                    <span v-if="quiz.rating" class="rating-info" :style="{backgroundColor: styleRatingObject}">{{ quiz.rating }}</span>
                 </div>
             </div>
             <div class="wrappre">
