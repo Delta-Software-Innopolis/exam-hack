@@ -21,8 +21,8 @@ fun QuestionDescriptionInputField(
     modifier: Modifier = Modifier
 ) {
     OutlinedTextField(
-        value = TextFieldValue(description),
-        onValueChange = { value: TextFieldValue -> onDescriptionChange(value.text) },
+        value = description,
+        onValueChange = onDescriptionChange,
         shape = RoundedCornerShape(Dimensions.DialogElementRadius),
         textStyle = TextStyle(
             fontSize = Dimensions.DescriptionInputFontSize,

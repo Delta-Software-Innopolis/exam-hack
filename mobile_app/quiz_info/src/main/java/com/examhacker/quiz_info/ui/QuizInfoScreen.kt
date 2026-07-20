@@ -23,7 +23,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -31,7 +30,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
@@ -46,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.examhacker.domain.model.QuizStatistics
 import com.examhacker.common.ui.AppNavigationBar
+import com.examhacker.common.ui.CustomProgressIndicator
 import com.examhacker.common.ui.DeleteButton
 import com.examhacker.common.ui.NavigationTab
 import com.examhacker.common.ui.SingleBackButtonTopBar
@@ -56,7 +55,6 @@ import com.examhacker.resources.R
 import com.examhacker.quiz_info.component.IQuizInfoComponent
 import com.examhacker.resources.ColorPreset
 import com.examhacker.resources.Dimensions
-import java.time.Instant
 import kotlin.time.Clock.System.now
 import kotlin.time.ExperimentalTime
 
@@ -132,10 +130,14 @@ private fun QuizInfoUI(
                     .padding(Dimensions.ScreenPadding)
             )
 
-            QuizDescriptionCard(
-                description = model.quiz?.description ?: "Quiz description",
-                modifier = Modifier.fillMaxWidth()
-            )
+            model.quiz?.description?. let {
+                if (it.isNotEmpty() && it.isNotBlank()) {
+                    QuizDescriptionCard(
+                        description = it,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            }
 
             AttemptQuizButton(
                 onAttemptQuiz = onAttemptQuizClick,
@@ -369,14 +371,9 @@ private fun QuizProgressBar(
                 color = ColorPreset.Black
             )
 
-            
-
-            LinearProgressIndicator(
-                progress = { progress },
-                color = ColorPreset.PositivePrimary,
+            CustomProgressIndicator(
+                progress = progress,
                 trackColor = ColorPreset.BackgroundVariant,
-                strokeCap = StrokeCap.Round,
-                drawStopIndicator = {},
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(Dimensions.ProgressBarHeight)

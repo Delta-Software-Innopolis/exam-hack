@@ -216,6 +216,7 @@ class RootComponent(
                     SettingsComponent(
                         componentContext = componentContext,
                         settingsStorage = settingStorage,
+                        quizRepository = quizRepository,
                         goToQuizList = ::navigateToQuizList,
                         goToProfile = ::navigateToProfile,
                         goToQuizHub = ::navigateToQuizHub,
