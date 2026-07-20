@@ -202,7 +202,8 @@ async def add_pack(
 @router.get("/{pack_id}", response_model=FullPublishedQuiz)
 async def get_pack_by_id(
     pack_id: int,
-    session: AsyncSession = Depends(get_async_db)
+    session: AsyncSession = Depends(get_async_db),
+    user_info = Depends(validate_token)
 )-> FullPublishedQuiz:
     stmt = (select(PublishedPackModel)
         .where(PublishedPackModel.id == pack_id)
@@ -233,12 +234,17 @@ async def get_pack_by_id(
             )
         )
     )
-    
     result = (await session.execute(stmt)).unique().scalar_one_or_none()
-    print("-" * 80 +f"{result}")
     if result is None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="no pack with such id")
-    return cast(FullPublishedQuiz, result)
+    user_id = user_info["user_id"]
+    rate_stmt = select(rating_table).where(rating_table.c.pack_id == pack_id, rating_table.c.user_id == user_id)
+    result_rate = (await session.execute(rate_stmt)).one_or_none()
+    score_value = result_rate.score if result_rate else None
+    validated_quiz = FullPublishedQuiz.model_validate(result)
+    return validated_quiz.model_copy(
+        update={"your_score": score_value} 
+    )
 
 @router.post("/{pack_id}/ratings", dependencies=[Depends(validate_pack_score)])
 async def add_rate(pack_id: int, score: int = Body(embed=True), user_info = Depends(validate_token), session: AsyncSession = Depends(get_async_db)):

@@ -5,11 +5,14 @@ from pydantic import ConfigDict
 class Author(BaseModel):
     id: PositiveInt
     name: str
+    
+    model_config = ConfigDict(from_attributes=True)
 class Fork(BaseModel):
     id: PositiveInt
     rating: PositiveFloat|None
     name: str
 
+    model_config = ConfigDict(from_attributes=True)
 class PublishedQuiz(BaseModel):
     id: PositiveInt
     author: Author
@@ -39,11 +42,16 @@ class Card(BaseModel):
     options: list[str]
     correct: list[PositiveInt]
     hint: str
+    model_config = ConfigDict(from_attributes=True)
 
 
 
 
 class FullPublishedQuiz(PublishedQuiz):
     cards: list[Card]
+    your_score: None | int = None
+
+    model_config = ConfigDict(from_attributes=True)
+
 
 
