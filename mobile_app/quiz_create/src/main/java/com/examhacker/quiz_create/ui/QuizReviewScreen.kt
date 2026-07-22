@@ -112,7 +112,9 @@ private fun QuizReviewUI(
             QuestionListWithTitle(
                 questions = model.questions,
                 onEditQuestionClick = onEditQuestionClick,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f, fill = false)
             )
 
             SaveQuizAddQuestionButtons(

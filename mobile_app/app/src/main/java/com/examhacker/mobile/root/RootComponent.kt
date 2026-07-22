@@ -20,6 +20,7 @@ import kotlinx.serialization.Serializable
 import com.examhacker.authentication.component.AuthenticationComponent
 import com.examhacker.authentication.component.IAuthenticationComponent
 import com.examhacker.common.utility.FilePicker
+import com.examhacker.common.utility.IFileResolver
 import com.examhacker.domain.model.AnswerVariant
 import com.examhacker.domain.model.Author
 import com.examhacker.domain.model.Question
@@ -87,6 +88,7 @@ class RootComponent(
     private val permissionHandler: IPermissionHandler,
     private val settingStorage: ISettingStorage,
     private val filePicker: FilePicker,
+    private val fileResolver: IFileResolver,
     private val startOverlayService: () -> Unit,
     private val showToast: (String) -> Unit
 ) : ComponentContext by componentContext, IRootComponent {
@@ -170,6 +172,10 @@ class RootComponent(
                     QuizCreateComponent(
                         componentContext,
                         filePicker = filePicker,
+                        fileResolver = fileResolver,
+                        quizRepository = quizRepository,
+                        showErrorToast = showToast,
+                        saveQuiz = ::saveQuiz,
                         toQuizHub = ::fromDeepQuizListToQuizHub,
                         toProfile = ::fromDeepQuizListToProfile,
                         toSettings = ::fromDeepQuizListToSettings,
@@ -343,6 +349,17 @@ class RootComponent(
 
         _model.update {
             it.copy(quizzes = updatedQuizzes)
+        }
+    }
+
+    private fun saveQuiz(quiz: Quiz) {
+        model.value.quizzes?.let { quizzes ->
+            val newQuizzes = quizzes.toMutableList()
+            newQuizzes.add(quiz)
+
+            _model.update {
+                it.copy(quizzes = newQuizzes)
+            }
         }
     }
 

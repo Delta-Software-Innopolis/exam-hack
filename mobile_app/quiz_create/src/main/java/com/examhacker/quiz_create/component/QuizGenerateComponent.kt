@@ -1,5 +1,6 @@
 package com.examhacker.quiz_create.component
 
+import android.net.Uri
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
@@ -37,6 +38,7 @@ internal class QuizGenerateComponent(
     isForthEnabled: Boolean,
     private val saveQuestions: (List<Question>) -> Unit,
     private val saveForthEnabled: (Boolean) -> Unit,
+    private val generateQuestions: (List<Uri>) -> Unit,
     private val toReview: () -> Unit,
     private val toQuizHub: () -> Unit,
     private val toProfile: () -> Unit,
@@ -94,8 +96,7 @@ internal class QuizGenerateComponent(
             }
 
             withContext(Dispatchers.Main) {
-                saveQuestions(emptyList())
-                toReview()
+                generateQuestions(model.value.files.map { it.uri })
             }
         }
     }

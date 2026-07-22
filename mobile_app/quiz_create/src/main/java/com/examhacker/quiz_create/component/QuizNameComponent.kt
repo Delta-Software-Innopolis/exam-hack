@@ -27,8 +27,7 @@ internal interface IQuizNameComponent {
 
 internal class QuizNameComponent(
     componentContext: ComponentContext,
-    private val updateName: (String) -> Unit,
-    private val updateDescription: (String) -> Unit,
+    private val updateInfo: (String, String) -> Unit,
     private val goToGenerate: () -> Unit,
     private val toQuizHub: () -> Unit,
     private val toProfile: () -> Unit,
@@ -55,8 +54,7 @@ internal class QuizNameComponent(
     override fun onNextClick() {
         Log.d("QuizName", "Next click registered")
         if (model.value.nextEnabled) {
-            updateName(model.value.name)
-            updateDescription(model.value.description)
+            updateInfo(model.value.name, model.value.description)
 
             _model.update {
                 it.copy(forthEnabled = true)

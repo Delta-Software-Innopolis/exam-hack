@@ -43,7 +43,10 @@ internal interface IQuizReviewComponent {
 internal class QuizReviewComponent(
     componentContext: ComponentContext,
     private val questions: List<Question>,
-    private val saveQuiz: (List<Question>) -> Unit,
+    private val onEditQuestion: (Int, Question) -> Unit,
+    private val onAddQuestion: (QuestionCreate) -> Unit,
+    private val onDeleteQuestion: (Int) -> Unit,
+    private val saveQuiz: () -> Unit,
     private val toQuizHub: () -> Unit,
     private val toProfile: () -> Unit,
     private val toSettings: () -> Unit,
@@ -108,7 +111,7 @@ internal class QuizReviewComponent(
     }
 
     override fun onSaveQuizClick() {
-        saveQuiz(model.value.questions)
+        saveQuiz()
     }
 
     override fun goToQuizHub() {
@@ -128,6 +131,8 @@ internal class QuizReviewComponent(
     }
 
     private fun saveChangedQuestion(index: Int, question: Question) {
+        onEditQuestion(index, question)
+
         val newQuestions = model.value.questions.toMutableList()
         newQuestions.removeAt(index)
         newQuestions.add(index, question)
@@ -138,6 +143,8 @@ internal class QuizReviewComponent(
     }
 
     private fun deleteQuestion(index: Int) {
+        onDeleteQuestion(index)
+
         val newQuestions = model.value.questions.toMutableList()
         newQuestions.removeAt(index)
 
@@ -146,7 +153,23 @@ internal class QuizReviewComponent(
         }
     }
 
-    private fun addQuestion(question: QuestionCreate) {}
+    private fun addQuestion(question: QuestionCreate) {
+        onAddQuestion(question)
+
+        val newQuestions = model.value.questions.toMutableList()
+        newQuestions.add(
+                Question(
+                    id = 0,
+                    description = question.description,
+                    hint = question.hint,
+                    variants = question.variants
+                )
+        )
+
+        _model.update {
+            it.copy(questions = newQuestions)
+        }
+    }
 
     @Serializable
     sealed class Config {

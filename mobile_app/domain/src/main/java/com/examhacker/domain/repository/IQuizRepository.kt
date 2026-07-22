@@ -2,12 +2,14 @@ package com.examhacker.domain.repository
 
 import com.examhacker.domain.model.Question
 import com.examhacker.domain.model.QuestionCreate
+import com.examhacker.domain.model.QuestionGenerated
 import com.examhacker.domain.model.QuestionUpdate
 import com.examhacker.domain.model.Quiz
 import com.examhacker.domain.model.QuizInfo
+import java.io.File
 
 interface IQuizRepository {
-    suspend fun createPack(name: String): Result<QuizInfo>
+    suspend fun createPack(name: String, description: String?): Result<QuizInfo>
     suspend fun updatePack(packId: Int, newName: String): Result<QuizInfo>
     suspend fun deletePack(packId: Int): Result<Unit>
     suspend fun getAllPacks(): Result<List<Quiz>>
@@ -15,4 +17,9 @@ interface IQuizRepository {
     suspend fun updateCards(questions: List<QuestionUpdate>): Result<List<Question>>
     suspend fun deleteCards(cardIds: List<Int>): Result<Unit>
     suspend fun getCardsForPack(packId: Int): Result<List<Question>>
+    suspend fun generateCards(
+        name: String,
+        count: Int,
+        files: List<File>
+    ): Result<List<QuestionGenerated>>
 }

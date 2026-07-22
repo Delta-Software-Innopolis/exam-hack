@@ -53,6 +53,7 @@ dependencies {
     // Project
     implementation(project(":resources"))
     implementation(project(":domain"))
+    implementation(libs.androidx.documentfile)
 
     // Testing
     testImplementation(libs.junit)

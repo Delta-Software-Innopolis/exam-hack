@@ -15,6 +15,7 @@ import com.arkivanov.decompose.defaultComponentContext
 import com.arkivanov.decompose.extensions.compose.stack.Children
 import com.examhacker.authentication.ui.AuthenticationScreen
 import com.examhacker.common.utility.AndroidFilePicker
+import com.examhacker.common.utility.FileResolver
 import com.examhacker.data_network.client.Client
 import com.examhacker.data_network.client.TokenStoragePrefs
 import com.examhacker.data_network.repository.AuthenticationRepository
@@ -60,6 +61,7 @@ class MainActivity : ComponentActivity() {
             lifecycleOwner = this,
             contentResolver = contentResolver,
         )
+        val fileResolver = FileResolver()
 
         val root = RootComponent(
             componentContext = defaultComponentContext(),
@@ -69,6 +71,7 @@ class MainActivity : ComponentActivity() {
             permissionHandler = permissionHandler,
             settingStorage = settingStorage,
             filePicker = filePicker,
+            fileResolver = fileResolver,
             startOverlayService = ::startOverlayService,
             showToast = ::showToast
         )

@@ -13,7 +13,8 @@ data class Pack(
 
 @Serializable
 data class PackCreateRequest(
-    val name: String
+    val name: String,
+    val description: String?
 )
 
 @Serializable
@@ -92,4 +93,19 @@ data class CardCreate(
 @Serializable
 data class CardsResponse(
     val cards: List<Card>
+)
+
+@Serializable
+data class CardsGenerateResponse(
+    val cards: List<GeneratedCard>
+)
+
+@Serializable
+data class GeneratedCard(
+    val question: String,
+    val hint: String? = null,
+    val options: List<String>,
+    val correct_indices: List<Int>? = null,
+    val correct_answer: String? = null,
+    val type: String? = null
 )

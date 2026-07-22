@@ -163,14 +163,7 @@ private fun SettingsUI(
             SettingItemCard(Modifier.fillMaxWidth()) {
                 PhoneUnlockFeatureSetting(
                     isPhoneUnlockFeatureOn = model.isPhoneUnlockFeatureOn,
-                    onPhoneUnlockFeatureToggle = {
-                        scope.launch {
-                            snackBarHostState.showSnackbar(
-                                message = "",
-                                duration = SnackbarDuration.Short
-                            )
-                        }
-                    },
+                    onPhoneUnlockFeatureToggle = onPhoneUnlockFeatureToggle,
                     modifier = Modifier.fillMaxWidth()
                 )
             }
