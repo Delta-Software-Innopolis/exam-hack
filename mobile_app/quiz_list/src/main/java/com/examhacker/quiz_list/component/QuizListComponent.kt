@@ -8,6 +8,7 @@ import com.examhacker.domain.model.Quiz
 import com.examhacker.domain.repository.IQuizRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 interface IQuizListComponent {
@@ -30,6 +31,7 @@ interface IQuizListComponent {
 
 class QuizListComponent(
     componentContext: ComponentContext,
+    private val quizStateFlow: Flow<List<Quiz>?>,
     private val quizRepository: IQuizRepository,
     private val saveQuizzes: (List<Quiz>) -> Unit,
     private val toQuizInfo: (Int) -> Unit,
@@ -45,6 +47,16 @@ class QuizListComponent(
 
     init {
         loadQuizzes()
+
+        CoroutineScope(Dispatchers.IO).launch {
+            quizStateFlow.collect { quizzes ->
+                quizzes?.let {
+                    _model.update {
+                        it.copy(quizzes = quizzes)
+                    }
+                }
+            }
+        }
     }
 
     override fun onAddQuiz() {

@@ -13,6 +13,7 @@ import com.examhacker.domain.model.QuizInfo
 import com.examhacker.domain.repository.IQuizRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlin.time.Clock.System.now
 import kotlin.time.ExperimentalTime
@@ -41,6 +42,7 @@ interface ISettingsComponent {
 
 class SettingsComponent(
     componentContext: ComponentContext,
+    private val quizStateFlow: Flow<List<Quiz>?>,
     private val settingsStorage: ISettingStorage,
     private val quizRepository: IQuizRepository,
     private val goToQuizList: () -> Unit,
@@ -59,6 +61,17 @@ class SettingsComponent(
 
         if (isUnlockFeatureOn) {
             loadQuizzes()
+        }
+
+
+        CoroutineScope(Dispatchers.IO).launch {
+            quizStateFlow.collect { quizzes ->
+                quizzes?.let {
+                    _model.update {
+                        it.copy(quizzes = quizzes)
+                    }
+                }
+            }
         }
     }
 

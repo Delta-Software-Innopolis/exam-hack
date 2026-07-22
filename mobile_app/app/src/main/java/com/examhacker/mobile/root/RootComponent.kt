@@ -7,6 +7,7 @@ import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.arkivanov.decompose.router.stack.items
 import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.popToFirst
@@ -51,6 +52,11 @@ import com.examhacker.quiz_solve.component.QuizSolveComponent
 import com.examhacker.settings.component.SettingsComponent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.Contextual
@@ -60,7 +66,7 @@ import kotlin.time.ExperimentalTime
 interface IRootComponent {
 
     val stack: Value<ChildStack<*, Child>>
-    val model: Value<Model>
+    val model: StateFlow<Model>
 
     data class Model(
         val quizzes: List<Quiz>? = null
@@ -93,7 +99,7 @@ class RootComponent(
     private val showToast: (String) -> Unit
 ) : ComponentContext by componentContext, IRootComponent {
 
-    private val _model = MutableValue(IRootComponent.Model())
+    private val _model = MutableStateFlow(IRootComponent.Model())
     override val model = _model
 
     private val navigation = StackNavigation<Config>()
@@ -135,6 +141,7 @@ class RootComponent(
                     QuizListComponent(
                         componentContext,
                         quizRepository = quizRepository,
+                        quizStateFlow = model.map { it.quizzes },
                         saveQuizzes = ::saveQuizzes,
                         toQuizCreate = ::navigateToQuizCreate,
                         toQuizInfo = { quizId ->
@@ -237,6 +244,7 @@ class RootComponent(
                 IRootComponent.Child.Settings(
                     SettingsComponent(
                         componentContext = componentContext,
+                        quizStateFlow = model.map { it.quizzes },
                         settingsStorage = settingStorage,
                         quizRepository = quizRepository,
                         goToQuizList = ::navigateToQuizList,

@@ -202,7 +202,7 @@ class QuizCreateComponent(
                 .onFailure { exception ->
                     exception.message?.let {
                         Log.d("CreateDebugEmptyQuiz", "Exception: $it")
-                        showErrorToast(it)
+                        withContext(Dispatchers.Main) { showErrorToast(it) }
                     }
                 }
             }
@@ -242,7 +242,7 @@ class QuizCreateComponent(
                 .onFailure { exception ->
                     exception.message?.let {
                         Log.d("CreateDebug", "Exception: $it")
-                        showErrorToast(it)
+                        withContext(Dispatchers.Main) { showErrorToast(it) }
                     }
                 }
             }
