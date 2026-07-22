@@ -1,13 +1,19 @@
 package com.examhacker.quiz_create.component
 
+import android.util.Log
+import androidx.navigationevent.compose.rememberNavigationEventDispatcherOwner
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
+import com.arkivanov.decompose.router.stack.active
+import com.arkivanov.decompose.router.stack.backStack
+import com.arkivanov.decompose.router.stack.bringToFront
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.items
 import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.popToFirst
 import com.arkivanov.decompose.router.stack.pushNew
+import com.arkivanov.decompose.router.stack.pushToFront
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
@@ -23,7 +29,8 @@ interface IQuizCreateComponent {
     val model: Value<Model>
 
     data class Model(
-        val quiz: Quiz? = null
+        val quiz: Quiz? = null,
+        val forthEnabledGenerate: Boolean = false
     )
 
     sealed class Child {
@@ -39,7 +46,7 @@ class QuizCreateComponent(
     private val toQuizHub: () -> Unit,
     private val toProfile: () -> Unit,
     private val toSettings: () -> Unit,
-    private val back: () -> Unit
+    private val goBack: () -> Unit
 ) : IQuizCreateComponent, ComponentContext by componentContext {
 
     private val _model = MutableValue(IQuizCreateComponent.Model())
@@ -66,7 +73,8 @@ class QuizCreateComponent(
                         goToGenerate = ::navigateToGenerate,
                         toQuizHub = ::navigateToQuizHub,
                         toProfile = ::navigateToProfile,
-                        toSettings = ::navigateToSettings
+                        toSettings = ::navigateToSettings,
+                        goBack = ::back
                     )
                 )
 
@@ -75,12 +83,14 @@ class QuizCreateComponent(
                     QuizGenerateComponent(
                         componentContext = componentContext,
                         filePicker = filePicker,
+                        isForthEnabled = model.value.forthEnabledGenerate,
                         saveQuestions = ::updateQuestions,
+                        saveForthEnabled = ::updateForthEnabledGenerate,
                         toReview = ::navigateToReview,
                         toQuizHub = ::navigateToQuizHub,
                         toProfile = ::navigateToProfile,
                         toSettings = ::navigateToSettings,
-                        back = ::goBack
+                        goBack = ::back
                     )
                 )
 
@@ -93,7 +103,7 @@ class QuizCreateComponent(
                         toQuizHub = ::navigateToQuizHub,
                         toProfile = ::navigateToProfile,
                         toSettings = ::navigateToSettings,
-                        back = ::goBack
+                        goBack = ::back
                     )
                 )
         }
@@ -116,7 +126,9 @@ class QuizCreateComponent(
     }
 
     private fun navigateToGenerate() {
-        navigation.pushNew(Config.Generate)
+        navigation.pushNew(
+            Config.Generate(model.value.forthEnabledGenerate)
+        )
     }
 
     private fun navigateToReview() {
@@ -138,11 +150,12 @@ class QuizCreateComponent(
         toSettings()
     }
 
-    private fun goBack() {
+    private fun back() {
+        Log.d("CreateDebug", "Create stack: ${stack.items}")
         if (stack.items.size > 1) {
             navigation.pop()
         } else {
-            back()
+            goBack()
         }
     }
 
@@ -157,6 +170,12 @@ class QuizCreateComponent(
     private fun saveQuiz(questions: List<Question>) {
         updateQuestions(questions)
         back()
+    }
+
+    private fun updateForthEnabledGenerate(enabled: Boolean) {
+        _model.update {
+            it.copy(forthEnabledGenerate = enabled)
+        }
     }
 
     private fun createMockQuestions(): List<Question> =
@@ -201,7 +220,7 @@ class QuizCreateComponent(
         @Serializable
         data object Name: Config()
         @Serializable
-        data object Generate: Config()
+        data class Generate(val forthEnabled: Boolean): Config()
         @Serializable
         data object Review: Config()
     }

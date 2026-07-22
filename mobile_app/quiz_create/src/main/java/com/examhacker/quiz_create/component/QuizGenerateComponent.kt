@@ -17,7 +17,8 @@ internal interface IQuizGenerateComponent {
     val model: Value<Model>
     data class Model(
         val files: List<PickedFile> = emptyList(),
-        val isGenerationInProgress: Boolean = false
+        val isGenerationInProgress: Boolean = false,
+        val forthEnabled: Boolean = false
     )
 
     fun onAddFileClick()
@@ -27,18 +28,20 @@ internal interface IQuizGenerateComponent {
     fun goToQuizHub()
     fun goToProfile()
     fun goToSettings()
-    fun goBack()
+    fun back()
 }
 
 internal class QuizGenerateComponent(
     componentContext: ComponentContext,
     private val filePicker: FilePicker,
+    isForthEnabled: Boolean,
     private val saveQuestions: (List<Question>) -> Unit,
+    private val saveForthEnabled: (Boolean) -> Unit,
     private val toReview: () -> Unit,
     private val toQuizHub: () -> Unit,
     private val toProfile: () -> Unit,
     private val toSettings: () -> Unit,
-    private val back: () -> Unit
+    private val goBack: () -> Unit
 ) : IQuizGenerateComponent, ComponentContext by componentContext {
 
     private val _model = MutableValue(IQuizGenerateComponent.Model())
@@ -58,6 +61,12 @@ internal class QuizGenerateComponent(
         }
     }
 
+    init {
+        _model.update{
+            it.copy(forthEnabled = isForthEnabled)
+        }
+    }
+
     override fun onRemoveFileClick(file: PickedFile) {
         _model.update {
             it.copy(files = it.files - file)
@@ -65,6 +74,10 @@ internal class QuizGenerateComponent(
     }
 
     override fun onSkipClick() {
+        _model.update {
+            it.copy(forthEnabled = true)
+        }
+        saveForthEnabled(true)
         toReview()
     }
 
@@ -99,7 +112,7 @@ internal class QuizGenerateComponent(
         toSettings()
     }
 
-    override fun goBack() {
-        back()
+    override fun back() {
+        goBack()
     }
 }

@@ -1,5 +1,6 @@
 package com.examhacker.quiz_create.ui
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -56,7 +57,8 @@ internal fun QuizNameScreen(
         onNextClick = component::onNextClick,
         onQuizHubClick = component::goToQuizHub,
         onProfileClick = component::goToProfile,
-        onSettingsClick = component::goToSettings
+        onSettingsClick = component::goToSettings,
+        onBackClick = component::back
     )
 }
 
@@ -68,15 +70,16 @@ private fun QuizNameUI(
     onNextClick: () -> Unit,
     onQuizHubClick: () -> Unit,
     onProfileClick: () -> Unit,
-    onSettingsClick: () -> Unit
+    onSettingsClick: () -> Unit,
+    onBackClick: () -> Unit
 ) {
     Scaffold(
         topBar = {
             QuizCreationTopBar(
                 creationStage = CreationStage.NAME,
-                onBackClick = {},
-                onForthClick = {},
-                isForthEnabled = false,
+                onBackClick = onBackClick,
+                onForthClick = onNextClick,
+                isForthEnabled = model.forthEnabled,
                 modifier = Modifier
                     .fillMaxWidth()
                     .statusBarsPadding()
@@ -123,6 +126,8 @@ private fun QuizNameUI(
             )
         }
     }
+
+    BackHandler { onBackClick() }
 }
 
 @Composable
@@ -258,6 +263,7 @@ private fun QuizNameScreenPreview() {
         onNextClick = {},
         onQuizHubClick = {},
         onProfileClick = {},
-        onSettingsClick = {}
+        onSettingsClick = {},
+        onBackClick = {}
     )
 }

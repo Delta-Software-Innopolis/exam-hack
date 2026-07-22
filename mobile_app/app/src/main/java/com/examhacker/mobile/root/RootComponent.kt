@@ -7,6 +7,7 @@ import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.router.stack.items
 import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.popToFirst
 import com.arkivanov.decompose.router.stack.popWhile
@@ -172,7 +173,10 @@ class RootComponent(
                         toQuizHub = ::fromDeepQuizListToQuizHub,
                         toProfile = ::fromDeepQuizListToProfile,
                         toSettings = ::fromDeepQuizListToSettings,
-                        back = ::back
+                        goBack = {
+                            Log.d("CreateDebugRoot", "Root stack: ${stack.items}")
+                            back()
+                        }
                     )
                 )
 

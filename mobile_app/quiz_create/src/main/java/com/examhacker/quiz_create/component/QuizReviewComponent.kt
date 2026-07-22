@@ -37,7 +37,7 @@ internal interface IQuizReviewComponent {
     fun goToQuizHub()
     fun goToProfile()
     fun goToSettings()
-    fun goBack()
+    fun back()
 }
 
 internal class QuizReviewComponent(
@@ -47,7 +47,7 @@ internal class QuizReviewComponent(
     private val toQuizHub: () -> Unit,
     private val toProfile: () -> Unit,
     private val toSettings: () -> Unit,
-    private val back: () -> Unit,
+    private val goBack: () -> Unit,
 ) : IQuizReviewComponent, ComponentContext by componentContext {
     
     private val _model = MutableValue(IQuizReviewComponent.Model())
@@ -123,8 +123,8 @@ internal class QuizReviewComponent(
         toSettings()
     }
 
-    override fun goBack() {
-        back()
+    override fun back() {
+        goBack()
     }
 
     private fun saveChangedQuestion(index: Int, question: Question) {

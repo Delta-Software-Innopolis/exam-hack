@@ -12,16 +12,17 @@ internal interface IQuizNameComponent {
     data class Model(
         val name: String = "",
         val description: String = "",
-        val nextEnabled: Boolean = false
+        val nextEnabled: Boolean = false,
+        val forthEnabled: Boolean = false
     )
 
     fun onNameChange(name: String)
     fun onDescriptionChange(description: String)
-    fun isNextEnabled(): Boolean
     fun onNextClick()
     fun goToQuizHub()
     fun goToProfile()
     fun goToSettings()
+    fun back()
 }
 
 internal class QuizNameComponent(
@@ -31,7 +32,8 @@ internal class QuizNameComponent(
     private val goToGenerate: () -> Unit,
     private val toQuizHub: () -> Unit,
     private val toProfile: () -> Unit,
-    private val toSettings: () -> Unit
+    private val toSettings: () -> Unit,
+    private val goBack: () -> Unit
 ) : IQuizNameComponent, ComponentContext by componentContext {
 
     private val _model = MutableValue(IQuizNameComponent.Model())
@@ -50,21 +52,15 @@ internal class QuizNameComponent(
         _model.update { it.copy(description = description) }
     }
 
-    override fun isNextEnabled(): Boolean {
-        Log.d("QuizName", "isNextEnabled launched")
-        val enabled = model.value.name.isNotEmpty()
-            && model.value.name.isNotBlank()
-        Log.d("QuizName", "Enabled: $enabled")
-
-        return enabled
-    }
-
     override fun onNextClick() {
         Log.d("QuizName", "Next click registered")
         if (model.value.nextEnabled) {
             updateName(model.value.name)
             updateDescription(model.value.description)
 
+            _model.update {
+                it.copy(forthEnabled = true)
+            }
             goToGenerate()
         }
     }
@@ -79,5 +75,9 @@ internal class QuizNameComponent(
 
     override fun goToSettings() {
         toSettings()
+    }
+
+    override fun back() {
+        goBack()
     }
 }

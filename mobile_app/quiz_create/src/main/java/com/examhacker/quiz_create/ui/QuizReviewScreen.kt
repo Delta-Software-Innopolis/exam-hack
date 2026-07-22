@@ -58,7 +58,7 @@ internal fun QuizReviewScreen(component: IQuizReviewComponent) {
         onQuizHubClick = component::goToQuizHub,
         onProfileClick = component::goToProfile,
         onSettingsClick = component::goToSettings,
-        goBack = component::goBack
+        goBack = component::back
     )
 }
 
@@ -78,7 +78,7 @@ private fun QuizReviewUI(
         topBar = {
             QuizCreationTopBar(
                 creationStage = CreationStage.REVIEW,
-                onBackClick = {},
+                onBackClick = goBack,
                 onForthClick = {},
                 isForthEnabled = false,
                 modifier = Modifier
