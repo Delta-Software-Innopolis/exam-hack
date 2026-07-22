@@ -3,6 +3,7 @@ package com.examhacker.data_network.dto
 import com.examhacker.domain.model.AnswerVariant
 import com.examhacker.domain.model.Author
 import com.examhacker.domain.model.Question
+import com.examhacker.domain.model.QuestionCreate
 import com.examhacker.domain.model.QuestionUpdate
 import com.examhacker.domain.model.Quiz
 import com.examhacker.domain.model.QuizInfo
@@ -43,6 +44,7 @@ internal fun Card.toDomain(): Question =
     Question(
         id = this.id,
         description = this.question,
+        hint = this.hint ?: "Hint text",
         variants = List(this.options.size) { index ->
             AnswerVariant(
                 description = this.options[index],
@@ -55,7 +57,7 @@ internal fun Question.toNetwork(): Card =
     Card(
         id = this.id,
         question = this.description,
-        hint = null,
+        hint = this.hint,
         options = this.variants.map { it.description },
         correct = this.variants
             .mapIndexed { index, variant ->
@@ -71,4 +73,16 @@ internal fun QuestionUpdate.toNetwork(): CardUpdate =
         hint = this.hint,
         options = this.options,
         correct = this.correct
+    )
+
+internal fun QuestionCreate.toNetwork(): CardCreate =
+    CardCreate(
+        question = this.description,
+        hint = this.hint,
+        options = this.variants.map { it.description },
+        correct = this.variants
+            .mapIndexed { index, variant ->
+                if (variant.isCorrect) index else null
+            }
+            .filterNotNull()
     )

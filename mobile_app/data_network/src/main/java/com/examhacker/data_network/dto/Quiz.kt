@@ -54,12 +54,22 @@ data class Card(
 
 @Serializable
 data class CardsCreateRequest(
-    val cards: List<Card>
+    val cards: List<CardCreate>
 )
 
 @Serializable
 data class CardsUpdateRequest(
     val cards: List<CardUpdate>
+)
+
+@Serializable
+data class CardsDeleteRequest(
+    val cards: List<Int>
+)
+
+@Serializable
+data class CardsUpdateResponse(
+    val cards: List<Card>
 )
 
 @Serializable
@@ -69,6 +79,14 @@ data class CardUpdate(
     val hint: String? = null,
     val options: List<String>? = null,
     val correct: List<Int>? = null
+)
+
+@Serializable
+data class CardCreate(
+    val question: String,
+    val hint: String,
+    val options: List<String>,
+    val correct: List<Int>
 )
 
 @Serializable

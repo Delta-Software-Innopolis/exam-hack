@@ -170,6 +170,7 @@ class SettingsComponent(
                     Question(
                         id = 1,
                         description = "How much?",
+                        hint = "Hint text",
                         variants = listOf(
                             AnswerVariant("One", false),
                             AnswerVariant("Two", true)
@@ -177,6 +178,7 @@ class SettingsComponent(
                     ),
                     Question(
                         id = 2,
+                        hint = "Hint text",
                         description = "How are you",
                         variants = listOf(AnswerVariant("good", true))
                     )
@@ -198,6 +200,7 @@ class SettingsComponent(
                     Question(
                         id = 3,
                         description = "Hate me?",
+                        hint = "Hint text",
                         variants = listOf(AnswerVariant("No", true))
                     )
                 )

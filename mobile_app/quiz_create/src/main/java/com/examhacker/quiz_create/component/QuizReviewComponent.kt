@@ -14,6 +14,7 @@ import com.examhacker.common.utility.dialogs.EditQuestionDialogComponent
 import com.examhacker.common.utility.dialogs.IAddQuestionDialogComponent
 import com.examhacker.common.utility.dialogs.IEditQuestionDialogComponent
 import com.examhacker.domain.model.Question
+import com.examhacker.domain.model.QuestionCreate
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 
@@ -145,14 +146,7 @@ internal class QuizReviewComponent(
         }
     }
 
-    private fun addQuestion(question: Question) {
-        val newQuestions = model.value.questions.toMutableList()
-        newQuestions.add(question)
-
-        _model.update {
-            it.copy(questions = newQuestions)
-        }
-    }
+    private fun addQuestion(question: QuestionCreate) {}
 
     @Serializable
     sealed class Config {

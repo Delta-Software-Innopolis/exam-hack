@@ -1,11 +1,14 @@
 package com.examhacker.mobile.root
 
+import android.util.Log
+import android.widget.Toast
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.pop
+import com.arkivanov.decompose.router.stack.popToFirst
 import com.arkivanov.decompose.router.stack.popWhile
 import com.arkivanov.decompose.router.stack.pushNew
 import com.arkivanov.decompose.router.stack.replaceCurrent
@@ -44,6 +47,10 @@ import com.examhacker.settings.component.ISettingsComponent
 import com.examhacker.quiz_list.component.QuizListComponent
 import com.examhacker.quiz_solve.component.QuizSolveComponent
 import com.examhacker.settings.component.SettingsComponent
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.Contextual
 import kotlin.time.Clock.System.now
 import kotlin.time.ExperimentalTime
@@ -79,7 +86,8 @@ class RootComponent(
     private val permissionHandler: IPermissionHandler,
     private val settingStorage: ISettingStorage,
     private val filePicker: FilePicker,
-    private val startOverlayService: () -> Unit
+    private val startOverlayService: () -> Unit,
+    private val showToast: (String) -> Unit
 ) : ComponentContext by componentContext, IRootComponent {
 
     private val _model = MutableValue(IRootComponent.Model())
@@ -129,11 +137,7 @@ class RootComponent(
                         toQuizInfo = { quizId ->
                             val quiz = model.value.quizzes?.findLast { it.info.id == quizId }
 
-                            quiz?.let {
-                                navigateToQuizInfo(
-                                    quiz = it
-                                )
-                            }
+                            quiz?.let { navigateToQuizInfo(quiz = it) }
                         },
                         toQuizHub = ::navigateToQuizHub,
                         toProfile = ::navigateToProfile,
@@ -147,7 +151,12 @@ class RootComponent(
                     QuizEditComponent(
                         componentContext = componentContext,
                         questions = config.quiz.questions,
-                        saveQuiz = { },
+                        quizId = config.quiz.info.id,
+                        quizRepository = quizRepository,
+                        showErrorToast = showToast,
+                        saveQuiz = { questions ->
+                            saveChangedQuiz(config.quiz.info.id, questions)
+                        },
                         toQuizHub = ::fromDeepQuizListToQuizHub,
                         toProfile = ::fromDeepQuizListToProfile,
                         toSettings = ::fromDeepQuizListToSettings,
@@ -174,7 +183,7 @@ class RootComponent(
                         quiz = config.quiz,
                         toSolve = { navigateToQuizSolve(config.quiz) },
                         toEdit = { navigateToQuizEdit(config.quiz) },
-                        deleteQuiz = { back() },
+                        deleteQuiz = { deleteQuiz(config.quiz.info.id) },
                         toQuizHub = ::fromDeepQuizListToQuizHub,
                         toProfile = ::fromDeepQuizListToProfile,
                         toSettings = ::fromDeepQuizListToSettings,
@@ -205,9 +214,12 @@ class RootComponent(
                 IRootComponent.Child.Profile(
                     ProfileComponent(
                         componentContext = componentContext,
+                        authRepository = authRepository,
+                        showErrorToast = showToast,
                         toQuizHub = ::navigateToQuizHub,
                         toQuizList = ::navigateToQuizList,
-                        toSettings = ::navigateToSettings
+                        toSettings = ::navigateToSettings,
+                        toAuthentication = ::backToAuthentication,
                     )
                 )
 
@@ -261,6 +273,7 @@ class RootComponent(
     }
 
     private fun navigateToQuizInfo(quiz: Quiz) {
+        Log.d("DeleteDebug", "Quiz ID: ${quiz.info.id}")
         navigation.pushNew(Config.QuizInfo(quiz))
     }
 
@@ -278,6 +291,11 @@ class RootComponent(
         navigation.popWhile { it !is Config.QuizList }
         navigateToSettings()
     }
+    
+    private fun backToAuthentication() {
+        navigation.popToFirst()
+        navigation.replaceCurrent(Config.Authentication)
+    }
 
     private fun back() {
         navigation.pop()
@@ -286,6 +304,41 @@ class RootComponent(
     private fun saveQuizzes(quizzes: List<Quiz>) {
         _model.update {
             it.copy(quizzes = quizzes)
+        }
+    }
+
+    private fun deleteQuiz(quizId: Int) {
+        CoroutineScope(Dispatchers.IO).launch {
+            quizRepository.deletePack(quizId)
+                .onSuccess {
+                    val updatedQuizzes = model.value.quizzes?.toMutableList()
+                    updatedQuizzes?.removeIf { it.info.id == quizId }
+
+                    _model.update {
+                        it.copy(quizzes = updatedQuizzes)
+                    }
+
+                    withContext(Dispatchers.Main) { back() }
+                }
+                .onFailure { exception ->
+                    exception.message?.let {
+                        withContext(Dispatchers.Main) { showToast(it) }
+                    }
+                }
+        }
+    }
+
+    private fun saveChangedQuiz(quizId: Int, questions: List<Question>) {
+        val updatedQuizzes = model.value.quizzes?.toMutableList()
+        val index = updatedQuizzes?.indexOfFirst { it.info.id == quizId }
+        index?.let { index ->
+            val quizToUpdate = updatedQuizzes[index]
+            updatedQuizzes.removeIf { it.info.id == quizId }
+            updatedQuizzes.add(index, quizToUpdate.copy(questions = questions))
+        }
+
+        _model.update {
+            it.copy(quizzes = updatedQuizzes)
         }
     }
 
@@ -308,6 +361,7 @@ class RootComponent(
                     Question(
                         id = index,
                         description = "What is the name of your Practicum Project TA?",
+                        hint = "Hint text",
                         variants = listOf(
                             AnswerVariant("Andrei Markov", true),
                             AnswerVariant("other", false)

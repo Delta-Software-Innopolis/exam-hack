@@ -164,6 +164,7 @@ class QuizCreateComponent(
             Question(
                 id = 0,
                 description = "Why do dogs think their tails are so clingy, they always want to grab it?",
+                hint = "Hint text",
                 variants = listOf(
                     AnswerVariant("Option 1", false),
                     AnswerVariant("Option 2", true),
@@ -174,6 +175,7 @@ class QuizCreateComponent(
             Question(
                 id = 1,
                 description = "Why something is this thing?",
+                hint = "Hint text",
                 variants = listOf(
                     AnswerVariant("Option 1", false),
                     AnswerVariant("Option 2", true),
@@ -184,6 +186,7 @@ class QuizCreateComponent(
             Question(
                 id = 2,
                 description = "Why do dogs think their tails are so clingy, they always want to grab it?",
+                hint = "Hint text",
                 variants = listOf(
                     AnswerVariant("Option 1", false),
                     AnswerVariant("Option 2", true),

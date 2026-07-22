@@ -6,6 +6,7 @@ import kotlinx.serialization.Serializable
 data class Question(
     val id: Int,
     val description: String,
+    val hint: String? = null,
     val variants: List<AnswerVariant>
 )
 

@@ -5,7 +5,7 @@ import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
 import com.examhacker.domain.model.AnswerVariant
-import com.examhacker.domain.model.Question
+import com.examhacker.domain.model.QuestionCreate
 import kotlin.collections.plus
 
 interface IAddQuestionDialogComponent {
@@ -28,7 +28,7 @@ interface IAddQuestionDialogComponent {
 class AddQuestionDialogComponent(
     componentContext: ComponentContext,
     index: Int,
-    private val addQuestion: (Question) -> Unit,
+    private val addQuestion: (QuestionCreate) -> Unit,
     private val back: () -> Unit
 ) : IAddQuestionDialogComponent, ComponentContext by componentContext {
 
@@ -83,9 +83,9 @@ class AddQuestionDialogComponent(
 
     override fun onAddQuestion() {
         addQuestion(
-            Question(
-                id = 0, //TODO Remove
+            QuestionCreate(
                 description = model.value.questionDescription,
+                hint = "Hint text",
                 variants = model.value.variants
             )
         )

@@ -95,6 +95,7 @@ class UnlockOverlayController(
                 question = Question(
                     id = 0,
                     description = "Question description, may span several lines, we’ll discuss the font size and boldness later",
+                    hint = "",
                     variants = listOf(
                         AnswerVariant(
                             description = "Option 1, option description",

@@ -1,8 +1,11 @@
 package com.examhacker.data_network.repository
 
+import android.util.Log
 import com.examhacker.data_network.dto.CardsCreateRequest
+import com.examhacker.data_network.dto.CardsDeleteRequest
 import com.examhacker.data_network.dto.CardsResponse
 import com.examhacker.data_network.dto.CardsUpdateRequest
+import com.examhacker.data_network.dto.CardsUpdateResponse
 import com.examhacker.data_network.dto.Pack
 import com.examhacker.data_network.dto.PackCreateRequest
 import com.examhacker.data_network.dto.PackUpdateRequest
@@ -10,6 +13,7 @@ import com.examhacker.data_network.dto.PacksResponse
 import com.examhacker.data_network.dto.toDomain
 import com.examhacker.data_network.dto.toNetwork
 import com.examhacker.domain.model.Question
+import com.examhacker.domain.model.QuestionCreate
 import com.examhacker.domain.model.QuestionUpdate
 import com.examhacker.domain.model.Quiz
 import com.examhacker.domain.model.QuizInfo
@@ -23,6 +27,7 @@ import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
+import kotlinx.serialization.json.Json
 
 class QuizRepository(private val client: HttpClient) : IQuizRepository {
 
@@ -71,12 +76,16 @@ class QuizRepository(private val client: HttpClient) : IQuizRepository {
     }
 
     // Card operations
-    override suspend fun createCards(packId: Int, questions: List<Question>): Result<List<Question>> {
+    override suspend fun createCards(packId: Int, questions: List<QuestionCreate>): Result<List<Question>> {
         return try {
+            val cards = questions.map { it.toNetwork() }
+            val request = CardsCreateRequest(cards)
+
             val response = client.post("/core/cards/$packId") {
                 contentType(ContentType.Application.Json)
-                setBody(CardsCreateRequest(questions.map { it.toNetwork() }))
+                setBody(request)
             }
+
             val cardsResponse = response.body<CardsResponse>()
             Result.success(cardsResponse.cards.map { it.toDomain() })
         } catch (e: Exception) {
@@ -86,20 +95,30 @@ class QuizRepository(private val client: HttpClient) : IQuizRepository {
 
     override suspend fun updateCards(questions: List<QuestionUpdate>): Result<List<Question>> {
         return try {
+            val updates = questions.map { it.toNetwork() }
+            val request = CardsUpdateRequest(cards = updates)
+
             val response = client.patch("/core/cards") {
                 contentType(ContentType.Application.Json)
-                setBody(CardsUpdateRequest(questions.map { it.toNetwork() }))
+                setBody(Json.encodeToString(request))
             }
-            val cardsResponse = response.body<CardsResponse>()
-            Result.success(cardsResponse.cards.map { it.toDomain() })
+
+            val updateResponse = response.body<CardsUpdateResponse>()
+            Result.success(updateResponse.cards.map { it.toDomain() })
         } catch (e: Exception) {
             Result.failure(e)
         }
     }
 
-    override suspend fun deleteCard(cardId: Int): Result<Unit> {
+    override suspend fun deleteCards(cardIds: List<Int>): Result<Unit> {
         return try {
-            client.delete("/core/cards/$cardId")
+            val request = CardsDeleteRequest(cardIds)
+
+            client.delete("/core/cards") {
+                contentType(ContentType.Application.Json)
+                setBody(request)
+            }
+
             Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)

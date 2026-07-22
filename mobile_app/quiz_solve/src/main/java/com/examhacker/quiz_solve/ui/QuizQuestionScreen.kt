@@ -135,6 +135,7 @@ private fun createMockData(): IQuizQuestionComponent.Model {
     val question1 = Question(
         id = 1,
         description = "Question description, may span several lines, we’ll discuss the font size and boldness later",
+        hint = "Hint text",
         variants = listOf(
             AnswerVariant("Option 1, option description", false),
             AnswerVariant("Option 2, description, maybe a correct answer", false),
@@ -146,6 +147,7 @@ private fun createMockData(): IQuizQuestionComponent.Model {
     val question2 = Question(
         id = 2,
         description = "Why do dogs think their tails are so clingy, they always want to grab it?",
+        hint = "Hint text",
         variants = listOf(
             AnswerVariant("Option 1", false),
             AnswerVariant("Option 2", false),

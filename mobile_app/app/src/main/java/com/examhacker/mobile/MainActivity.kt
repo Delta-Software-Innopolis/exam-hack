@@ -3,6 +3,7 @@ package com.examhacker.mobile
 import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -68,7 +69,8 @@ class MainActivity : ComponentActivity() {
             permissionHandler = permissionHandler,
             settingStorage = settingStorage,
             filePicker = filePicker,
-            startOverlayService = ::startOverlayService
+            startOverlayService = ::startOverlayService,
+            showToast = ::showToast
         )
 
         setContent {
@@ -93,6 +95,14 @@ class MainActivity : ComponentActivity() {
     private fun stopOverlayService() {
         val intent = Intent(this, UnlockOverlayService::class.java)
         stopService(intent)
+    }
+
+    private fun showToast(text: String) {
+        Toast.makeText(
+            this,
+            text,
+            Toast.LENGTH_SHORT
+        ).show()
     }
 }
 
