@@ -45,7 +45,8 @@ async function fetchInfo() {
         }
 
         const data = await response.json()
-        suggestions.value = data
+        suggestions.value = [...new Set(data)]
+	
         isOpen.value = data.length > 0
     } catch (error) {
         console.error("Не удалось загрузить подсказки:", error)
