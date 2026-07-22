@@ -44,7 +44,7 @@ async function fetchInfo() {
             throw new Error(`Ошибка сети: ${response.status}`)
         }
 
-        const data = await response.json()
+        const data = await response.json() as string[]
         suggestions.value = [...new Set(data)]
 	
         isOpen.value = data.length > 0
