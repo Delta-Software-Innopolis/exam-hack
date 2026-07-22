@@ -2,6 +2,7 @@ package com.examhacker.profile.component
 
 import com.arkivanov.decompose.ComponentContext
 import com.examhacker.domain.repository.IAuthenticationRepository
+import com.examhacker.domain.repository.ITokenStorage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -17,6 +18,7 @@ interface IProfileComponent {
 class ProfileComponent(
     componentContext: ComponentContext,
     private val authRepository: IAuthenticationRepository,
+    private val tokenStorage: ITokenStorage,
     private val showErrorToast: (String) -> Unit,
     private val toQuizHub: () -> Unit,
     private val toQuizList: () -> Unit,
@@ -39,15 +41,19 @@ class ProfileComponent(
 
     override fun logout() {
         CoroutineScope(Dispatchers.IO).launch {
-            authRepository.logout()
-                .onSuccess {
-                    withContext(Dispatchers.Main) { toAuthentication() }
-                }
-                .onFailure { exception ->
-                    exception.message?.let {
-                        showErrorToast(it)
+            val refreshToken = tokenStorage.getRefreshToken()
+
+            refreshToken?.let { token ->
+                authRepository.logout(token)
+                    .onSuccess {
+                        withContext(Dispatchers.Main) { toAuthentication() }
                     }
-                }
+                    .onFailure { exception ->
+                        exception.message?.let {
+                            showErrorToast(it)
+                        }
+                    }
+            }
         }
     }
 }

@@ -232,6 +232,7 @@ class RootComponent(
                     ProfileComponent(
                         componentContext = componentContext,
                         authRepository = authRepository,
+                        tokenStorage = tokenStorage,
                         showErrorToast = showToast,
                         toQuizHub = ::navigateToQuizHub,
                         toQuizList = ::navigateToQuizList,
