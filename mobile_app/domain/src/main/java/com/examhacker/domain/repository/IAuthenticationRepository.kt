@@ -6,5 +6,5 @@ interface IAuthenticationRepository {
     suspend fun register(username: String, password: String): Result<AuthResponse>
     suspend fun login(username: String, password: String): Result<AuthResponse>
     suspend fun refreshToken(refreshToken: String): Result<AuthResponse>
-    suspend fun logout(): Result<Unit>
+    suspend fun logout(refreshToken: String): Result<Unit>
 }

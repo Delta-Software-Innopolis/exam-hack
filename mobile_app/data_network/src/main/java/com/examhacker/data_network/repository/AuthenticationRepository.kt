@@ -1,6 +1,8 @@
 package com.examhacker.data_network.repository
 
+import android.util.Log
 import com.examhacker.data_network.dto.AuthRequest
+import com.examhacker.data_network.dto.LogoutRequest
 import com.examhacker.data_network.dto.NetworkAuthResponse
 import com.examhacker.data_network.dto.RefreshRequest
 import com.examhacker.data_network.dto.toDomain
@@ -51,9 +53,15 @@ class AuthenticationRepository(private val client: HttpClient) : IAuthentication
         }
     }
 
-    override suspend fun logout(): Result<Unit> {
+    override suspend fun logout(refreshToken: String): Result<Unit> {
         return try {
-            client.post("/auth/logout")
+            val response = client.post("/auth/logout") {
+                contentType(ContentType.Application.Json)
+                setBody(LogoutRequest(refreshToken))
+            }
+
+            Log.d("LogoutDebug", "Response: $response")
+
             Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)

@@ -13,7 +13,8 @@ data class Pack(
 
 @Serializable
 data class PackCreateRequest(
-    val name: String
+    val name: String,
+    val description: String?
 )
 
 @Serializable
@@ -54,12 +55,22 @@ data class Card(
 
 @Serializable
 data class CardsCreateRequest(
-    val cards: List<Card>
+    val cards: List<CardCreate>
 )
 
 @Serializable
 data class CardsUpdateRequest(
     val cards: List<CardUpdate>
+)
+
+@Serializable
+data class CardsDeleteRequest(
+    val cards: List<Int>
+)
+
+@Serializable
+data class CardsUpdateResponse(
+    val cards: List<Card>
 )
 
 @Serializable
@@ -72,6 +83,29 @@ data class CardUpdate(
 )
 
 @Serializable
+data class CardCreate(
+    val question: String,
+    val hint: String,
+    val options: List<String>,
+    val correct: List<Int>
+)
+
+@Serializable
 data class CardsResponse(
     val cards: List<Card>
+)
+
+@Serializable
+data class CardsGenerateResponse(
+    val cards: List<GeneratedCard>
+)
+
+@Serializable
+data class GeneratedCard(
+    val question: String,
+    val hint: String? = null,
+    val options: List<String>,
+    val correct_indices: List<Int>? = null,
+    val correct_answer: String? = null,
+    val type: String? = null
 )

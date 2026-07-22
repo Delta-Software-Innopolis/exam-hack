@@ -68,7 +68,7 @@ internal fun QuizGenerateScreen(component: IQuizGenerateComponent) {
         onQuizHubClick = component::goToQuizHub,
         onProfileClick = component::goToProfile,
         onSettingsClick = component::goToSettings,
-        goBack = component::goBack
+        goBack = component::back
     )
 }
 
@@ -88,9 +88,9 @@ private fun QuizGenerateUI(
         topBar = {
             QuizCreationTopBar(
                 creationStage = CreationStage.AI_GENERATION,
-                onBackClick = {},
-                onForthClick = {},
-                isForthEnabled = false,
+                onBackClick = goBack,
+                onForthClick = onSkipClick,
+                isForthEnabled = model.forthEnabled,
                 modifier = Modifier
                     .fillMaxWidth()
                     .statusBarsPadding()

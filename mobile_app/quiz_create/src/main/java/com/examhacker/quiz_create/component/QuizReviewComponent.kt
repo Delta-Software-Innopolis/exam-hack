@@ -14,6 +14,7 @@ import com.examhacker.common.utility.dialogs.EditQuestionDialogComponent
 import com.examhacker.common.utility.dialogs.IAddQuestionDialogComponent
 import com.examhacker.common.utility.dialogs.IEditQuestionDialogComponent
 import com.examhacker.domain.model.Question
+import com.examhacker.domain.model.QuestionCreate
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 
@@ -36,17 +37,20 @@ internal interface IQuizReviewComponent {
     fun goToQuizHub()
     fun goToProfile()
     fun goToSettings()
-    fun goBack()
+    fun back()
 }
 
 internal class QuizReviewComponent(
     componentContext: ComponentContext,
     private val questions: List<Question>,
-    private val saveQuiz: (List<Question>) -> Unit,
+    private val onEditQuestion: (Int, Question) -> Unit,
+    private val onAddQuestion: (QuestionCreate) -> Unit,
+    private val onDeleteQuestion: (Int) -> Unit,
+    private val saveQuiz: () -> Unit,
     private val toQuizHub: () -> Unit,
     private val toProfile: () -> Unit,
     private val toSettings: () -> Unit,
-    private val back: () -> Unit,
+    private val goBack: () -> Unit,
 ) : IQuizReviewComponent, ComponentContext by componentContext {
     
     private val _model = MutableValue(IQuizReviewComponent.Model())
@@ -107,7 +111,7 @@ internal class QuizReviewComponent(
     }
 
     override fun onSaveQuizClick() {
-        saveQuiz(model.value.questions)
+        saveQuiz()
     }
 
     override fun goToQuizHub() {
@@ -122,11 +126,13 @@ internal class QuizReviewComponent(
         toSettings()
     }
 
-    override fun goBack() {
-        back()
+    override fun back() {
+        goBack()
     }
 
     private fun saveChangedQuestion(index: Int, question: Question) {
+        onEditQuestion(index, question)
+
         val newQuestions = model.value.questions.toMutableList()
         newQuestions.removeAt(index)
         newQuestions.add(index, question)
@@ -137,6 +143,8 @@ internal class QuizReviewComponent(
     }
 
     private fun deleteQuestion(index: Int) {
+        onDeleteQuestion(index)
+
         val newQuestions = model.value.questions.toMutableList()
         newQuestions.removeAt(index)
 
@@ -145,9 +153,18 @@ internal class QuizReviewComponent(
         }
     }
 
-    private fun addQuestion(question: Question) {
+    private fun addQuestion(question: QuestionCreate) {
+        onAddQuestion(question)
+
         val newQuestions = model.value.questions.toMutableList()
-        newQuestions.add(question)
+        newQuestions.add(
+                Question(
+                    id = 0,
+                    description = question.description,
+                    hint = question.hint,
+                    variants = question.variants
+                )
+        )
 
         _model.update {
             it.copy(questions = newQuestions)

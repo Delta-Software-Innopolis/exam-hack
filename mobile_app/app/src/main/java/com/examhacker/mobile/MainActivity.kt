@@ -3,6 +3,7 @@ package com.examhacker.mobile
 import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -14,6 +15,7 @@ import com.arkivanov.decompose.defaultComponentContext
 import com.arkivanov.decompose.extensions.compose.stack.Children
 import com.examhacker.authentication.ui.AuthenticationScreen
 import com.examhacker.common.utility.AndroidFilePicker
+import com.examhacker.common.utility.FileResolver
 import com.examhacker.data_network.client.Client
 import com.examhacker.data_network.client.TokenStoragePrefs
 import com.examhacker.data_network.repository.AuthenticationRepository
@@ -59,6 +61,7 @@ class MainActivity : ComponentActivity() {
             lifecycleOwner = this,
             contentResolver = contentResolver,
         )
+        val fileResolver = FileResolver()
 
         val root = RootComponent(
             componentContext = defaultComponentContext(),
@@ -68,7 +71,9 @@ class MainActivity : ComponentActivity() {
             permissionHandler = permissionHandler,
             settingStorage = settingStorage,
             filePicker = filePicker,
-            startOverlayService = ::startOverlayService
+            fileResolver = fileResolver,
+            startOverlayService = ::startOverlayService,
+            showToast = ::showToast
         )
 
         setContent {
@@ -93,6 +98,14 @@ class MainActivity : ComponentActivity() {
     private fun stopOverlayService() {
         val intent = Intent(this, UnlockOverlayService::class.java)
         stopService(intent)
+    }
+
+    private fun showToast(text: String) {
+        Toast.makeText(
+            this,
+            text,
+            Toast.LENGTH_SHORT
+        ).show()
     }
 }
 

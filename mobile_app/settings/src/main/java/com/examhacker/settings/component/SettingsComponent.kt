@@ -13,6 +13,7 @@ import com.examhacker.domain.model.QuizInfo
 import com.examhacker.domain.repository.IQuizRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlin.time.Clock.System.now
 import kotlin.time.ExperimentalTime
@@ -41,6 +42,7 @@ interface ISettingsComponent {
 
 class SettingsComponent(
     componentContext: ComponentContext,
+    private val quizStateFlow: Flow<List<Quiz>?>,
     private val settingsStorage: ISettingStorage,
     private val quizRepository: IQuizRepository,
     private val goToQuizList: () -> Unit,
@@ -59,6 +61,17 @@ class SettingsComponent(
 
         if (isUnlockFeatureOn) {
             loadQuizzes()
+        }
+
+
+        CoroutineScope(Dispatchers.IO).launch {
+            quizStateFlow.collect { quizzes ->
+                quizzes?.let {
+                    _model.update {
+                        it.copy(quizzes = quizzes)
+                    }
+                }
+            }
         }
     }
 
@@ -170,6 +183,7 @@ class SettingsComponent(
                     Question(
                         id = 1,
                         description = "How much?",
+                        hint = "Hint text",
                         variants = listOf(
                             AnswerVariant("One", false),
                             AnswerVariant("Two", true)
@@ -177,6 +191,7 @@ class SettingsComponent(
                     ),
                     Question(
                         id = 2,
+                        hint = "Hint text",
                         description = "How are you",
                         variants = listOf(AnswerVariant("good", true))
                     )
@@ -198,6 +213,7 @@ class SettingsComponent(
                     Question(
                         id = 3,
                         description = "Hate me?",
+                        hint = "Hint text",
                         variants = listOf(AnswerVariant("No", true))
                     )
                 )

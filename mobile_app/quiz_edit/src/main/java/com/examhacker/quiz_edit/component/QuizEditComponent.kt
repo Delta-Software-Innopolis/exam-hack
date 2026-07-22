@@ -1,5 +1,6 @@
 package com.examhacker.quiz_edit.component
 
+import android.util.Log
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.slot.ChildSlot
 import com.arkivanov.decompose.router.slot.SlotNavigation
@@ -14,6 +15,14 @@ import com.examhacker.common.utility.dialogs.EditQuestionDialogComponent
 import com.examhacker.common.utility.dialogs.IAddQuestionDialogComponent
 import com.examhacker.common.utility.dialogs.IEditQuestionDialogComponent
 import com.examhacker.domain.model.Question
+import com.examhacker.domain.model.QuestionCreate
+import com.examhacker.domain.model.QuestionUpdate
+import com.examhacker.domain.repository.IQuizRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 
@@ -41,6 +50,9 @@ interface IQuizEditComponent {
 class QuizEditComponent(
     componentContext: ComponentContext,
     private val questions: List<Question>,
+    private val quizId: Int,
+    private val quizRepository: IQuizRepository,
+    private val showErrorToast: (String) -> Unit,
     private val saveQuiz: (List<Question>) -> Unit,
     private val toQuizHub: () -> Unit,
     private val toProfile: () -> Unit,
@@ -71,7 +83,7 @@ class QuizEditComponent(
                         index = config.index,
                         question = config.question,
                         saveChanges = ::saveChangedQuestion,
-                        deleteQuestion = { deleteQuestion(config.index) },
+                        deleteQuestion = { deleteQuestion(config.question.id) },
                         back = { navigation.dismiss() },
                     )
                 )
@@ -127,26 +139,70 @@ class QuizEditComponent(
         newQuestions.removeAt(index)
         newQuestions.add(index, question)
 
-        _model.update {
-            it.copy(questions = newQuestions)
+        CoroutineScope(Dispatchers.IO).launch {
+            quizRepository.updateCards(
+                newQuestions.map { question ->
+                    QuestionUpdate(
+                        id = question.id,
+                        question = question.description,
+                        options = question.variants.map { it.description },
+                        correct = question.variants.mapIndexed { index, variant ->
+                            if (variant.isCorrect) index else null
+                        }.filterNotNull()
+                    )
+                }
+            )
+            .onSuccess {
+                _model.update {
+                    it.copy(questions = newQuestions)
+                }
+            }
+            .onFailure { exception ->
+                exception.message?.let {
+                    Log.d("EditDebug", "Exception: $it")
+                    withContext(Dispatchers.Main) { showErrorToast(it) }
+                }
+            }
         }
     }
 
-    private fun deleteQuestion(index: Int) {
-        val newQuestions = model.value.questions.toMutableList()
-        newQuestions.removeAt(index)
+    private fun deleteQuestion(questionId: Int) {
+        CoroutineScope(Dispatchers.IO).launch {
+            quizRepository.deleteCards(listOf(questionId))
+                .onSuccess {
+                    val newQuestions = model.value.questions.toMutableList()
+                    newQuestions.removeIf { it.id == questionId }
 
-        _model.update {
-            it.copy(questions = newQuestions)
+                    _model.update {
+                        it.copy(questions = newQuestions)
+                    }
+                }
+                .onFailure { exception ->
+                    exception.message?.let {
+                        Log.d("EditDebug", "Exception: $it")
+                        withContext(Dispatchers.Main) { showErrorToast(it) }
+                    }
+                }
         }
     }
 
-    private fun addQuestion(question: Question) {
-        val newQuestions = model.value.questions.toMutableList()
-        newQuestions.add(question)
-
-        _model.update {
-            it.copy(questions = newQuestions)
+    private fun addQuestion(question: QuestionCreate) {
+        CoroutineScope(Dispatchers.IO).launch {
+            quizRepository.createCards(
+                packId = quizId,
+                questions = listOf(question)
+            )
+            .onSuccess { createdQuestions ->
+                _model.update {
+                    it.copy(questions = model.value.questions + createdQuestions)
+                }
+            }
+            .onFailure { exception ->
+                exception.message?.let {
+                    Log.d("EditDebug", "Exception: $it")
+                    withContext(Dispatchers.Main) { showErrorToast(it) }
+                }
+            }
         }
     }
 

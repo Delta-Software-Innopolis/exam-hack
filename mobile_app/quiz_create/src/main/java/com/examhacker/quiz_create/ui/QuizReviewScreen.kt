@@ -58,7 +58,7 @@ internal fun QuizReviewScreen(component: IQuizReviewComponent) {
         onQuizHubClick = component::goToQuizHub,
         onProfileClick = component::goToProfile,
         onSettingsClick = component::goToSettings,
-        goBack = component::goBack
+        goBack = component::back
     )
 }
 
@@ -78,7 +78,7 @@ private fun QuizReviewUI(
         topBar = {
             QuizCreationTopBar(
                 creationStage = CreationStage.REVIEW,
-                onBackClick = {},
+                onBackClick = goBack,
                 onForthClick = {},
                 isForthEnabled = false,
                 modifier = Modifier
@@ -112,7 +112,9 @@ private fun QuizReviewUI(
             QuestionListWithTitle(
                 questions = model.questions,
                 onEditQuestionClick = onEditQuestionClick,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f, fill = false)
             )
 
             SaveQuizAddQuestionButtons(
@@ -245,6 +247,7 @@ private fun createMockQuestions(): List<Question> =
         Question(
             id = 1,
             description = "Why do dogs think their tails are so clingy, they always want to grab it?",
+            hint = "Hint text",
             variants = listOf(
                 AnswerVariant("Option 1", false),
                 AnswerVariant("Option 2", true),
@@ -255,6 +258,7 @@ private fun createMockQuestions(): List<Question> =
         Question(
             id = 2,
             description = "Why something is this thing?",
+            hint = "Hint text",
             variants = listOf(
                 AnswerVariant("Option 1", false),
                 AnswerVariant("Option 2", true),
@@ -265,6 +269,7 @@ private fun createMockQuestions(): List<Question> =
         Question(
             id = 3,
             description = "Why do dogs think their tails are so clingy, they always want to grab it?",
+            hint = "Hint text",
             variants = listOf(
                 AnswerVariant("Option 1", false),
                 AnswerVariant("Option 2", true),

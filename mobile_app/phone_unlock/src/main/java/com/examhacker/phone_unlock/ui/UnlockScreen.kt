@@ -186,6 +186,7 @@ fun UnlockPreview() {
             question = Question(
                 id = 1,
                 description = "Question description, may span several lines, we’ll discuss the font size and boldness later",
+                hint = "Hint text",
                 variants = listOf(
                     AnswerVariant(
                         description = "Option 1, option description",

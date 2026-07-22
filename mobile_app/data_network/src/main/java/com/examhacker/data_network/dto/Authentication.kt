@@ -18,3 +18,8 @@ data class NetworkAuthResponse(
     val access_token: String,
     val refresh_token: String
 )
+
+@Serializable
+data class LogoutRequest(
+    val refresh_token: String
+)

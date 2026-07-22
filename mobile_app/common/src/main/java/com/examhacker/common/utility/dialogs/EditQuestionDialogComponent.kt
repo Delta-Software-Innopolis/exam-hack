@@ -29,7 +29,7 @@ interface IEditQuestionDialogComponent {
 class EditQuestionDialogComponent(
     componentContext: ComponentContext,
     index: Int,
-    question: Question,
+    private val question: Question,
     private val saveChanges: (Int, Question) -> Unit,
     private val deleteQuestion: () -> Unit,
     private val back: () -> Unit
@@ -91,7 +91,8 @@ class EditQuestionDialogComponent(
         saveChanges(
             model.value.questionNumber - 1,
             Question(
-                id = 0, //TODO remove
+                id = question.id,
+                hint = question.hint,
                 description = model.value.questionDescription,
                 variants = model.value.variants
             )

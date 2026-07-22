@@ -517,6 +517,7 @@ private fun createMockQuizzes(): List<Quiz> =
                 Question(
                     id = 1,
                     description = "How much?",
+                    hint = "Hint text",
                     variants = listOf(
                         AnswerVariant("One", false),
                         AnswerVariant("Two", true)
@@ -525,6 +526,7 @@ private fun createMockQuizzes(): List<Quiz> =
                 Question(
                     id = 2,
                     description = "How are you",
+                    hint = "Hint text",
                     variants = listOf(AnswerVariant("good", true))
                 )
             )
@@ -545,6 +547,7 @@ private fun createMockQuizzes(): List<Quiz> =
                 Question(
                     id = 3,
                     description = "Hate me?",
+                    hint = "Hint text",
                     variants = listOf(AnswerVariant("No", true))
                 )
             )
